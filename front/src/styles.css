@@ -1,0 +1,80 @@
+/* You can add global styles to this file, and also import other style files */
+body{
+	font-size: 1.2em;
+}
+#loginMessage .ui-messages-icon {
+  display: none;
+}
+.ui-breadcrumb .ui-menuitem-link .fa-home {
+  font-size: 1.2em;
+}
+.client-list-item .ui-button .ui-button-text {
+  font-size: 1.2em;
+}
+.client-list-item .ui-button {
+  width: 80%;
+}
+.form-group.required .control-label:after {
+  content:"*";color:red;
+}
+label.ui-chkbox-label {
+  margin-bottom: 0;
+}
+.ui-inputtext {
+  width: 100%;
+}
+.ui-dropdown {
+  width: 100% !important;
+}
+.ui-tabview .ui-tabview-panel {
+  border-width: 1px;
+}
+p-splitbutton{
+	margin-right: 5px;
+}
+p-splitbutton span.ui-button-text.ui-clickable{
+	padding: 3px 10px;
+    font-size: 16px;
+}
+p-splitbutton .ui-menu .ui-menuitem{
+	width:100%;
+}
+
+.department-dashboard .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only,.department-dashboard .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left{
+	background: #ECEDF0;
+	border-color: gray;
+	color:#222222;
+	border-radius:0;
+}
+.ui-button.ui-widget.ui-state-default.ui-corner-left.ui-button-text-icon-left, .ui-splitbutton-menubutton.ui-button.ui-widget.ui-state-default.ui-corner-right.ui-button-icon-only{
+	background: #ECEDF0;
+	border-color: gray;
+	color:#222222;
+	border-radius:0;
+}
+.ui-password-panel{width:auto !important;}
+.uploaded_documents li{width:100%;}
+.uploaded_documents li p-button{float:right;}
+.fa.fa-star-o, .fa.fa-star {
+    color: orange !important;
+    font-size: 25px !important;
+}
+.notification{
+	background:red;
+	width:5px;
+	height:5px;
+	border-radius:50%;
+	float:left;
+}
+.dashboard-menus{
+	float:none;
+}
+.dashboard-menus button{
+	width: 250px;
+}
+.ui-button-text-only .ui-button-text{
+	color:#FFF;
+}
+.ui-button-raised .ui-button-text{
+	color:#000;
+}

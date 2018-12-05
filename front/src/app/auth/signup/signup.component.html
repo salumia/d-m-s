@@ -1,0 +1,63 @@
+<form [formGroup]="Userform" (ngSubmit)="saveUser(Userform.value)">
+  <div class="ui-g">
+    <p-panel header="Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-2 ui-xl-offset-5 ui-md-6 ui-md-offset-3 loginPanel">
+	  <p-messages id="SignupMessage" [(value)]="msgs" [closable]="false"></p-messages>
+      <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+          <!-- <span class="ui-inputgroup-addon">First Name</span> -->
+          <input pInputText name="first_name" id="first_name" placeholder="First Name"  [(ngModel)]="user.first_name" formControlName="first_name" />
+        </div>
+      </div>
+      <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="last_name" id="last_name" placeholder="Last Name"  [(ngModel)]="user.last_name" formControlName="last_name" />
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="father_name" id="father_name" placeholder="Father Name"  [(ngModel)]="user.father_name" formControlName="father_name" />
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="mother_name" id="mother_name" placeholder="Mother Name"  [(ngModel)]="user.mother_name" formControlName="mother_name" />
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="email" id="email" placeholder="Email"  [(ngModel)]="user.email" formControlName="email" />
+        </div>
+      </div>
+	   <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input id="newPassword" name="password" type="password" pPassword placeholder="Password" [(ngModel)]="user.password" formControlName="password" />
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.phone" formControlName="phone" placeholder="Phone"></p-inputMask>
+        </div>
+      </div> 
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.alt_phone" formControlName="alt_phone" placeholder="Alternative Phone"></p-inputMask><br />
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <textarea rows="5" placeholder="Correspondence Address" pInputTextarea [(ngModel)]="user.correspondence_address" formControlName="correspondence_address"></textarea>
+        </div>
+      </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <textarea rows="5" placeholder="Permanent Address" pInputTextarea [(ngModel)]="user.permanent_address" formControlName="permanent_address"></textarea>
+        </div>
+      </div>
+      <p-footer>
+        <div class="text-right">
+			<p-button type="submit" label="Sign Up" [disabled]="!Userform.valid"></p-button>
+		</div>
+      </p-footer>
+    </p-panel>
+  </div>
+</form>

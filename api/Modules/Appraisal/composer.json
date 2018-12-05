@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/appraisal",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Appraisal\\Providers\\AppraisalServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Appraisal\\": ""
+        }
+    }
+}

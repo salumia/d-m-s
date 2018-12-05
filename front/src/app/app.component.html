@@ -1,0 +1,7 @@
+<div class="body-wrapper container-fluid">
+  <app-header *ngIf="template.loadComponent('header')"></app-header>
+  <div class="container-fluid content-wrapper">
+	<router-outlet></router-outlet>
+  </div>
+  <app-footer *ngIf="template.loadComponent('footer')"></app-footer>
+</div>

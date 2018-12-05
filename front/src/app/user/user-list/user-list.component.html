@@ -1,0 +1,64 @@
+<!-- <user-menubar></user-menubar> -->
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="container">
+  <div class="row">
+	<div class="col-xs-6"> 
+		<h1><i class="fa fa-user"></i> Users</h1>		
+	</div>
+	<div class="col-xs-6"> 
+		<p-button label="Create User" style="float:right" styleClass="ui-button-primary" [routerLink]="'/users/create'"></p-button>	
+	</div>    
+	
+	<div class="col-xs-12 d-flex justify-content-center" *ngIf="users?.length < 1"> 
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+	<div class="table-responsive">
+    <p-table #userListing [columns]="cols" [value]="users" [paginator]="true" [rows]="10" *ngIf="users?.length > 0">
+		<ng-template pTemplate="caption">
+			<div style="text-align: right">        
+				<i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+				<input type="text" pInputText size="50" placeholder="Search" (input)="userListing.filterGlobal($event.target.value, 'contains')" style="width:auto">                
+			</div>
+		</ng-template>
+		<ng-template pTemplate="header" let-columns>
+			<tr>       
+				<ng-container *ngFor="let col of columns">
+					<th width="230" *ngIf="col.header != ''" >
+						{{col.header}}
+					</th>
+				</ng-container>
+				<th width="300">Actions</th>
+			</tr>
+        </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.email }}</td>
+          <td>{{ user.first_name }} {{ user.last_name }}</td>
+          <td align="right">			
+            <span *ngIf="user.role == 'disabled'">
+              <p-button label="Enable" icon="fa fa-close" styleClass="ui-button-success" (onClick)="enableUser(user.id)"></p-button>
+            </span> 
+			<span *ngIf="user.role != 'disabled' && user.id != this.loggedInUser.id">
+              <p-button label="Disable" icon="fa fa-close" styleClass="ui-button-danger" (onClick)="disableUser(user.id)"></p-button>
+            </span>  
+			<p-button title="Change Password" icon="fa fa-lock" (onClick)="changePassword(user.id)" label="Change Password"></p-button>       
+            <p-button label="Edit" icon="fa fa-pencil-square-o" [routerLink]="'/users/edit/' + user.id"></p-button>
+            <p-button label="View" icon="fa fa-user" [routerLink]="'/users/view/' + user.id"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+	</div>
+  </div>
+</div>
+
+<form (submit)="doPasswordChange()">
+  <p-dialog header="Change Password" [(visible)]="passwordDialogVisible">
+    <p><b>New Password for {{ selectedUser?.first_name }} {{ selectedUser?.last_name }}</b></p>
+    <label for="newPassword">New Password</label>
+    <input id="newPassword" name="myPassword" type="password" pPassword [(ngModel)]="newPassword" />
+    <p-footer>
+      <p-button type="submit" label="Update Password"></p-button>
+    </p-footer>
+  </p-dialog>
+</form>

@@ -1,0 +1,118 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="col-xs-12 d-flex justify-content-center" *ngIf="loadSpinner">
+	<p-progressSpinner ></p-progressSpinner>		
+</div>	
+<form id="Userform" [formGroup]="Userform" *ngIf="!loadSpinner" (ngSubmit)="saveUser(Userform.value)" class="row">
+  <div class="container">
+    <div class="col-md-12">
+		<a href="javascript:void(0);" (click)="goBack()" style="display:block; margin-top: 10px;"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+    <div class="pull-right" style="margin-top:12px" *ngIf="id > 0" >User ID: {{ id }}</div>
+    <!-- <p-messages [(value)]="msgs"></p-messages> -->
+    <h1><i class="fa fa-user"></i> {{ user?.first_name }} {{ user?.last_name }}</h1>
+	
+    <div class="row">
+	
+      <div class="col-md-7">
+		
+        <div class="row">
+          <div class="col-md-6">
+            <h5>First Name</h5>
+            <input type="text" pInputText name="first_name" id="first_name" [(ngModel)]="user.first_name" formControlName="first_name" /><br />
+          </div>
+
+          <div class="col-md-6">
+            <h5>Last Name</h5>
+            <input type="text" pInputText name="last_name" id="last_name" [(ngModel)]="user.last_name" formControlName="last_name" /><br />
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Father Name</h5>
+            <input type="text" pInputText name="father_name" id="father_name" [(ngModel)]="user.father_name" formControlName="father_name" /><br />
+          </div>
+
+          <div class="col-md-6">
+            <h5>Mother Name</h5>
+            <input type="text" pInputText name="mother_name" id="mother_name" [(ngModel)]="user.mother_name" formControlName="mother_name" /><br />
+          </div>
+        </div>
+        <br />		
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Email</h5>
+            <input type="text" pInputText name="email" id="email" [(ngModel)]="user.email" formControlName="email" />
+          </div>
+		<!-- 	
+          <div class="col-md-6">
+            <h5>Department</h5>
+            <p-dropdown [options]="departments" name="department" [(ngModel)]="user.department" formControlName="department" (onChange)="onSelectDepartment()" [disabled]="!enableDepartment"></p-dropdown>
+          </div> -->
+        </div>
+        <br />
+		<!-- <div class="row">
+          <div class="col-md-6">
+            <h5>Designation</h5>
+            <p-dropdown [options]="designations" name="designation" [(ngModel)]="user.designation" formControlName="designation" [disabled]="!enableDesignation" ></p-dropdown>
+          </div>
+        </div>
+        <br /> -->
+		<div class="row">
+          <div class="col-md-6">
+            <h5>Phone</h5>
+            <!-- <input type="text" pInputText name="phone" id="phone" [(ngModel)]="user.phone" formControlName="phone" /><br /> -->
+			<p-inputMask mask="+99-9999999999" [(ngModel)]="user.phone" formControlName="phone" placeholder="+91-9999999999"></p-inputMask>
+          </div>
+
+          <div class="col-md-6">
+            <h5>Alternative Phone</h5> <!-- 
+            <input type="text" pInputText name="alt_phone" id="alt_phone" [(ngModel)]="user.alt_phone" formControlName="alt_phone" /> -->
+			<p-inputMask mask="+99-9999999999" [(ngModel)]="user.alt_phone" formControlName="alt_phone" placeholder="+91-9999999999"></p-inputMask><br />
+          </div>
+        </div>
+        <br />
+		<div class="row">
+          <div class="col-md-6">
+            <h5>Correspondence Address</h5>
+			<textarea rows="5" cols="30" pInputTextarea [(ngModel)]="user.correspondence_address" formControlName="correspondence_address"></textarea>
+			<br />
+          </div>
+
+          <div class="col-md-6">
+            <h5>Permanent Address</h5>
+			<textarea rows="5" cols="30" pInputTextarea [(ngModel)]="user.permanent_address" formControlName="permanent_address"></textarea>
+			<br />
+          </div>
+        </div>
+        <br />
+		<div *ngIf="id > 0;else other_content">
+		
+		</div>
+		<ng-template #other_content>
+		<div class="row" >
+          <div class="col-md-6">
+            <h5>Password</h5>
+			<input id="newPassword" name="password" type="password" pPassword [(ngModel)]="user.password" formControlName="password" />
+			<br />
+          </div>
+        </div>
+        <br />
+		</ng-template>
+		
+		<div class="row">
+          <div class="col-md-12 text-right border-top">
+            <br />
+            <p-button type="submit" label="Save User" icon="fa fa-save" [disabled]="!Userform.valid"></p-button>
+          </div>
+        </div>
+		<br />
+		<br />
+	  </div>
+	  <!-- 
+      <div class="col-md-5 bg-light" *ngIf="id > 0 && loggedInUser.department == 1">
+		<app-upload-documents #documentsChild *ngIf="loadComponents" [loadDocuments]="user.documents"></app-upload-documents>
+      </div> -->
+    </div>
+  </div>
+</form>

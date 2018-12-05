@@ -1,0 +1,7 @@
+p-inputmask, p-inputmask input,input,textarea {
+    width: 100%;
+	border:1px solid #d6d6d6
+}
+#SignupMessage .ui-messages-icon {
+  display: none;
+}
