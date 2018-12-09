@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
+import { VendorLoginComponent } from './vendor-login/vendor-login.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LogoutComponent } from './logout/logout.component';
 
 // Controls
@@ -20,15 +23,15 @@ import { InputMaskModule } from 'primeng/inputmask';
   imports: [
     CommonModule,
     FormsModule,
-	ReactiveFormsModule,
+	  ReactiveFormsModule,
     AuthRoutingModule,
     PanelModule,
     ButtonModule,
     InputTextModule,
     MessagesModule,
     MessageModule,
-	InputMaskModule
+	 InputMaskModule
   ],
-  declarations: [LoginComponent, LogoutComponent, SignupComponent]
+  declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent]
 })
 export class AuthModule { }

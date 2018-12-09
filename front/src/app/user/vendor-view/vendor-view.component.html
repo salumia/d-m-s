@@ -1,0 +1,90 @@
+<div class="container">
+	<div class="col-md-12">
+		<a href="javascript:void(0);" (click)="goBack()" style="display:block; margin-top: 10px;"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+	<div class="col-xs-12 d-flex justify-content-center" *ngIf="!loadUserData">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>	
+	<ng-container *ngIf="loadUserData">
+		<div class="pull-right" style="margin-top:12px" *ngIf="id > 0" >User ID: {{ id }}</div>   
+		<h1><i class="fa fa-user"></i> {{ user?.first_name }} {{ user?.last_name }}</h1>
+		
+		
+		<div class="row">
+			<p-tabView>
+				<p-tabPanel header="Profile" [selected]="true">
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Name</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.first_name }} {{ user?.last_name }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Father Name</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.father_name }}</label>
+					  </div>
+					</div> 
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Mother Name</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.mother_name }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Email</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.email }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Phone</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.phone }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Alternative</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.alt_phone }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Correspondence Address</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.correspondence_address }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Permanent Address</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.permanent_address }}</label>
+					  </div>
+					</div>
+				</p-tabPanel>
+				<p-tabPanel header="Contacts">
+					Contacts listing will be here
+				</p-tabPanel>
+				<p-tabPanel header="Contracts/Agreements">
+					Contracts listing will be here
+				</p-tabPanel>
+			</p-tabView>
+		</div>
+	</ng-container>
+  </div>

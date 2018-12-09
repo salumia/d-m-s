@@ -14,13 +14,22 @@
 				<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i> Login</a>
 			</li>
 			<li>
+				<a routerLink="/admin-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i>Admin Login</a>
+			</li>
+			<li>
+				<a routerLink="/vendor-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i>Vendor Login</a>
+			</li>
+			<li>
 				<a routerLink="/signup" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user-plus"></i> SignUp</a>
 			</li>		
 		</ul>
 		<ul class="nav navbar-nav" *ngIf="loggedInMenus">
 			<li class="active">
 				<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-home"></i> Home</a>
-			</li>    
+			</li>   
+			<li>
+				<a routerLink="/vendors" routerLinkActive="active" *ngIf="userData.role == 'admin'"><i class="fa fa-user"></i> Manage Vendors</a>
+			</li>	 
 			<li>
 				<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'"><i class="fa fa-user"></i> Manage Users</a>
 			</li>		

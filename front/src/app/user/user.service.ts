@@ -14,6 +14,14 @@ export class UserService {
     this.apiUrl = config.getApiUrl();
   }
 
+  getVendors() {
+    const token = this.auth.getToken();
+    return this.http.get<User[]>(this.apiUrl + '/vendors', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   getUsers() {
     const token = this.auth.getToken();
     return this.http.get<User[]>(this.apiUrl + '/users', {
@@ -21,8 +29,17 @@ export class UserService {
         Authorization: 'Bearer ' + token
       }
     });
+  }
+  getVendor(id: number) {
+    const token = this.auth.getToken();
+    return this.http.get<User>(this.apiUrl + '/vendors/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).map(res => {
+      return new User(res);
+    });
   }  
-  
   getUser(id: number) {
     const token = this.auth.getToken();
     return this.http.get<User>(this.apiUrl + '/users/' + id, {
@@ -33,7 +50,22 @@ export class UserService {
       return new User(res);
     });
   }  
-  
+  saveVendor(id: number, data: User) {
+    const token = this.auth.getToken();
+	  if(id > 0 ){
+		return this.http.put<UserChangeResponse>(this.apiUrl + '/vendors/' + id, data, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	} else {
+		return this.http.post<UserChangeResponse>(this.apiUrl + '/vendors', data, {
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		});
+	  }
+  }
   saveUser(id: number, data: User) {
     const token = this.auth.getToken();
 	if(id > 0 ){

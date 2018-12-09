@@ -7,7 +7,9 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { UserRoutingModule } from './user-routing.module';
 import { UserListComponent } from './user-list/user-list.component';
+import { VendorListComponent } from './vendor-list/vendor-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { VendorEditComponent } from './vendor-edit/vendor-edit.component';
 import { TemplateModule } from "../template/template.module";
 import { MenubarComponent } from './menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
@@ -27,6 +29,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { GrowlModule } from 'primeng/growl';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ViewComponent } from './view/view.component';
+import { VendorViewComponent } from './vendor-view/vendor-view.component';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TabViewModule} from 'primeng/tabview';
 
@@ -55,7 +58,9 @@ import {TabViewModule} from 'primeng/tabview';
 	TabViewModule
   ],
   providers: [AuthService, UserService],
-  declarations: [UserListComponent, UserEditComponent, MenubarComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent]
+  declarations: [UserListComponent, VendorListComponent 
+      , UserEditComponent, VendorEditComponent,VendorViewComponent,
+      MenubarComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent]
 })
 export class UserModule {
   constructor(auth: AuthService, router: Router) {

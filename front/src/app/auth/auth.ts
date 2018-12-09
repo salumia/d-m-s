@@ -9,3 +9,10 @@ export class Auth {
   }
 
 }
+
+export class ResetEmail {
+  email: string;
+  constructor(email: string) {
+     this.email = email;
+  }
+}
