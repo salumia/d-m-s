@@ -15,6 +15,10 @@ Route::group(['middleware' => ['api']], function () {
   	Route::resource('vendors', 'VendorUserController');
 });
 
+Route::group(['middleware' => ['api']], function () {
+  	Route::resource('admin', 'AdminController');
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -23,12 +27,19 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return 'working';
     //return $request->user();
 });*/
-  Route::post('reset-password', 'PasswordResetController@create');
-  Route::get('find/{token}', 'PasswordResetController@find');
-  Route::post('reset', 'PasswordResetController@reset');
+
+Route::post('reset-password', 'PasswordResetController@create');
+Route::get('find/{token}', 'PasswordResetController@find');
+Route::post('reset', 'PasswordResetController@reset');
 //Route::post('reset-password', 'Auth\RegisterController@register');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('login-admin', 'Auth\AdminLoginController@loginAdmin');
 Route::post('login-vendor', 'Auth\VendorLoginController@loginVendor');
 Route::post('logout', 'Auth\LoginController@logout');
+
+Route::post('vendor/change-password/{user}', 'VendorUserController@changePassword');//->middleware('auth:api');
+Route::post('admin/change-password/{user}', 'AdminController@changePassword');//->middleware('auth:api');
+
+Route::post('vendor/disable-user/{user}', 'VendorUserController@disableUser');//->middleware('auth:api');
+Route::post('vendor/enable-user/{user}', 'VendorUserController@enableUser');//->middleware('auth:api');

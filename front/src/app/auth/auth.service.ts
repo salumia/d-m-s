@@ -32,6 +32,7 @@ export class AuthService {
       });
     });
   }
+  
   loginVendor(user: Auth): Observable<AuthData> {
     return new Observable((observer) => {
       this.doLoginVendor(user).subscribe((response: AuthResponse) => {

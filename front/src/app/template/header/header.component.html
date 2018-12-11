@@ -11,17 +11,20 @@
     <div class="collapse navbar-collapse" id="myNavbar">
 		<ul class="nav navbar-nav" *ngIf="!loggedInMenus">
 			<li>
-				<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i> Login</a>
+				<a routerLink="/vendor-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+				<i class="fa fa-group"></i> Vendor</a>
 			</li>
 			<li>
-				<a routerLink="/admin-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i>Admin Login</a>
+				<a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> User</a>
 			</li>
-			<li>
-				<a routerLink="/vendor-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-sign-in"></i>Vendor Login</a>
-			</li>
-			<li>
+			<!-- <li>
 				<a routerLink="/signup" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user-plus"></i> SignUp</a>
-			</li>		
+			</li>	 -->	
+		</ul>
+		<ul class="nav navbar-nav navbar-right" *ngIf="!loggedInMenus">
+			<li>
+				<a routerLink="/admin-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> Admin</a>
+			</li>
 		</ul>
 		<ul class="nav navbar-nav" *ngIf="loggedInMenus">
 			<li class="active">

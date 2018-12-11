@@ -105,7 +105,7 @@ export class VendorEditComponent implements OnInit {
   isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
-                this.userService.isEmailRegisterd(control.value,this.id).subscribe(res => {
+                this.userService.isEmailRegisterd(control.value, this.id, 'vendor').subscribe(res => {
                     console.log('Check Email Calling'+res);
                     if(res == 0){
                         resolve(null);

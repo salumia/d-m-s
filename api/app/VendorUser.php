@@ -39,15 +39,4 @@ class VendorUser extends Authenticatable
         return $this->api_token;
     }
 	
-	public function getFiles() {
-        return $this->hasMany(EmployeeFiles::class,'user_id');
-    }	
-	
-	public function getLeaves() {
-        return $this->hasMany(Leave::class,'user_id');
-    }
-	
-	public function getClaims() {
-        return $this->hasMany(Claim::class,'user_id');
-    }
 }

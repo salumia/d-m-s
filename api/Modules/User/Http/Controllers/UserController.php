@@ -3,6 +3,8 @@
 namespace Modules\User\Http\Controllers;
 
 use App\User;
+use App\VendorUser;
+use App\AdminUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -124,22 +126,13 @@ class UserController extends Controller
     public function changePassword(User $user, Request $request)
     {
         $data = $request->post();
-		/* $count = User::where([['password','=',Hash::make($data['my_password'])],['id','=',$user->id]])->count();
-		if($count > 0){ */
-			$user->password = Hash::make($data['new_password']);
-			$user->save();
-			return new Response([
-				'message' => 'Password updated successfully',
-				'user' => $user,
-				'error' => false
-			]);
-		/* } else {
-			return new Response([
-				'message' => 'Current password is wrong',
-				'user' => $user,
-				'error' => true
-			]);
-		}  */
+		$user->password = Hash::make($data['new_password']);
+		$user->save();
+		return new Response([
+			'message' => 'Password updated successfully',
+			'user' => $user,
+			'error' => false
+		]);
     }
 
     /**
@@ -185,7 +178,7 @@ class UserController extends Controller
     public function enableUser(User $user) {
         // Disable user
         $user->api_token = '';
-        $user->role = 'subscriber';
+        $user->role = 'user';
         $user->save();
 
         return new Response([
@@ -203,7 +196,31 @@ class UserController extends Controller
     public function checkIfEmailExist(Request $request)
     {
 		$data = $request->post();
-		return new Response(User::where([['email','=',$data['email']],['id','!=',$data['id']]])->count());
+		$condition = [['email','=',$data['email']]] ;
+		$conditionWithId = [['email','=',$data['email']],['id','!=',$data['id']]] ;
+		$count = 0;
+		if($data['id'] == 0){
+			$count = $count + User::where($condition)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			
+		} elseif($data['role'] == "vendor"){
+			$count = $count + User::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			$count = $count + VendorUser::where($conditionWithId)->count();
+			
+		} elseif($data['role'] == "user"){
+			$count = $count + User::where($conditionWithId)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			
+		} elseif($data['role'] == "admin"){
+			$count = $count + User::where($condition)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($conditionWithId)->count();
+		}		
+		
+		return new Response($count);
     }	
 	
 	/**

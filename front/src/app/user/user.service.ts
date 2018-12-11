@@ -49,7 +49,19 @@ export class UserService {
     }).map(res => {
       return new User(res);
     });
-  }  
+  }   
+  
+  getAdmin(id: number) {
+    const token = this.auth.getToken();
+    return this.http.get<User>(this.apiUrl + '/admin/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).map(res => {
+      return new User(res);
+    });
+  }
+  
   saveVendor(id: number, data: User) {
     const token = this.auth.getToken();
 	  if(id > 0 ){
@@ -83,9 +95,9 @@ export class UserService {
 	}
   }
 
-  changePassword(id: number, my_password: string, new_password: string) {
+  changePassword(id: number, my_password: string, new_password: string, role = 'users' ) {
     const token = this.auth.getToken();
-    return this.http.post<UserChangeResponse>(this.apiUrl + '/users/change-password/' + id, {
+    return this.http.post<UserChangeResponse>(this.apiUrl + '/' + role +  '/change-password/' + id, {
       my_password: my_password,
       new_password: new_password
     }, {
@@ -104,27 +116,27 @@ export class UserService {
     });
   }
 
-  disableUser(id: number) {
+  disableUser(id: number, role = 'users') {
     const token = this.auth.getToken();
-    return this.http.post<UserChangeResponse>(this.apiUrl + '/users/disable-user/' + id, null, {
+    return this.http.post<UserChangeResponse>(this.apiUrl + '/'+ role +'/disable-user/' + id, null, {
       headers: {
         Authorization: 'Bearer ' + token
       }
     });
   }
 
-  enableUser(id: number) {
+  enableUser(id: number, role = 'users') {
     const token = this.auth.getToken();
-    return this.http.post<UserChangeResponse>(this.apiUrl + '/users/enable-user/' + id, null, {
+    return this.http.post<UserChangeResponse>(this.apiUrl + '/'+ role +'/enable-user/' + id, null, {
       headers: {
         Authorization: 'Bearer ' + token
       }
     });
   } 
   
-  isEmailRegisterd(email: string, id: number = 0) {
+  isEmailRegisterd(email: string, id: number = 0, role:string = 'user') {
         const token = this.auth.getToken();
-        return this.http.post<any>(this.apiUrl + '/users/checkEmail', { email: email, id: id}, {
+        return this.http.post<any>(this.apiUrl + '/users/checkEmail', { email: email, id: id, role: role}, {
               /*   headers: {
                     Authorization: 'Bearer ' + token
                 } */
