@@ -22,7 +22,8 @@ const routes: Routes = [
   {path: 'settings/users/edit/:id', component: UserEditComponent},
   {path: 'dashboard', component: DashboardComponent},
   {path: 'underconstruction', component: NotfoundComponent},
-  {path: 'users/change-password', component: ChangePasswordComponent},
+  {path: 'user/change-password', component: ChangePasswordComponent},
+  {path: 'vendor/change-password', component: ChangePasswordComponent},
   {path: 'users/view/:id', component: ViewComponent},
   {path: 'vendor/view/:id', component: VendorViewComponent},
   

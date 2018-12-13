@@ -49,7 +49,7 @@ export class VendorListComponent implements OnInit {
 	}
 
 	doPasswordChange() {
-		this.userService.changePassword(this.selectedUser.id, this.myPassword, this.newPassword).subscribe(res => {
+		this.userService.changePassword(this.selectedUser.id, this.myPassword, this.newPassword, 'vendor').subscribe(res => {
 			// Clear fields
 			this.myPassword = '';
 			this.newPassword = '';
@@ -59,8 +59,9 @@ export class VendorListComponent implements OnInit {
 		});
 	}
 
+	
 	disableUser(id: number) {
-		this.userService.disableUser(id).subscribe(res => {		
+		this.userService.disableUser(id,'vendor').subscribe(res => {		
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'User Updated', detail: res.message});
 			// Reload Users
 			this.loadUsers();
@@ -68,7 +69,7 @@ export class VendorListComponent implements OnInit {
 	}
 
 	enableUser(id) {
-		this.userService.enableUser(id).subscribe(res => {
+		this.userService.enableUser(id,'vendor').subscribe(res => {
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'User Updated', detail: res.message});
 
 			// Reload Users

@@ -99,19 +99,28 @@ export class UserEditComponent implements OnInit {
 	  }
   }
   
-  loadUser() {
-    // Load User
-    this.userService.getUser(this.id).subscribe(res => {
-      this.user = res;
-	  this.loadComponents = true;
-	  this.loadSpinner = false;
-    });
+	loadUser() {
+		if(this.loggedInUser.id == this.id && this.loggedInUser.role == 'admin'){
+			// Load User
+			this.userService.getAdmin(this.id).subscribe(res => {
+				this.user = res;
+				this.loadComponents = true;
+				this.loadSpinner = false;
+			});
+		} else {
+			// Load User
+			this.userService.getUser(this.id).subscribe(res => {
+			  this.user = res;
+			  this.loadComponents = true;
+			  this.loadSpinner = false;
+			});
+		}
 
-  }
+	}
     isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
-                this.userService.isEmailRegisterd(control.value,this.id).subscribe(res => {
+                this.userService.isEmailRegisterd(control.value,this.id, 'user').subscribe(res => {
                     console.log('Check Email Calling'+res);
                     if(res == 0){
                         resolve(null);

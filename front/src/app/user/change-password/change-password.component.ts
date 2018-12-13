@@ -13,6 +13,7 @@ export class ChangePasswordComponent implements OnInit {
 
   user: any;
   Userform: FormGroup;
+  role: string = 'users';
   
   constructor(private userService: UserService, private auth: AuthService, private fb: FormBuilder, private messageService: MessageService) { }
 
@@ -37,7 +38,13 @@ export class ChangePasswordComponent implements OnInit {
     }	
 	
 	doPasswordChange(data) {
-		this.userService.changePassword(this.user.id, '', data.new_password).subscribe(res => {
+		if(this.user.role == 'vendor'){
+			this.role = 'vendor';
+		}
+		if(this.user.role == 'admin'){
+			this.role = 'admin';
+		}
+		this.userService.changePassword(this.user.id, '', data.new_password, this.role).subscribe(res => {
 			this.Userform.reset();
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Password updated successfully'});		
 		});

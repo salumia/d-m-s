@@ -34,27 +34,38 @@ export class HeaderComponent implements OnInit {
 	this.userData = this.auth.getAuth();
 	
 	if(this.userData != null){
+		console.log(this.userData);
 		if(this.userData.department == 1 || this.userData.role == 'admin'){
 			this.reviewAppraisalList = true;
 		}
 		this.setSettingMenus();
-		this.loadActiveAppraisal();
+		/* this.loadActiveAppraisal();
 		this.loadReviewAppraisalList();
-		this.loadDepartmentAppraisalList();
+		this.loadDepartmentAppraisalList(); */
 	}
 	
 	
 	console.log('Loggedin DATA');
 	console.log(this.userData);
-	console.log(this.loggedInMenus);
-	
+	console.log(this.loggedInMenus);	
   }
   
   setSettingMenus(){
 		if(this.items.length == 0){
-			this.items.push({label: 'Profile', icon: 'fa-user', routerLink: '/users/view/'+this.userData.id});
-			this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/users/edit/'+this.userData.id});
-			this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/users/change-password'});
+			if(this.userData.role == "vendor"){
+				this.items.push({label: 'Profile', icon: 'fa-user', routerLink: '/vendor/view/'+this.userData.id});
+				this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/vendor/edit/'+this.userData.id});
+				this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/vendor/change-password'});
+			} else if(this.userData.role == "admin"){
+				this.items.push({label: 'Profile', icon: 'fa-user', routerLink: '/users/view/'+this.userData.id});
+				this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/users/edit/'+this.userData.id});
+				this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/user/change-password'});
+			} else {
+				this.items.push({label: 'Profile', icon: 'fa-user', routerLink: '/users/view/'+this.userData.id});
+				this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/users/edit/'+this.userData.id});
+				this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/user/change-password'});
+			}
+			
 			this.items.push({label: 'Logout', icon: 'fa-sign-out', routerLink: '/logout'});
 		}
 		this.loggedInMenus = true;
@@ -105,9 +116,9 @@ export class HeaderComponent implements OnInit {
 	this.userData = this.auth.getAuth();
 	this.setSettingMenus();
 	if(this.userData != null){		
-		this.loadActiveAppraisal();
+		/* this.loadActiveAppraisal();
 		this.loadReviewAppraisalList();
-		this.loadDepartmentAppraisalList();		
+		this.loadDepartmentAppraisalList();	 */	
 	} else {
 		this.loggedInMenus = false;
 		this.activeAppraisal = false;

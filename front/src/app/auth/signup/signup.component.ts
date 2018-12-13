@@ -56,13 +56,13 @@ export class SignupComponent implements OnInit {
 	
 	saveUser() {
 		console.log(this.user);
-		this.userService.saveUser(0, this.user).subscribe(res => {
+		this.userService.saveVendor(0, this.user).subscribe(res => {
 			if(res instanceof HttpErrorResponse) {
 				this.updateMessage('Sign up Failed:', res.error.message, 'error');
 			} else {
 				this.updateMessage('Success :', res.message, 'success');
 				setTimeout(() => {
-					this.router.navigate(['login']);
+					this.router.navigate(['vendor-login']);
 				}, 2000);
 			}
 		});
