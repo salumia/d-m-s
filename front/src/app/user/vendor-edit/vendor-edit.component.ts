@@ -69,7 +69,6 @@ export class VendorEditComponent implements OnInit {
 	
 	// Load Departments
     this.departments = [
-      { label: '(select)', value: null },
       { label: 'Male', value: 'male' },
       { label: 'Felmale', value: 'famale' }
     ];	
@@ -86,18 +85,17 @@ export class VendorEditComponent implements OnInit {
 			this.enableDesignation = true;
 		}
 	  }else{
-		this.Userform.controls['password'].setValidators(Validators.required);
-		this.disableFieldsFlag = false;
-		this.enableDepartment = true;
+      this.Userform.controls['password'].setValidators(Validators.required);
+      this.disableFieldsFlag = false;
+      this.enableDepartment = true;
 	  }
   }
   
   loadUser() {
-    // Load User
-    this.userService.getVendor(this.id).subscribe(res => {
+      this.userService.getVendor(this.id).subscribe(res => {
       this.user = res;
-    this.loadComponents = true;
-	  this.loadSpinner = false;
+      this.loadComponents = true;
+      this.loadSpinner = false;
     });
 
   }

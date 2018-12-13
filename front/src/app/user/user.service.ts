@@ -64,7 +64,7 @@ export class UserService {
     });
   }
   
-  saveVendor(id: number, data: User) {
+  saveVendor(id: number, data: Vendor) {
     const token = this.auth.getToken();
 	  if(id > 0 ){
 		return this.http.put<VendorChangeResponse>(this.apiUrl + '/vendors/' + id, data, {

@@ -7,7 +7,7 @@
 	</div>	
 	<ng-container *ngIf="loadUserData">
 		<div class="pull-right" style="margin-top:12px" *ngIf="id > 0" >User ID: {{ id }}</div>   
-		<h1><i class="fa fa-user"></i> {{ user?.first_name }} {{ user?.last_name }}</h1>
+		<h1><i class="fa fa-user"></i> {{ user?.name }}</h1>
 		
 		
 		<div class="row">
@@ -18,25 +18,17 @@
 						<h5>Name</h5>
 					  </div>
 					  <div class="col-md-8">
-						<label>{{ user?.first_name }} {{ user?.last_name }}</label>
+						<label>{{ user?.name }}</label>
 					  </div>
 					</div>
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Father Name</h5>
+						<h5>Shop Name</h5>
 					  </div>
 					  <div class="col-md-8">
-						<label>{{ user?.father_name }}</label>
+						<label>{{ user?.shop_name }}</label>
 					  </div>
 					</div> 
-					<div class="row">
-					  <div class="col-md-4">
-						<h5>Mother Name</h5>
-					  </div>
-					  <div class="col-md-8">
-						<label>{{ user?.mother_name }}</label>
-					  </div>
-					</div>
 					<div class="row">
 					  <div class="col-md-4">
 						<h5>Email</h5>
@@ -55,26 +47,26 @@
 					</div>
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Alternative</h5>
+						<h5>Address</h5>
 					  </div>
 					  <div class="col-md-8">
-						<label>{{ user?.alt_phone }}</label>
+						<label>{{ user?.address }}</label>
 					  </div>
 					</div>
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Correspondence Address</h5>
+						<h5>City</h5>
 					  </div>
 					  <div class="col-md-8">
-						<label>{{ user?.correspondence_address }}</label>
+						<label>{{ user?.city }}</label>
 					  </div>
 					</div>
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Permanent Address</h5>
+						<h5>Fax</h5>
 					  </div>
 					  <div class="col-md-8">
-						<label>{{ user?.permanent_address }}</label>
+						<label>{{ user?.fax }}</label>
 					  </div>
 					</div>
 				</p-tabPanel>

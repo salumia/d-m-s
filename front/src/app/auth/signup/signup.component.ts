@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../user/user.service';
-import { User } from '../../user/user';
+import { Vendor } from '../../user/vendor';
 import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { MessageService } from 'primeng/components/common/messageservice';
@@ -14,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
-	user: User = {} as User;
+	user: Vendor = {} as Vendor;
 	roles: SelectItem[];
 	departments: SelectItem[];
 	designations: SelectItem[];
@@ -25,16 +25,15 @@ export class SignupComponent implements OnInit {
 
 	ngOnInit() {
 		this.Userform = this.fb.group({
-			'first_name': new FormControl('', Validators.required),            
-			'last_name': new FormControl('', Validators.required),            
-			'father_name': new FormControl('', Validators.required),            
-			'mother_name': new FormControl('', Validators.required),
-			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),					
-			'phone': new FormControl('', Validators.required),            
-			'alt_phone': new FormControl(''),            
-			'correspondence_address': new FormControl('', Validators.required),            
-			'permanent_address': new FormControl('', Validators.required),            
-			'password': new FormControl('')
+			'name': new FormControl('', Validators.required),
+			'shop_name': new FormControl('', Validators.required),
+			'phone': new FormControl('', Validators.required),
+			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]), this.isEmailUnique.bind(this)),					
+			'fax': new FormControl('', Validators.required),
+			'address': new FormControl(''),
+			'city': new FormControl('', Validators.required),
+			'zip': new FormControl('', Validators.required),
+			'password': new FormControl('', Validators.required)
 		});
 	}
 
@@ -55,7 +54,6 @@ export class SignupComponent implements OnInit {
     }        
 	
 	saveUser() {
-		console.log(this.user);
 		this.userService.saveVendor(0, this.user).subscribe(res => {
 			if(res instanceof HttpErrorResponse) {
 				this.updateMessage('Sign up Failed:', res.error.message, 'error');

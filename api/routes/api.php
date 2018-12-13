@@ -28,9 +28,4 @@ Route::post('login', 'Auth\LoginController@login');
 Route::post('login-admin', 'Auth\AdminLoginController@loginAdmin');
 Route::post('login-vendor', 'Auth\VendorLoginController@loginVendor');
 Route::post('logout', 'Auth\LoginController@logout');
-
-Route::post('vendor/change-password/{user}', 'VendorUserController@changePassword');//->middleware('auth:api');
 Route::post('admin/change-password/{user}', 'AdminController@changePassword');//->middleware('auth:api');
-
-Route::post('vendor/disable-user/{user}', 'VendorUserController@disableUser');//->middleware('auth:api');
-Route::post('vendor/enable-user/{user}', 'VendorUserController@enableUser');//->middleware('auth:api');

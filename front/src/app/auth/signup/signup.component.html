@@ -5,22 +5,22 @@
       <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
           <!-- <span class="ui-inputgroup-addon">First Name</span> -->
-          <input pInputText name="first_name" id="first_name" placeholder="First Name"  [(ngModel)]="user.first_name" formControlName="first_name" />
+          <input pInputText name="name" id="name" placeholder="Name"  [(ngModel)]="user.name" formControlName="name" />
         </div>
       </div>
       <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="last_name" id="last_name" placeholder="Last Name"  [(ngModel)]="user.last_name" formControlName="last_name" />
+		  <input pInputText name="shop_name" id="shop_name" placeholder="Shop Name"  [(ngModel)]="user.shop_name" formControlName="shop_name" />
         </div>
       </div>
-	  <div class="ui-g ui-fluid">
+      <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="father_name" id="father_name" placeholder="Father Name"  [(ngModel)]="user.father_name" formControlName="father_name" />
+		    <input pInputText name="city" id="city" placeholder="City"  [(ngModel)]="user.city" formControlName="city" />
         </div>
       </div>
-	  <div class="ui-g ui-fluid">
+      <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="mother_name" id="mother_name" placeholder="Mother Name"  [(ngModel)]="user.mother_name" formControlName="mother_name" />
+		  <input pInputText name="zip" id="zip" placeholder="Zip"  [(ngModel)]="user.zip" formControlName="zip" />
         </div>
       </div>
 	  <div class="ui-g ui-fluid">
@@ -40,17 +40,12 @@
       </div> 
 	  <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.alt_phone" formControlName="alt_phone" placeholder="Alternative Phone"></p-inputMask><br />
+		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.fax" formControlName="fax" placeholder="Fax"></p-inputMask><br />
         </div>
       </div>
 	  <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <textarea rows="5" placeholder="Correspondence Address" pInputTextarea [(ngModel)]="user.correspondence_address" formControlName="correspondence_address"></textarea>
-        </div>
-      </div>
-	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-		  <textarea rows="5" placeholder="Permanent Address" pInputTextarea [(ngModel)]="user.permanent_address" formControlName="permanent_address"></textarea>
+		  <textarea rows="5" placeholder=" Address" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
         </div>
       </div>
       <p-footer>
