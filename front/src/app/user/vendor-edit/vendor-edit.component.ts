@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
-import { User } from '../user';
+import { Vendor } from '../vendor';
 import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
@@ -16,7 +16,7 @@ import {Location} from '@angular/common';
 export class VendorEditComponent implements OnInit {
 	@ViewChild('documentsChild') documentsChild;
 	id: number;
-	user: User = {} as User;
+	user: Vendor = {} as Vendor;
 	roles: SelectItem[];
 	departments: SelectItem[];
 	designations: SelectItem[];
@@ -48,15 +48,15 @@ export class VendorEditComponent implements OnInit {
 
 	
 	this.Userform = this.fb.group({
-			'first_name': new FormControl('', Validators.required),            
-			'last_name': new FormControl('', Validators.required),            
-			'father_name': new FormControl('', Validators.required),            
-			'mother_name': new FormControl('', Validators.required),
+			'name': new FormControl('', Validators.required),
+			'shop_name': new FormControl('', Validators.required),
+			'gender': new FormControl('', Validators.required),
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
-			'phone': new FormControl('', Validators.required),            
-			'alt_phone': new FormControl(''),            
-			'correspondence_address': new FormControl('', Validators.required),            
-			'permanent_address': new FormControl('', Validators.required),            
+			'phone': new FormControl('', Validators.required),
+			'fax': new FormControl('', Validators.required),
+			'address': new FormControl('', Validators.required),
+			'city': new FormControl('', Validators.required),
+			'zip': new FormControl('', Validators.required),
 			'password': new FormControl('')
 		});
 	 
@@ -70,9 +70,8 @@ export class VendorEditComponent implements OnInit {
 	// Load Departments
     this.departments = [
       { label: '(select)', value: null },
-      { label: 'HR', value: 1 },
-      { label: 'Marketing & Software Development', value: 2 },
-      { label: 'Finance', value: 3 }
+      { label: 'Male', value: 'male' },
+      { label: 'Felmale', value: 'famale' }
     ];	
 	
 	// Load Designations
@@ -97,7 +96,7 @@ export class VendorEditComponent implements OnInit {
     // Load User
     this.userService.getVendor(this.id).subscribe(res => {
       this.user = res;
-	  this.loadComponents = true;
+    this.loadComponents = true;
 	  this.loadSpinner = false;
     });
 

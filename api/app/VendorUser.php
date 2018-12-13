@@ -11,14 +11,14 @@ use Modules\Claim\Entities\Claim as Claim;
 class VendorUser extends Authenticatable
 {
     use Notifiable;
-
+    protected $table = 'vendor_profiles';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'name', 'email', 'role', 'department', 'designation', 'father_name','mother_name', 'phone', 'alt_phone', 'correspondence_address', 'permanent_address', 'api_token', 'api_token_expires','password'
+        'name', 'shop_name', 'email', 'phone', 'gender', 'fax', 'address','city', 'zip', 'api_token', 'api_token_expires','password'
     ];
 
     /**

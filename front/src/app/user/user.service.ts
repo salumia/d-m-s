@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { ConfigServiceService } from '../config-service.service';
 import { User } from './user';
+import { Vendor } from './vendor';
 import { UserChangeResponse } from './user-change-response';
+import { VendorChangeResponse } from './vendor-change-response';
 
 @Injectable()
 export class UserService {
@@ -16,7 +18,7 @@ export class UserService {
 
   getVendors() {
     const token = this.auth.getToken();
-    return this.http.get<User[]>(this.apiUrl + '/vendors', {
+    return this.http.get<Vendor[]>(this.apiUrl + '/vendors', {
       headers: {
         Authorization: 'Bearer ' + token
       }
@@ -32,12 +34,12 @@ export class UserService {
   }
   getVendor(id: number) {
     const token = this.auth.getToken();
-    return this.http.get<User>(this.apiUrl + '/vendors/' + id, {
+    return this.http.get<Vendor>(this.apiUrl + '/vendors/' + id, {
       headers: {
         Authorization: 'Bearer ' + token
       }
     }).map(res => {
-      return new User(res);
+      return new Vendor(res);
     });
   }  
   getUser(id: number) {
@@ -53,13 +55,13 @@ export class UserService {
   saveVendor(id: number, data: User) {
     const token = this.auth.getToken();
 	  if(id > 0 ){
-		return this.http.put<UserChangeResponse>(this.apiUrl + '/vendors/' + id, data, {
+		return this.http.put<VendorChangeResponse>(this.apiUrl + '/vendors/' + id, data, {
 		  headers: {
 			Authorization: 'Bearer ' + token
 		  }
 		});
 	} else {
-		return this.http.post<UserChangeResponse>(this.apiUrl + '/vendors', data, {
+		return this.http.post<VendorChangeResponse>(this.apiUrl + '/vendors', data, {
 			headers: {
 				Authorization: 'Bearer ' + token
 			}

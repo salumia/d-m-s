@@ -11,7 +11,7 @@ use Modules\Claim\Entities\Claim as Claim;
 class User extends Authenticatable
 {
     use Notifiable;
-
+    protected $table = 'user_profiles';
     /**
      * The attributes that are mass assignable.
      *

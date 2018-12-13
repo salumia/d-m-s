@@ -11,7 +11,7 @@ use Modules\Claim\Entities\Claim as Claim;
 class AdminUser extends Authenticatable
 {
     use Notifiable;
-
+    protected $table = 'admin';
     /**
      * The attributes that are mass assignable.
      *

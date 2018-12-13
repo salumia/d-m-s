@@ -3,8 +3,8 @@ import { Injectable, Inject } from '@angular/core';
 @Injectable()
 export class ConfigServiceService {
 
-  private apiUrl = 'http://trigvent.com/portfolio/intranet/api/public/api';
-  private baseUrl = 'http://trigvent.com/portfolio/intranet/api/public';
+  private apiUrl = 'http://trigvent.com/portfolio/bookeeper/api/public/api';
+  private baseUrl = 'http://trigvent.com/portfolio/bookeeper/api/public/';
 
   constructor() {
     if (window.location.host.startsWith('localhost')) {

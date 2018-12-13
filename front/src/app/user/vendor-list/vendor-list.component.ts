@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
-import { User } from '../user';
+import { Vendor } from '../vendor';
 import { Message } from 'primeng/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 
@@ -11,13 +11,13 @@ import { MessageService } from 'primeng/components/common/messageservice';
   styleUrls: ['./vendor-list.component.css']
 })
 export class VendorListComponent implements OnInit {
-	users: User[];
+	users: Vendor[];
 	passwordDialogVisible = false;
-	selectedUser: User;
+	selectedUser: Vendor;
 	myPassword: string;
 	newPassword: string;
 	msgs: Message[] = [];
-	loggedInUser: User;
+	loggedInUser: Vendor;
 	cols: any[];
 
 	constructor(private userService: UserService, private authService: AuthService, private messageService: MessageService) {}
