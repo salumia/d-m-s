@@ -93,21 +93,12 @@ export class UserEditComponent implements OnInit {
   }
   
 	loadUser() {
-		if(this.loggedInUser.id == this.id && this.loggedInUser.role == 'admin'){
-			// Load User
-			this.userService.getAdmin(this.id).subscribe(res => {
-				this.user = res;
-				this.loadComponents = true;
-				this.loadSpinner = false;
-			});
-		} else {
-			// Load User
-			this.userService.getUser(this.id).subscribe(res => {
-			  this.user = res;
-			  this.loadComponents = true;
-			  this.loadSpinner = false;
-			});
-		}
+		// Load User
+		this.userService.getUser(this.id).subscribe(res => {
+		  this.user = res;
+		  this.loadComponents = true;
+		  this.loadSpinner = false;
+		});
 
 	}
     isEmailUnique(control: FormControl) {
@@ -162,11 +153,11 @@ export class UserEditComponent implements OnInit {
     }
 	
 	toggle_password() {
-		if( $("#newPassword").attr('type') == "text" ){
+		/* if( $("#newPassword").attr('type') == "text" ){
 			$("#newPassword").attr('type',"password");
 		} else {
 			$("#newPassword").attr('type',"text");
-		}
+		} */
     }
 
 

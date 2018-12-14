@@ -28,22 +28,14 @@ export class ViewComponent implements OnInit {
 	}
 
 	loadUser() {
-		if(this.loggedInUser.id == this.id && this.loggedInUser.role == 'admin'){
-			// Load User
-			this.userService.getAdmin(this.id).subscribe(res => {
-				this.user = res;
-				this.loadUserData = true;
-				console.log(this.user);
-			});
-		} else {
-			// Load User
-			this.userService.getUser(this.id).subscribe(res => {
-				this.user = res;
-				this.loadUserData = true;
-				console.log(this.user);
-			});
-		}
 		
+		// Load User
+		this.userService.getUser(this.id).subscribe(res => {
+			this.user = res;
+			this.loadUserData = true;
+			console.log(this.user);
+		});
+	
 	}
 	
 	goBack() {

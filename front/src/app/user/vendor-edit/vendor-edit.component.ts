@@ -150,11 +150,11 @@ export class VendorEditComponent implements OnInit {
     }
 	
 	toggle_password() {
-		if( $("#newPassword").attr('type') == "text" ){
+		/* if( $("#newPassword").attr('type') == "text" ){
 			$("#newPassword").attr('type',"password");
 		} else {
 			$("#newPassword").attr('type',"text");
-		}
+		} */
     }
 
 

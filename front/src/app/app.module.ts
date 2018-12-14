@@ -13,7 +13,6 @@ import { TemplateModule } from './template/template.module';
 import { ConfigServiceService } from './config-service.service';
 import { FormsModule } from '@angular/forms';
 import { PagesModule } from './pages/pages.module';
-import { AppraisalModule } from './appraisal/appraisal.module';
 
 @NgModule({
   declarations: [
@@ -29,8 +28,7 @@ import { AppraisalModule } from './appraisal/appraisal.module';
     UserModule,
     TemplateModule,
     FormsModule,
-	PagesModule,
-	AppraisalModule
+	PagesModule
   ],
   providers: [ConfigServiceService],
   bootstrap: [AppComponent]

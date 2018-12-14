@@ -4,33 +4,17 @@
 	  <p-messages id="SignupMessage" [(value)]="msgs" [closable]="false"></p-messages>
       <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-          <!-- <span class="ui-inputgroup-addon">First Name</span> -->
-          <input pInputText name="name" id="name" placeholder="Name"  [(ngModel)]="user.name" formControlName="name" />
-        </div>
-      </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="shop_name" id="shop_name" placeholder="Shop Name"  [(ngModel)]="user.shop_name" formControlName="shop_name" />
-        </div>
-      </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-		    <input pInputText name="city" id="city" placeholder="City"  [(ngModel)]="user.city" formControlName="city" />
-        </div>
-      </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="zip" id="zip" placeholder="Zip"  [(ngModel)]="user.zip" formControlName="zip" />
+		  <input pInputText name="shop_name" id="shop_name" placeholder="Company Name"  [(ngModel)]="user.shop_name" formControlName="shop_name" />
         </div>
       </div>
 	  <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <input pInputText name="email" id="email" placeholder="Email"  [(ngModel)]="user.email" formControlName="email" />
+          <input pInputText name="name" id="name" placeholder="Contact Name"  [(ngModel)]="user.name" formControlName="name" />
         </div>
       </div>
-	   <div class="ui-g ui-fluid">
+      <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
-		  <input id="newPassword" name="password" type="password" pPassword placeholder="Password" [(ngModel)]="user.password" formControlName="password" />
+		  <input pInputText name="email" id="email" placeholder="Contact Email"  [(ngModel)]="user.email" formControlName="email" />
         </div>
       </div>
 	  <div class="ui-g ui-fluid">
@@ -42,12 +26,27 @@
         <div class="ui-inputgroup ui-g-12">
 		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.fax" formControlName="fax" placeholder="Fax"></p-inputMask><br />
         </div>
-      </div>
+      </div>	  
 	  <div class="ui-g ui-fluid">
         <div class="ui-inputgroup ui-g-12">
 		  <textarea rows="5" placeholder=" Address" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
         </div>
       </div>
+	  <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		    <input pInputText name="city" id="city" placeholder="City"  [(ngModel)]="user.city" formControlName="city" />
+        </div>
+      </div>
+      <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="zip" id="zip" placeholder="Zip"  [(ngModel)]="user.zip" formControlName="zip" />
+        </div>
+      </div>	  
+	   <div class="ui-g ui-fluid">
+        <div class="ui-inputgroup ui-g-12">
+		  <input id="newPassword" name="password" type="password" pPassword placeholder="Password" [(ngModel)]="user.password" formControlName="password" />
+        </div>
+      </div>	  
       <p-footer>
         <div class="text-right">
 			<p-button type="submit" label="Sign Up" [disabled]="!Userform.valid"></p-button>

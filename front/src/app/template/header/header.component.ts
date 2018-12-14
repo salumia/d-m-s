@@ -4,8 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PagesService } from '../../pages/pages.service';
 import { AuthService } from '../../auth/auth.service';
 import { TemplateConfigService } from '../template-config.service';
-import { AppraisalService } from '../../appraisal/appraisal.service';
-import { Appraisal } from '../../appraisal/appraisal';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +18,7 @@ export class HeaderComponent implements OnInit {
   activeAppraisal: boolean = false;
   reviewAppraisalList: boolean = false;
   
-  constructor(private pageService: PagesService, private auth: AuthService,private templateService: TemplateConfigService, private appraisalService: AppraisalService) {
+  constructor(private pageService: PagesService, private auth: AuthService,private templateService: TemplateConfigService) {
         this.templateService.listen().subscribe((m:any) => {
             this.refreshHeader();
         })
@@ -39,9 +37,6 @@ export class HeaderComponent implements OnInit {
 			this.reviewAppraisalList = true;
 		}
 		this.setSettingMenus();
-		/* this.loadActiveAppraisal();
-		this.loadReviewAppraisalList();
-		this.loadDepartmentAppraisalList(); */
 	}
 	
 	
@@ -78,47 +73,13 @@ export class HeaderComponent implements OnInit {
         });  
   }
   
-  loadActiveAppraisal(){	
-	console.log('loadActiveAppraisal');
-	this.appraisalService.getActiveAppraisal(this.userData.id).subscribe(res => {
-			if(res.data != null){
-				this.activeAppraisal = true;
-			}  			
-        });  
-  }  
-  
-  loadReviewAppraisalList(){	
-	console.log('loadReviewAppraisalList');
-	this.appraisalService.getReviewAppraisalList(this.userData.id).subscribe(res => {
-			if(res.data.length > 0){
-				
-				this.reviewAppraisalList = true;
-			}  			
-        });  
-  }  
-  
-  loadDepartmentAppraisalList(){	
-	console.log('loadDepartmentAppraisalList');
-	if(this.userData.department == 1 || this.userData.designation == 'hod'){
-		this.appraisalService.getDepartmentAppraisalList(this.userData.department).subscribe(res => {
-			if(res.length > 0){				
-				this.reviewAppraisalList = true;
-			}  			
-		});  
-	}
-	
-  }
-  
   refreshHeader() {
 	console.log('header refresh');
 	this.loadDynamicPages(); 	
 	
 	this.userData = this.auth.getAuth();
 	this.setSettingMenus();
-	if(this.userData != null){		
-		/* this.loadActiveAppraisal();
-		this.loadReviewAppraisalList();
-		this.loadDepartmentAppraisalList();	 */	
+	if(this.userData != null){
 	} else {
 		this.loggedInMenus = false;
 		this.activeAppraisal = false;

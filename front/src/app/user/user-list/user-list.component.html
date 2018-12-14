@@ -33,7 +33,6 @@
 			<tr>
 				<th *ngFor="let col of columns" [ngSwitch]="col.field">
 				
-					<!-- <input *ngSwitchCase="'shop_name'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)"> -->
 					<input *ngSwitchCase="'name'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)">
 					<input *ngSwitchCase="'email'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)">
 					
