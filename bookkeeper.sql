@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Dec 14, 2018 at 01:00 AM
+-- Generation Time: Dec 14, 2018 at 05:51 PM
 -- Server version: 10.3.9-MariaDB
 -- PHP Version: 7.2.10
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
-(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'admin', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-13 19:00:13', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'eDT4Oj2cQCEbfEYlaEhgHKfM06iCS3r4vVX2glZ7PZtHBCHJVuOZvv5hAGBX', '2018-12-14 04:30:13');
+(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'admin', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-13 19:39:30', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'MmXXJpW9Fc6mFSltxKEcUO5wSvznN53mH5K3Nmz3QjBFmWec7DZhig2pDiTG', '2018-12-14 05:09:30');
 
 -- --------------------------------------------------------
 
@@ -930,20 +930,17 @@ CREATE TABLE IF NOT EXISTS `rpm_session` (
 DROP TABLE IF EXISTS `user_profiles`;
 CREATE TABLE IF NOT EXISTS `user_profiles` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
+  `gender` varchar(100) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
-  `phone` varchar(15) NOT NULL,
-  `alt_phone` varchar(15) NOT NULL,
-  `correspondence_address` varchar(255) NOT NULL,
-  `permanent_address` varchar(255) NOT NULL,
-  `father_name` varchar(255) NOT NULL,
-  `mother_name` varchar(255) NOT NULL,
+  `phone` varchar(100) NOT NULL,
+  `fax` varchar(100) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `zip` varchar(255) NOT NULL,
   `encrypted_password` varchar(100) DEFAULT NULL,
   `salt` varchar(100) NOT NULL DEFAULT '',
   `role` varchar(50) NOT NULL DEFAULT 'user',
-  `department` int(11) NOT NULL DEFAULT 1 COMMENT '1=HR, 2=Marketing,3=Finance',
-  `designation` varchar(255) NOT NULL DEFAULT 'other',
+  `status` int(11) NOT NULL DEFAULT 1,
   `created_at` datetime DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -952,18 +949,20 @@ CREATE TABLE IF NOT EXISTS `user_profiles` (
   `api_token` varchar(60) DEFAULT NULL,
   `api_token_expires` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user_profiles`
 --
 
-INSERT INTO `user_profiles` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
-(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-13 08:59:15', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'dWaNWljbdC3a54glAR6HI7nEBJFebTti5FILQnfL694tJGKNZU8HjFLDBMo9', '2018-12-13 06:29:15'),
-(2, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-07 01:00:46', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'ghhjqaF4S9WGMhQIGUaVgTelsLoTRGWiuz7b7QdewhdnhQDJiCZH3IHx2QpM', '2018-12-07 04:00:46'),
-(23, 'Nitin', 'Saluja1', 'nitinsaluja@example.com', '+99-9999999999', '+99-9999999999', 'Chd, India', 'Same', 'Test1', 'Test2', NULL, '', 'user', 1, 'other', '2018-12-05 05:25:20', '2018-12-04 23:58:47', 'Nitin Saluja1', '$2y$10$kmJamWM54XlD6QH/b/ehSu0.R.tovBzJk2FyXy0qRzRlcXx7HMJv6', NULL, '', NULL),
-(24, 'Kirpal', 'Singh', 'kirpal@example.com', '+24-3564465676', '+53-4645656768', 'Chd, India', 'Same', 'Test', 'Test1', NULL, '', 'user', 1, 'other', '2018-12-05 07:40:19', '2018-12-05 02:10:34', '', '$2y$10$i4V4kgLoSIRo.y.LIXx1aegq4vlRvmzOJjHjE0VXw75basUa8x1VC', NULL, 'pN0SnYPzDvXaXR5rkSnAkk88hlbrPehPbiS1ClE14xwvwwQL22BhJ0v69Al8', '2018-12-05 11:40:34'),
-(25, 'asdasd', 'asdasd', 'asdsd@asd.sds', '+22-2222222222', '+22-2222222222', 'asdasdsdfsd', 'asdasdasd', 'asdasd', 'asdasd', NULL, '', 'subscriber', 1, 'other', '2018-12-09 08:54:55', '2018-12-09 04:02:08', 'asdasd asdasd', '$2y$10$glXGJbF9B2GFesaebDERd.476ONrIT0qBAGeaOhk3wtyLHrrpIiza', NULL, NULL, NULL);
+INSERT INTO `user_profiles` (`id`, `gender`, `email`, `phone`, `fax`, `address`, `city`, `zip`, `encrypted_password`, `salt`, `role`, `status`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
+(1, 'Testing', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, '2014-03-03 10:18:33', '2018-12-13 19:39:14', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'WnQV38GieJNnmQGMzIpJcZ4bgvm9mohW7tmdQpU3acg1XjSuV3pfGXQbIJ37', '2018-12-14 05:09:14'),
+(2, 'Testing', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, '2014-03-03 10:18:33', '2018-12-07 01:00:46', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'ghhjqaF4S9WGMhQIGUaVgTelsLoTRGWiuz7b7QdewhdnhQDJiCZH3IHx2QpM', '2018-12-07 04:00:46'),
+(23, 'Nitin', 'nitinsaluja@example.com', '+99-9999999999', '+99-9999999999', 'Chd, India', 'Same', 'Test1', NULL, '', 'user', 1, '2018-12-05 05:25:20', '2018-12-04 23:58:47', 'Nitin Saluja1', '$2y$10$kmJamWM54XlD6QH/b/ehSu0.R.tovBzJk2FyXy0qRzRlcXx7HMJv6', NULL, '', NULL),
+(24, 'Kirpal', 'kirpal@example.com', '+24-3564465676', '+53-4645656768', 'Chd, India', 'Same', 'Test', NULL, '', 'user', 1, '2018-12-05 07:40:19', '2018-12-05 02:10:34', '', '$2y$10$i4V4kgLoSIRo.y.LIXx1aegq4vlRvmzOJjHjE0VXw75basUa8x1VC', NULL, 'pN0SnYPzDvXaXR5rkSnAkk88hlbrPehPbiS1ClE14xwvwwQL22BhJ0v69Al8', '2018-12-05 11:40:34'),
+(25, 'asdasd', 'asdsd@asd.sds', '+22-2222222222', '+22-2222222222', 'asdasdsdfsd', 'asdasdasd', 'asdasd', NULL, '', 'subscriber', 1, '2018-12-09 08:54:55', '2018-12-09 04:02:08', 'asdasd asdasd', '$2y$10$glXGJbF9B2GFesaebDERd.476ONrIT0qBAGeaOhk3wtyLHrrpIiza', NULL, NULL, NULL),
+(26, 'male', 'asdasd@asd.sdf', '(123) 123 – 1231', '(123) 123 – 1231', 'asdase', 'qweqwe', 'qweqwe', NULL, '', 'user', 1, '2018-12-14 17:45:02', '2018-12-14 12:15:02', 'asdas', '$2y$10$cfmLaRFxUQfx2bUQwAnKJem8YbE1/PkQsYvIR3Box7.38JtNDvVCq', NULL, NULL, NULL),
+(27, 'male', 'erere@dfere.asa', '(231) 231 – 2312', '(123) 123 – 3333', '112ssad', 'asdasd', 'asdasd', NULL, '', 'user', 1, '2018-12-14 17:45:43', '2018-12-14 12:20:39', '53w5', '$2y$10$Hhrd1wBk9Haga3GaoKEX8uy2RebF/rIdUCN5n4cbWIB7iACXeN6J2', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
