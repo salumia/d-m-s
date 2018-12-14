@@ -24,7 +24,7 @@ export class UserListComponent implements OnInit {
 
 	ngOnInit() {
 		this.cols = [
-			{ field: 'shop_name', header: 'Company Name' },
+			// { field: 'shop_name', header: 'Company Name' },
 			{ field: 'name', header: 'Contact Name' },
 			{ field: 'email', header: 'Contact Email' }
 		];

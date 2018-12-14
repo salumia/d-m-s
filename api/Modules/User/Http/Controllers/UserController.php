@@ -76,7 +76,7 @@ class UserController extends Controller
 
         // Massage data
         unset($data['api_token_expires']);
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        //$data['name'] = $data['first_name'] . ' ' . $data['last_name'];
 
         // Update data
         $user->update($data);
