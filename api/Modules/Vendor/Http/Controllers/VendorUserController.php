@@ -83,8 +83,6 @@ class VendorUserController extends Controller{
         $data = $request->post();
         // Massage data
         unset($data['api_token_expires']);
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
-
         // Update data
         $user->update($data);
 

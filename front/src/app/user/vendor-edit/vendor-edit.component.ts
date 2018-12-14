@@ -69,6 +69,7 @@ export class VendorEditComponent implements OnInit {
 	
 	// Load Departments
     this.departments = [
+      { label: '(select)', value: null },
       { label: 'Male', value: 'male' },
       { label: 'Felmale', value: 'famale' }
     ];	

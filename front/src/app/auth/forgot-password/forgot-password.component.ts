@@ -30,7 +30,7 @@ export class ForgotPasswordComponent implements OnInit {
     const auth = this.username;
     this.auth.reset(auth).subscribe(res => {
       if (res instanceof HttpErrorResponse) {
-        this.updateMessage('Not Found:', res.error.message);
+        this.updateMessage('Note:', res.error.message);
         this.clearForm();
       } else if (res instanceof AuthData) {
 		  this.templateService.filter('header refresh');
