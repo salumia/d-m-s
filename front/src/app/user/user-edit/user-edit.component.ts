@@ -125,6 +125,10 @@ export class UserEditComponent implements OnInit {
                     if(res == 0){
                         resolve(null);
                     } else {
+											this.msgs.push({severity: 'error', summary: 'Email', detail: 'Email already exist!'});
+                        setTimeout(() => {
+                          this.msgs = [];
+                        }, 2000);
                         resolve({ 'isEmailUnique': true });
                     }
                 });
