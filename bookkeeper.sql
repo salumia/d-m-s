@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Dec 10, 2018 at 04:29 PM
+-- Generation Time: Dec 14, 2018 at 01:00 AM
 -- Server version: 10.3.9-MariaDB
 -- PHP Version: 7.2.10
 
@@ -25,11 +25,11 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin_users`
+-- Table structure for table `admin`
 --
 
-DROP TABLE IF EXISTS `admin_users`;
-CREATE TABLE IF NOT EXISTS `admin_users` (
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 --
--- Dumping data for table `admin_users`
+-- Dumping data for table `admin`
 --
 
-INSERT INTO `admin_users` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
-(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'admin', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-09 01:18:42', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'VYIIDFRgcL9UGH9GRQNEpi7Bx5gpeohk3bqcw5nbnKC7N99epKxGw8AkS5UG', '2018-12-09 10:48:42');
+INSERT INTO `admin` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
+(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'admin', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-13 19:00:13', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'eDT4Oj2cQCEbfEYlaEhgHKfM06iCS3r4vVX2glZ7PZtHBCHJVuOZvv5hAGBX', '2018-12-14 04:30:13');
 
 -- --------------------------------------------------------
 
@@ -596,10 +596,21 @@ INSERT INTO `page_files` (`id`, `name`, `original_name`, `page_id`, `created_at`
 
 DROP TABLE IF EXISTS `password_resets`;
 CREATE TABLE IF NOT EXISTS `password_resets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`id`, `email`, `token`, `created_at`, `updated_at`) VALUES
+(2, 'nitinsaluja@example.com', 'GvH0ipOcZdo4gO3JdrZkbnFnQ1p9RWTFQKplwbHYLtg56KA1gutkBS7hfxcO', '2018-12-13 11:16:06', '2018-12-13 19:24:49'),
+(3, 'kirpal@example.com', 'eU76uw84AFCb8klZMdyLxi5RZbRcUhtWzzj11EqyLIMCXaZxbY9MpbVtV8N0', '2018-12-13 19:18:52', '2018-12-13 19:19:49');
 
 -- --------------------------------------------------------
 
@@ -913,11 +924,11 @@ CREATE TABLE IF NOT EXISTS `rpm_session` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `user_profiles`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
+DROP TABLE IF EXISTS `user_profiles`;
+CREATE TABLE IF NOT EXISTS `user_profiles` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -944,11 +955,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `user_profiles`
 --
 
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
-(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-09 01:07:26', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'Rm7x1Xn1gTB5B5x2KOfe9ubdKuNds1Vhe8bnN6UieRMcY2h80EMRrpWsBpa8', '2018-12-09 10:37:26'),
+INSERT INTO `user_profiles` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
+(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-13 08:59:15', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'dWaNWljbdC3a54glAR6HI7nEBJFebTti5FILQnfL694tJGKNZU8HjFLDBMo9', '2018-12-13 06:29:15'),
 (2, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'user', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-07 01:00:46', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'ghhjqaF4S9WGMhQIGUaVgTelsLoTRGWiuz7b7QdewhdnhQDJiCZH3IHx2QpM', '2018-12-07 04:00:46'),
 (23, 'Nitin', 'Saluja1', 'nitinsaluja@example.com', '+99-9999999999', '+99-9999999999', 'Chd, India', 'Same', 'Test1', 'Test2', NULL, '', 'user', 1, 'other', '2018-12-05 05:25:20', '2018-12-04 23:58:47', 'Nitin Saluja1', '$2y$10$kmJamWM54XlD6QH/b/ehSu0.R.tovBzJk2FyXy0qRzRlcXx7HMJv6', NULL, '', NULL),
 (24, 'Kirpal', 'Singh', 'kirpal@example.com', '+24-3564465676', '+53-4645656768', 'Chd, India', 'Same', 'Test', 'Test1', NULL, '', 'user', 1, 'other', '2018-12-05 07:40:19', '2018-12-05 02:10:34', '', '$2y$10$i4V4kgLoSIRo.y.LIXx1aegq4vlRvmzOJjHjE0VXw75basUa8x1VC', NULL, 'pN0SnYPzDvXaXR5rkSnAkk88hlbrPehPbiS1ClE14xwvwwQL22BhJ0v69Al8', '2018-12-05 11:40:34'),
@@ -957,26 +968,26 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_pho
 -- --------------------------------------------------------
 
 --
--- Table structure for table `vendor_users`
+-- Table structure for table `vendor_profiles`
 --
 
-DROP TABLE IF EXISTS `vendor_users`;
-CREATE TABLE IF NOT EXISTS `vendor_users` (
+DROP TABLE IF EXISTS `vendor_profiles`;
+CREATE TABLE IF NOT EXISTS `vendor_profiles` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
+  `shop_name` varchar(255) NOT NULL,
+  `photo` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `phone` varchar(15) NOT NULL,
-  `alt_phone` varchar(15) NOT NULL,
-  `correspondence_address` varchar(255) NOT NULL,
-  `permanent_address` varchar(255) NOT NULL,
-  `father_name` varchar(255) NOT NULL,
-  `mother_name` varchar(255) NOT NULL,
+  `gender` varchar(15) NOT NULL DEFAULT 'male',
+  `fax` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `zip` varchar(255) NOT NULL,
   `encrypted_password` varchar(100) DEFAULT NULL,
   `salt` varchar(100) NOT NULL DEFAULT '',
   `role` varchar(50) NOT NULL DEFAULT 'vendor',
-  `department` int(11) NOT NULL DEFAULT 1 COMMENT '1=HR, 2=Marketing,3=Finance',
-  `designation` varchar(255) NOT NULL DEFAULT 'other',
+  `status` int(11) NOT NULL DEFAULT 0,
+  `current_balance` float NOT NULL DEFAULT 0,
   `created_at` datetime DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -985,17 +996,22 @@ CREATE TABLE IF NOT EXISTS `vendor_users` (
   `api_token` varchar(60) DEFAULT NULL,
   `api_token_expires` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 --
--- Dumping data for table `vendor_users`
+-- Dumping data for table `vendor_profiles`
 --
 
-INSERT INTO `vendor_users` (`id`, `first_name`, `last_name`, `email`, `phone`, `alt_phone`, `correspondence_address`, `permanent_address`, `father_name`, `mother_name`, `encrypted_password`, `salt`, `role`, `department`, `designation`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
-(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'vendor', 1, 'Software Engineer', '2014-03-03 10:18:33', '2018-12-09 00:59:35', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'pIOwwxmnPg1uSY5bWnTA5JOhN6Rz9zEKs0w3Qtr1oIYUrWwH4p3liAQlMHYL', '2018-12-09 10:29:35'),
-(2, 'sdfsdf', 'sdfsdf', 'sdfsdf@asdas.sdf', '+23-4444444444', '+44-4434444444', 'sdfsdf', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 'other', '2018-12-09 09:12:01', '2018-12-09 03:42:01', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL),
-(3, 'sdfsdf', 'sdfsdf', 'sdf@asdas.sdf', '+23-4444444444', '+44-4434444444', 'sdfsdf', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 'other', '2018-12-09 09:12:19', '2018-12-09 04:08:45', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL),
-(4, 'sdfsdf', 'sdfsdf', 'kt@asdas.sdf', '+23-4444444444', '+44-4434444444', 'kirpal', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 'other', '2018-12-09 09:12:28', '2018-12-09 04:14:20', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL);
+INSERT INTO `vendor_profiles` (`id`, `shop_name`, `photo`, `email`, `phone`, `gender`, `fax`, `address`, `city`, `zip`, `encrypted_password`, `salt`, `role`, `status`, `current_balance`, `created_at`, `updated_at`, `name`, `password`, `remember_token`, `api_token`, `api_token_expires`) VALUES
+(1, 'Testing', 'Admin', 'admin@shredex.net', '+32-4355656756', '+43-2543654765', 'sscsde', 'xdfdvdgs', 'aasdasdsadsf', 'ADSADFS', '$2y$10$lcHTaiw8SPNzbq49qY4UL.ikB96FJuTc3EFBKu3kgNiloU3yzLuoK', 'bce158956dbdb7b82ec14690aadd450d171b6c1094e29c84bdeff79252c9ade3', 'vendor', 1, 0, '2014-03-03 10:18:33', '2018-12-13 08:59:40', 'Testing Admin', '$2y$10$OKmM0Oqe82l8O7H0mTtsvOoSo7c6E.WBi0G1S73S9unUTXWXXnj7e', NULL, 'jF5HfkIroarglIO3NynOGrrtNLirwOcKCmRUbqyZZMtpmCMmfuShNZHJl6k7', '2018-12-13 06:29:40'),
+(2, 'sdfsdf', 'sdfsdf', 'sdfsdf@asdas.sdf', '+23-4444444444', '+44-4434444444', 'sdfsdf', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 0, '2018-12-09 09:12:01', '2018-12-09 03:42:01', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL),
+(3, 'sdfsdf', 'sdfsdf', 'sdf@asdas.sdf', '+23-4444444444', '+44-4434444444', 'sdfsdf', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 0, '2018-12-09 09:12:19', '2018-12-09 04:08:45', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL),
+(4, 'sdfsdf', 'sdfsdf', 'kt@asdas.sdf', '+23-4444444444', '+44-4434444444', 'kirpal', 'sdfsdf', 'sdfsdf', 'sdfsdf', NULL, '', 'subscriber', 1, 0, '2018-12-09 09:12:28', '2018-12-09 04:14:20', '', 'sdfsdfsdfsdfsdfs', NULL, NULL, NULL),
+(5, 'sdfsdf', NULL, 'sdfsdf@test.dc', '+34-4444444444', 'famale', '+34-4444444444', 'sdfsdfsdf', 'sdfsdf', 'sdf', NULL, '', 'vendor', 0, 0, '2018-12-13 13:08:58', '2018-12-13 07:38:58', 'sdfsdf', '1233456678', NULL, NULL, NULL),
+(6, 'thakurshop', NULL, 'thatkurshop@test.com', '+12-1111111111', 'male', '+12-2222222222', 'testing address', 'testingcity', 'testingzip update', NULL, '', 'vendor', 0, 0, '2018-12-13 13:12:22', '2018-12-13 08:50:47', 'thakur', 'Kirpal@18', NULL, NULL, NULL),
+(7, 'sdfsdf', NULL, 'sdfsdfr@sdf.sds', '+23-4234234234', 'male', '+23-4234234234', 'serserer', 'esrerwer', 'werwe', NULL, '', 'disabled', 0, 0, '2018-12-13 15:40:00', '2018-12-13 10:11:04', 'fstsdf', '$2y$10$G1RCzQ63I5wbmA6p/sSrCuIR6VpxoJZFHQX3VsHEAHm4wgQ279B22', NULL, '', NULL),
+(8, 'signup', NULL, 'signup@test.asd', '+34-2342342342', 'male', '+23-4234234234', 'signupsignupsignupsignup', 'signup', 'signup', NULL, '', 'vendor', 0, 0, '2018-12-13 16:27:11', '2018-12-13 10:57:33', 'signup', '$2y$10$5fh8uFaQbZDNBuQlM6wdRO1f3xznj7sHd8Ne2M.sYZVLr68yvNWaS', NULL, 'Kv44JMbH7BO8SarD1SjeTsq6ob0t0Nch42KDXcO1fMexq7yxzMADhgdIEN8P', '2018-12-13 08:27:33'),
+(9, 'sdere', NULL, 'srese@sdfdf.sdf', '+23-4234234234', 'famale', '+23-4234234234', 'dsdfsdrwerwe', 'srwerw', 'werw', NULL, '', 'vendor', 0, 0, '2018-12-14 00:44:47', '2018-12-13 19:14:47', 'teste', '$2y$10$CJK2tMj9Kv0633wbC/WR6escKFTkGnTxvlBM/n80hnys6vTwCacKK', NULL, NULL, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
