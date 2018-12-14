@@ -43,7 +43,7 @@ class VendorUserController extends Controller{
         $user = VendorUser::create($data);
 
         return new Response([
-            'message' => 'User created successfully',
+            'message' => 'Vendor created successfully',
             'user' => $user
         ]);
     }

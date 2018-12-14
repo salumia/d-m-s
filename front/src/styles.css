@@ -78,3 +78,6 @@ p-splitbutton .ui-menu .ui-menuitem{
 .ui-button-raised .ui-button-text{
 	color:#000;
 }
+span.required-fields {
+    color: red;
+}

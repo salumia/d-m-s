@@ -148,6 +148,14 @@ export class VendorEditComponent implements OnInit {
 	goBack() {
         this._location.back();
     }
+	
+	toggle_password() {
+		if( $("#newPassword").attr('type') == "text" ){
+			$("#newPassword").attr('type',"password");
+		} else {
+			$("#newPassword").attr('type',"text");
+		}
+    }
 
 
 }

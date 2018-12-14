@@ -20,25 +20,39 @@
 				<input type="text" pInputText size="50" placeholder="Search" (input)="userListing.filterGlobal($event.target.value, 'contains')" style="width:auto">                
 			</div>
 		</ng-template>
+		
 		<ng-template pTemplate="header" let-columns>
 			<tr>       
 				<ng-container *ngFor="let col of columns">
-					<th width="230" *ngIf="col.header != ''" >
+					<th width="200" [pSortableColumn]="col.field" *ngIf="col.header != ''" >
 						{{col.header}}
+						<p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
 					</th>
 				</ng-container>
-				<th width="300">Actions</th>
+				<th width="400">Actions</th>
+			</tr>
+			<tr>
+				<th *ngFor="let col of columns" [ngSwitch]="col.field">
+				
+					<input *ngSwitchCase="'shop_name'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)">
+					<input *ngSwitchCase="'name'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)">
+					<input *ngSwitchCase="'email'" pInputText type="text" (input)="userListing.filter($event.target.value, col.field, col.filterMatchMode)">
+					
+				</th>
 			</tr>
         </ng-template>
+		
+		
       <ng-template pTemplate="body" let-user>
         <tr>
-          <td>{{ user.email }}</td>
+          <td>{{ user.shop_name }}</td>
           <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
           <td align="right">			
             <span *ngIf="user.role == 'disabled'">
               <p-button label="Enable" icon="fa fa-close" styleClass="ui-button-success" (onClick)="enableUser(user.id)"></p-button>
             </span> 
-			<span *ngIf="user.role != 'disabled' && user.id != this.loggedInUser.id">
+			<span *ngIf="user.role != 'disabled'">
               <p-button label="Disable" icon="fa fa-close" styleClass="ui-button-danger" (onClick)="disableUser(user.id)"></p-button>
             </span>  
 			<p-button title="Change Password" icon="fa fa-lock" (onClick)="changePassword(user.id)" label="Change Password"></p-button>       
@@ -51,14 +65,12 @@
 	</div>
   </div>
 </div>
-
 <form (submit)="doPasswordChange()">
   <p-dialog header="Change Password" [(visible)]="passwordDialogVisible">
-    <p><b>New Password for {{ selectedUser?.name }}</b></p>
-    <label for="newPassword">New Password</label>
+    <p><b>Update Password for {{ selectedUser?.name }}</b></p>
     <input id="newPassword" name="myPassword" type="password" pPassword [(ngModel)]="newPassword" />
     <p-footer>
-      <p-button type="submit" label="Update Password"></p-button>
+      <p-button type="submit" label="Update"></p-button>
     </p-footer>
   </p-dialog>
 </form>

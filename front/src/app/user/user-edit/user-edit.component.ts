@@ -42,27 +42,21 @@ export class UserEditComponent implements OnInit {
 	
 	this.loggedInUser = this.auth.getAuth();
 	
-	console.log('User');
-	console.log(this.loggedInUser.id);
-	
-	console.log(this.id);
-	
-	
 	if((this.loggedInUser.id != this.id && this.loggedInUser.department == 1) || this.loggedInUser.role == 'admin'){
 		this.disableFieldsFlag = false;  
 	}
 
 	
 	this.Userform = this.fb.group({
-			'first_name': new FormControl('', Validators.required),            
-			'last_name': new FormControl('', Validators.required),            
-			'father_name': new FormControl('', Validators.required),            
-			'mother_name': new FormControl('', Validators.required),
+			'name': new FormControl('', Validators.required),
+			'shop_name': new FormControl(''),
+			'gender': new FormControl('', Validators.required),
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
-			'phone': new FormControl('', Validators.required),            
-			'alt_phone': new FormControl(''),            
-			'correspondence_address': new FormControl('', Validators.required),            
-			'permanent_address': new FormControl('', Validators.required),            
+			'phone': new FormControl('', Validators.required),
+			'fax': new FormControl('', Validators.required),
+			'address': new FormControl('', Validators.required),
+			'city': new FormControl('', Validators.required),
+			'zip': new FormControl('', Validators.required),
 			'password': new FormControl('')
 		});
 	 
@@ -76,9 +70,8 @@ export class UserEditComponent implements OnInit {
 	// Load Departments
     this.departments = [
       { label: '(select)', value: null },
-      { label: 'HR', value: 1 },
-      { label: 'Marketing & Software Development', value: 2 },
-      { label: 'Finance', value: 3 }
+      { label: 'Male', value: 'male' },
+      { label: 'Felmale', value: 'famale' }
     ];	
 	
 	// Load Designations
@@ -166,6 +159,14 @@ export class UserEditComponent implements OnInit {
   
 	goBack() {
         this._location.back();
+    }
+	
+	toggle_password() {
+		if( $("#newPassword").attr('type') == "text" ){
+			$("#newPassword").attr('type',"password");
+		} else {
+			$("#newPassword").attr('type',"text");
+		}
     }
 
 

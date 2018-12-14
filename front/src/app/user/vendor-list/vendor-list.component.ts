@@ -24,9 +24,9 @@ export class VendorListComponent implements OnInit {
 
 	ngOnInit() {
 		this.cols = [
-			{ field: 'email', header: 'Email' },
-			{ field: 'first_name', header: 'Name' },
-			{ field: 'last_name', header: '' }
+			{ field: 'shop_name', header: 'Company Name' },
+			{ field: 'name', header: 'Contact Name' },
+			{ field: 'email', header: 'Contact Email' }
 		];
 		  
 		this.loadUsers();

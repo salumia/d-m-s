@@ -1,21 +1,16 @@
 /* import { Leave } from './leave'; */
 export class User {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
+  shop_name: string;
+  gender: string;
   email: string;
-  role: string;
-
-  department: number;
-  designation: string;
-  father_name: string;
-  mother_name: string;
-  phone: string;
-  alt_phone: string;
-  correspondence_address: string;
-  permanent_address: string;
+  phone: number;
+  fax: string;
+  address: string;
+  city: string;
+  zip: string;
   password: string;
-  documents: any;
   /* leaves: Leave[]; */
 
   api_token_expires: Date;
@@ -25,26 +20,17 @@ export class User {
   isLoggedIn: boolean;
 
   constructor(data: any) {
-    console.log(data);
-
     // Set normal fields
     this.id = data.id;
-    this.first_name = data.first_name;
-    this.last_name = data.last_name;
+    this.name = data.name;
+    this.shop_name = data.shop_name;
+    this.gender = data.gender;
     this.email = data.email;
-    this.role = data.role;
-	
-	this.department = data.department;
-	this.designation = data.designation;
-	this.father_name= data.father_name; 
-	this.mother_name= data.mother_name;
-	this.phone= data.phone;
-	this.alt_phone= data.alt_phone;
-	this.correspondence_address= data.correspondence_address;
-	this.permanent_address= data.permanent_address;
-	this.password= data.password;
-	
-	this.documents  = data.get_files;
+    this.phone = data.phone;
+    this.fax = data.fax;
+    this.address = data.address;
+    this.city = data.city;
+    this.zip = data.zip;
 /* 	this.leaves  = data.get_leaves; */
 
     // Parse date fields

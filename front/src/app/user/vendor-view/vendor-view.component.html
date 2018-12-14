@@ -12,10 +12,18 @@
 		
 		<div class="row">
 			<p-tabView>
-				<p-tabPanel header="Profile" [selected]="true">
+				<p-tabPanel header="Profile" [selected]="true">					
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Name</h5>
+						<h5>Company Name</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.shop_name }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Contact Name</h5>
 					  </div>
 					  <div class="col-md-8">
 						<label>{{ user?.name }}</label>
@@ -23,15 +31,7 @@
 					</div>
 					<div class="row">
 					  <div class="col-md-4">
-						<h5>Shop Name</h5>
-					  </div>
-					  <div class="col-md-8">
-						<label>{{ user?.shop_name }}</label>
-					  </div>
-					</div> 
-					<div class="row">
-					  <div class="col-md-4">
-						<h5>Email</h5>
+						<h5>Contact Email</h5>
 					  </div>
 					  <div class="col-md-8">
 						<label>{{ user?.email }}</label>
@@ -59,6 +59,14 @@
 					  </div>
 					  <div class="col-md-8">
 						<label>{{ user?.city }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Zip</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.zip }}</label>
 					  </div>
 					</div>
 					<div class="row">
