@@ -1,26 +1,30 @@
-<div class="container">
-	<div class="col-md-12">
-		<a href="javascript:void(0);" (click)="goBack()" style="display:block; margin-top: 10px;"><i class="fa fa-arrow-left"></i> Go Back</a>
-	</div>
-	<div class="col-xs-12 d-flex justify-content-center" *ngIf="!loadUserData">
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="row">	
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="!loadUserData">
 		<p-progressSpinner ></p-progressSpinner>		
-	</div>	
+	</div>
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+</div>
+<div class="panel">
 	<ng-container *ngIf="loadUserData">
-		<div class="pull-right" style="margin-top:12px" *ngIf="id > 0" >User ID: {{ id }}</div>   
-		<h1><i class="fa fa-user"></i> {{ user?.name }}</h1>
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-user"></i> {{ user?.name }}</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5 text-right"  *ngIf="id > 0">ID: {{ user?.id }}</h2>
+				<!-- Page Title End -->
+			</div>
+		</div>
 		
-		
-		<div class="row">
-			<p-tabView>
-				<p-tabPanel header="Profile" [selected]="true">					
-					<div class="row">
-					  <div class="col-md-4">
-						<h5>Company Name</h5>
-					  </div>
-					  <div class="col-md-8">
-						<label>{{ user?.shop_name }}</label>
-					  </div>
-					</div>
+		<p-tabView>
+				<p-tabPanel header="Profile" [selected]="true">
 					<div class="row">
 					  <div class="col-md-4">
 						<h5>Contact Name</h5>
@@ -77,14 +81,13 @@
 						<label>{{ user?.fax }}</label>
 					  </div>
 					</div>
-				</p-tabPanel><!-- 
-				<p-tabPanel header="Contacts">
-					Contacts listing will be here
-				</p-tabPanel> -->
+				</p-tabPanel>
 				<p-tabPanel header="Contracts/Agreements">
 					Contracts listing will be here
 				</p-tabPanel>
 			</p-tabView>
-		</div>
+		
+		
+	</div>
 	</ng-container>
-  </div>
+</div>

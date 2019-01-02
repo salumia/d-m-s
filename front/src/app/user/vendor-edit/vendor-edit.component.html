@@ -1,103 +1,129 @@
 <p-growl [(value)]="msgs" key="top-corner"></p-growl>
-<div class="col-xs-12 d-flex justify-content-center" *ngIf="loadSpinner">
-	<p-progressSpinner ></p-progressSpinner>		
-</div>	
-<form id="Userform" [formGroup]="Userform" *ngIf="!loadSpinner" (ngSubmit)="saveUser(Userform.value)" class="row">
-  <div class="container">
-    <div class="col-md-12">
-		<a href="javascript:void(0);" (click)="goBack()" style="display:block; margin-top: 10px;"><i class="fa fa-arrow-left"></i> Go Back</a>
+<div class="row">	
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
 	</div>
-    <div class="pull-right" style="margin-top:12px" *ngIf="id > 0" >User ID: {{ id }}</div>
-    <!-- <p-messages [(value)]="msgs"></p-messages> -->
-    <h1><i class="fa fa-user"></i> {{ user?.shop_name }}</h1>
-	
-    <div class="row">
-	
-      <div class="col-md-7">
-		
-        <div class="row">
-          <div class="col-md-6">
-            <h5>Company Name <span class="required-fields">*</span></h5>
-            <input type="text" pInputText name="shop_name" id="shop_name" [(ngModel)]="user.shop_name" formControlName="shop_name" />
-          </div>
-          <div class="col-md-6">
-            <h5>Gender <span class="required-fields">*</span></h5>
-            <p-dropdown [options]="departments" name="department" [(ngModel)]="user.gender" formControlName="gender" ></p-dropdown>
-          </div> 
-		  
-        </div>
-        <br />		
-        <div class="row">
-		  <div class="col-md-6">
-            <h5>Contact Name <span class="required-fields">*</span></h5>
-            <input type="text" pInputText name="name" id="name" [(ngModel)]="user.name" formControlName="name" /><br />
-          </div>
-          <div class="col-md-6">
-            <h5>Contact Email <span class="required-fields">*</span></h5>
-            <input type="text" pInputText name="email" id="email" [(ngModel)]="user.email" formControlName="email" />
-          </div>
-        </div>
-        <br />
-		<div class="row">
-          <div class="col-md-6">
-            <h5>Phone <span class="required-fields">*</span></h5>
-			<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.phone" formControlName="phone" placeholder="(XXX) XXX – XXXX"></p-inputMask>
-          </div>
-
-          <div class="col-md-6">
-            <h5>Fax <span class="required-fields">*</span></h5>
-			<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.fax" formControlName="fax" placeholder="(XXX) XXX – XXXX"></p-inputMask><br />
-          </div>
-        </div>
-        <br />
-		<div class="row">
-          <div class="col-md-6">
-            <h5>Address <span class="required-fields">*</span></h5>
-			<textarea rows="5" cols="30" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
-			<br />
-          </div>
-
-          <div class="col-md-6">
-            <h5>City <span class="required-fields">*</span></h5>
-            <input type="text" pInputText name="city" id="city" [(ngModel)]="user.city" formControlName="city" /><br />
-            <br />
-          </div>
-          <div class="col-md-6">
-            <h5>Zip <span class="required-fields">*</span></h5>
-            <input type="text" pInputText name="zip" id="zip" [(ngModel)]="user.zip" formControlName="zip" /><br />
-            <br />
-          </div>
-        </div>
-        <br />
-		<div *ngIf="id > 0;else other_content">
-		
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+</div>
+<div class="panel">
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-user"></i> {{ user?.shop_name }}</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5 text-right"  *ngIf="id > 0">ID: {{ id }}</h2>
+				<!-- Page Title End -->
+			</div>
 		</div>
-		<ng-template #other_content>
-		<div class="row" >
-          <div class="col-md-6">
-            <h5>Password <span class="required-fields">*</span></h5>
-			
-			<input id="newPassword" name="password" type="password" pPassword [(ngModel)]="user.password" formControlName="password" /><a href="javascript:void(0);" (click)="toggle_password()"> <i style="position: relative; top: -28px; left: 100%; font-size: 16px;" class="fa fa-eye"></i></a>
-			<br />
-          </div>
-        </div>
-        <br />
-		</ng-template>
 		
-		<div class="row">
-          <div class="col-md-12 text-right border-top">
-            <br />
-            <p-button type="submit" label="Save" [disabled]="!Userform.valid"></p-button>
-            <p-button label="Cancel" (click)="goBack()"></p-button>
-          </div>
-        </div>
-		<br />
-		<br />
-	  </div>
-	  <!-- 
-      <div class="col-md-5 bg-light" *ngIf="id > 0 && loggedInUser.department == 1">
-		<app-upload-documents #documentsChild *ngIf="loadComponents" [loadDocuments]="user.documents"></app-upload-documents>
-      </div> -->
-    </div>
-  </div>
-</form>
+			<div class="tab-pane fade show active" id="tab01">
+				<form id="Userform" [formGroup]="Userform" *ngIf="!loadSpinner" (ngSubmit)="saveUser(Userform.value)" >
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Company Name: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="shop_name" id="shop_name"  [(ngModel)]="user.shop_name" formControlName="shop_name" />
+						</div>
+			
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Gender: *</span>
+
+						<div class="col-md-9">
+							<!-- <p-dropdown [options]="departments" name="department" [(ngModel)]="user.gender" formControlName="gender" ></p-dropdown> -->
+							<select name="department" [(ngModel)]="user.gender" formControlName="gender" class="form-control">
+								<option value="">Select</option>
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</select>
+						</div>
+					</div>
+												
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contact Name: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="name" id="name"  [(ngModel)]="user.name" formControlName="name" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contact Email: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="email" id="email"  [(ngModel)]="user.email" formControlName="email" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Phone: *</span>
+
+						<div class="col-md-9">
+							<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.phone" formControlName="phone" placeholder="(XXX) XXX – XXXX"></p-inputMask>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Fax: *</span>
+
+						<div class="col-md-9">
+							<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.fax" formControlName="fax" placeholder="(XXX) XXX – XXXX"></p-inputMask>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Address: *</span>
+
+						<div class="col-md-9">
+							<textarea rows="5" cols="30" class="form-control" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">City: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText  class="form-control" name="city" id="city" [(ngModel)]="user.city" formControlName="city" />
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Zip: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="zip" id="zip" [(ngModel)]="user.zip" formControlName="zip" />
+						</div>
+					</div>
+					
+					<div *ngIf="id > 0;else other_content">
+			
+					</div>
+					<ng-template #other_content>
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Password: *</span>
+
+						<div class="col-md-9">
+							<input id="newPassword" class="form-control" name="password" type="password" pPassword [(ngModel)]="user.password" formControlName="password" /><a href="javascript:void(0);" (click)="toggle_password()"> <i style="position: relative; top: -32px; left: 97%; font-size: 16px;" class="fa fa-eye"></i></a>
+						</div>
+					</div>
+					</ng-template>
+					
+					<div class="row mt-3">
+						<div class="col-md-9 offset-md-3">
+							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!Userform.valid">Save</button>
+							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
+						</div>
+					</div>
+				</form>
+			</div>
+	
+	</div>
+</div>

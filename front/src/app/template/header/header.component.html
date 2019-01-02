@@ -1,46 +1,96 @@
-<nav class="navbar navbar-inverse header">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="#" routerLink="/"><img src="assets/images/logo.jpg" /></a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-		<ul class="nav navbar-nav" *ngIf="!loggedInMenus">
-			<li>
-				<a routerLink="/vendor-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-				<i class="fa fa-group"></i> Vendor</a>
+ <!-- Navbar Start -->
+<header class="navbar navbar-fixed">
+	<!-- Navbar Header Start -->
+	<div class="navbar--header">
+		<!-- Logo Start -->
+		<a class="logo" href="#" routerLink="/"><img src="assets/logo.jpg" /></a>
+		<!-- Logo End -->
+
+		<!-- Sidebar Toggle Button Start -->
+		<a href="javascript:void(0);" class="navbar--btn" data-toggle="sidebar" title="Toggle Sidebar" *ngIf="loggedInMenus">
+			<i class="fa fa-bars"></i>
+		</a>
+		<!-- Sidebar Toggle Button End -->
+	</div>
+	<!-- Navbar Header End -->
+
+	<!-- Sidebar Toggle Button Start -->
+	<a href="javascript:void(0);" class="navbar--btn" data-toggle="sidebar" title="Toggle Sidebar" *ngIf="loggedInMenus">
+		<i class="fa fa-bars"></i>
+	</a>
+	<!-- Sidebar Toggle Button End -->
+	
+	<div class="navbar--nav" *ngIf="!loggedInMenus">
+		<ul class="nav">
+			<li class="nav-item">
+				<a routerLink="/vendor-login" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-group"></i> Vendor</a>
 			</li>
-			<li>
-				<a routerLink="/login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> User</a>
+
+			<li class="nav-item">
+				<a routerLink="/login" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> User</a>
 			</li>
-			<!-- <li>
-				<a routerLink="/signup" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user-plus"></i> SignUp</a>
-			</li>	 -->	
-		</ul>
-		<ul class="nav navbar-nav navbar-right" *ngIf="!loggedInMenus">
-			<li>
-				<a routerLink="/admin-login" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> Admin</a>
+			<li class="nav-item">				
+				<a routerLink="/admin-login" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-user"></i> Admin</a>
 			</li>
 		</ul>
-		<ul class="nav navbar-nav" *ngIf="loggedInMenus">
-			<li class="active">
-				<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><i class="fa fa-home"></i> Home</a>
-			</li>   
-			<li>
-				<a routerLink="/vendors" routerLinkActive="active" *ngIf="userData.role == 'admin'"><i class="fa fa-user"></i> Manage Vendors</a>
-			</li>	 
-			<li>
-				<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'"><i class="fa fa-user"></i> Manage Users</a>
-			</li>		
+	</div>
+	
+	<div class="navbar--nav ml-auto">
+		<ul class="nav">
+
+			<!-- Nav User Start -->
+			<li class="nav-item dropdown nav--user online" *ngIf="loggedInMenus">
+				<a href="javascript:return false;" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
+					<img src="assets/img/avatars/01_80x80.png" alt="" class="rounded-circle">
+					<span>{{userData.first_name}} {{userData.last_name}}</span>
+					<i class="fa fa-angle-down"></i>
+				</a>
+
+				<ul class="dropdown-menu">
+					<li *ngFor="let item of items; let i = index">
+						<a routerLink="{{item.routerLink}}" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ><i class="fa {{item.icon}}"></i>{{item.label}}</a>
+					</li>
+				</ul>
+				
+			</li>
+			
+			<!-- Nav User End -->
 		</ul>
-		<ul class="nav navbar-nav navbar-right" *ngIf="loggedInMenus">
-			<p-menu #menu popup="popup" [model]="items"></p-menu>
-			<li><a (click)="menu.toggle($event)" href="javascript:return false;"><i class="fa fa-user fa-2x"></i>User <i class="fa fa-chevron-circle-down"></i></a></li>
+	</div>
+</header>
+<!-- Navbar End -->
+
+<!-- Sidebar Start -->
+<aside class="sidebar" data-trigger="scrollbar" *ngIf="loggedInMenus">
+	<!-- Sidebar Navigation Start -->
+	<div class="sidebar--nav">
+		<ul>
+			<li>
+				<ul>
+					<li class="active">
+						<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+							<i class="fa fa-home"></i>
+							<span>Dashboard</span>
+						</a>
+					</li> 
+					<li class="active">
+						<a routerLink="/vendors" routerLinkActive="active" *ngIf="userData.role == 'admin'">
+							<i class="fa fa-user"></i>
+							<span>Manage Vendors</span>
+						</a>
+					</li>
+					<li>
+						<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'">
+							<i class="fa fa-user"></i>
+							<span>Manage Users</span>
+						</a>
+					</li>	
+				</ul>
+			</li>
+
 		</ul>
-    </div>
-  </div>
-</nav>
+	</div>
+	<!-- Sidebar Navigation End -->
+
+</aside>
+<!-- Sidebar End -->

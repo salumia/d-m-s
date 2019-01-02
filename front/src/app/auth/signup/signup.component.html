@@ -1,57 +1,57 @@
 <form [formGroup]="Userform" (ngSubmit)="saveUser(Userform.value)">
   <div class="ui-g">
-    <p-panel header="Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-2 ui-xl-offset-5 ui-md-6 ui-md-offset-3 loginPanel">
+	<p-panel header="Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-2 ui-xl-offset-5 ui-md-6 ui-md-offset-3 loginPanel">
 	  <p-messages id="SignupMessage" [(value)]="msgs" [closable]="false"></p-messages>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+	  <div class="ui-g ui-fluid">
+		<div class="ui-inputgroup ui-g-12">
 		  <input pInputText name="shop_name" id="shop_name" placeholder="Company Name"  [(ngModel)]="user.shop_name" formControlName="shop_name" />
-        </div>
-      </div>
+		</div>
+	  </div>
 	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-          <input pInputText name="name" id="name" placeholder="Contact Name"  [(ngModel)]="user.name" formControlName="name" />
-        </div>
-      </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
+		  <input pInputText name="name" id="name" placeholder="Contact Name"  [(ngModel)]="user.name" formControlName="name" />
+		</div>
+	  </div>
+	  <div class="ui-g ui-fluid">
+		<div class="ui-inputgroup ui-g-12">
 		  <input pInputText name="email" id="email" placeholder="Contact Email"  [(ngModel)]="user.email" formControlName="email" />
-        </div>
-      </div>
+		</div>
+	  </div>
 	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
 		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.phone" formControlName="phone" placeholder="Phone"></p-inputMask>
-        </div>
-      </div> 
+		</div>
+	  </div> 
 	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
 		  <p-inputMask mask="+99-9999999999" [(ngModel)]="user.fax" formControlName="fax" placeholder="Fax"></p-inputMask><br />
-        </div>
-      </div>	  
+		</div>
+	  </div>	  
 	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
 		  <textarea rows="5" placeholder=" Address" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
-        </div>
-      </div>
+		</div>
+	  </div>
 	  <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
-		    <input pInputText name="city" id="city" placeholder="City"  [(ngModel)]="user.city" formControlName="city" />
-        </div>
-      </div>
-      <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
+			<input pInputText name="city" id="city" placeholder="City"  [(ngModel)]="user.city" formControlName="city" />
+		</div>
+	  </div>
+	  <div class="ui-g ui-fluid">
+		<div class="ui-inputgroup ui-g-12">
 		  <input pInputText name="zip" id="zip" placeholder="Zip"  [(ngModel)]="user.zip" formControlName="zip" />
-        </div>
-      </div>	  
+		</div>
+	  </div>	  
 	   <div class="ui-g ui-fluid">
-        <div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-12">
 		  <input id="newPassword" name="password" type="password" pPassword placeholder="Password" [(ngModel)]="user.password" formControlName="password" />
-        </div>
-      </div>	  
-      <p-footer>
-        <div class="text-right">
+		</div>
+	  </div>	  
+	  <p-footer>
+		<div class="text-right">
 			<p-button type="submit" label="Sign Up" [disabled]="!Userform.valid"></p-button>
 		</div>
-      </p-footer>
-    </p-panel>
+	  </p-footer>
+	</p-panel>
   </div>
 </form>
