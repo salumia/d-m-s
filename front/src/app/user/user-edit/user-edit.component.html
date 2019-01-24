@@ -28,6 +28,8 @@
 						<span class="label-text col-md-3 col-form-label">Gender: *</span>
 
 						<div class="col-md-9">
+							<span class="label-text col-md-3 col-form-label">Street Address: *</span>
+							<ng4geo-autocomplete [userSettings]="userSettings"  (componentCallback)="autoCompleteCallback1($event)"></ng4geo-autocomplete>
 							<!-- <p-dropdown [options]="departments" name="department" [(ngModel)]="user.gender" formControlName="gender" ></p-dropdown> -->
 							<select name="department" [(ngModel)]="user.gender" formControlName="gender" class="form-control">
 								<option value="">Select</option>

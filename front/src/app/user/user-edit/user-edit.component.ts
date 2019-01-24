@@ -7,7 +7,7 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 import { AuthService } from '../../auth/auth.service';
 import { MessageService } from 'primeng/components/common/messageservice';
 import {Location} from '@angular/common';
-
+declare var google: any;
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
@@ -28,7 +28,9 @@ export class UserEditComponent implements OnInit {
 	enableDesignation:boolean = false;
 	disableFieldsFlag:boolean = true;
 	loadSpinner: boolean = false;
-
+	userSettings: any = {
+		inputPlaceholderText: 'This is the placeholder text doring component initialization'
+	};
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
     aroute.params.subscribe(params => {
       this.id = params['id'];
@@ -37,16 +39,23 @@ export class UserEditComponent implements OnInit {
 	  }
     });
   }
-
+	autoCompleteCallback1(event){
+		console.log(event);
+	}	
   ngOnInit() {
+
 	
+		
+		this.userSettings['inputPlaceholderText'] = 'This is the placeholder text after doing some external operation after some time';
+		this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
+
 	this.loggedInUser = this.auth.getAuth();
 	
 	if((this.loggedInUser.id != this.id && this.loggedInUser.department == 1) || this.loggedInUser.role == 'admin'){
 		this.disableFieldsFlag = false;  
 	}
 
-	
+
 	this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl(''),
@@ -101,6 +110,16 @@ export class UserEditComponent implements OnInit {
 		});
 
 	}
+	
+	// initAutocomplete() {
+	// 	console.log('working');
+	// 	const autocomplete = new google.maps.places.Autocomplete(
+	// 			/** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+	// 			{types: ['geocode']});
+	// 			const place = autocomplete.getPlace();
+	// 			console.log(place);
+	// 		//autocomplete.addListener('place_changed', fillInAddress);
+	// 	}
     isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
