@@ -37,6 +37,8 @@ export class LoginComponent implements OnInit {
       } else if(res instanceof AuthData) {
 		this.templateService.filter('header refresh');
         this.router.navigateByUrl('/dashboard');
+		//location.reload();
+		window.location.href = "http://trigvent.com/portfolio/clerk/";			
       } else {
         this.updateMessage('Login Failed:', 'An unknown error occurred');
         this.clearForm();

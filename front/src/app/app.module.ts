@@ -13,6 +13,7 @@ import { TemplateModule } from './template/template.module';
 import { ConfigServiceService } from './config-service.service';
 import { FormsModule } from '@angular/forms';
 import { PagesModule } from './pages/pages.module';
+import { ContractModule } from './contract/contract.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { PagesModule } from './pages/pages.module';
     UserModule,
     TemplateModule,
     FormsModule,
-	PagesModule
+	PagesModule,
+	ContractModule
   ],
   providers: [ConfigServiceService],
   bootstrap: [AppComponent]

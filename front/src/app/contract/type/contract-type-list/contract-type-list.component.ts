@@ -1,0 +1,54 @@
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../../auth/auth.service';
+import { ContractTypeService } from '../../contract-type.service';
+import { User } from '../../../user/user';
+import { ContractType } from '../../contract-type';
+import { Message } from 'primeng/api';
+import { MessageService } from 'primeng/components/common/messageservice';
+
+@Component({
+  selector: 'app-contract-type-list',
+  templateUrl: './contract-type-list.component.html',
+  styleUrls: ['./contract-type-list.component.css']
+})
+  
+export class ContractTypeListComponent implements OnInit {
+	contractTypes: ContractType[] = [];
+	msgs: Message[] = [];
+	loggedInUser: User;
+	cols: any[];
+
+	constructor(private authService: AuthService, private contractTypeService: ContractTypeService, private messageService: MessageService) {}
+
+	ngOnInit() {
+		this.cols = [
+			{ field: 'id', header: 'Id' },
+			{ field: 'name', header: 'Name' }
+		];
+		  
+		this.loadContractTypes();
+		this.loggedInUser = this.authService.getAuth();
+	}
+
+	loadContractTypes() {
+		this.contractTypeService.getContractTypes().subscribe(res => this.contractTypes = res);
+	}
+	
+	disableContractType(id: number) {
+		this.contractTypeService.disableContractType(id).subscribe(res => {		
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'ContractType Updated', detail: res.message});
+			// Reload ContractTypes
+			this.loadContractTypes();
+		});
+	}
+
+	enableContractType(id) {
+		this.contractTypeService.enableContractType(id).subscribe(res => {
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'ContractType Updated', detail: res.message});
+
+			// Reload ContractTypes
+			this.loadContractTypes();
+
+		});
+	}
+}

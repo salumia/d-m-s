@@ -32,6 +32,8 @@ import { ViewComponent } from './view/view.component';
 import { VendorViewComponent } from './vendor-view/vendor-view.component';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TabViewModule} from 'primeng/tabview';
+import { AdminViewComponent } from './admin-view/admin-view.component';
+import { AdminEditComponent } from './admin-edit/admin-edit.component';
 
 @NgModule({
   imports: [
@@ -60,7 +62,7 @@ import {TabViewModule} from 'primeng/tabview';
   providers: [AuthService, UserService],
   declarations: [UserListComponent, VendorListComponent 
       , UserEditComponent, VendorEditComponent,VendorViewComponent,
-      MenubarComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent]
+      MenubarComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent, AdminViewComponent, AdminEditComponent]
 })
 export class UserModule {
   constructor(auth: AuthService, router: Router) {

@@ -41,8 +41,8 @@
 			<!-- Nav User Start -->
 			<li class="nav-item dropdown nav--user online" *ngIf="loggedInMenus">
 				<a href="javascript:return false;" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
-					<img src="assets/img/avatars/01_80x80.png" alt="" class="rounded-circle">
-					<span>{{userData.first_name}} {{userData.last_name}}</span>
+					<img src="http://bookkeeper.shredex.net/resources/assets/images/placeholder.jpg" alt="" class="rounded-circle">
+					<span>{{userData.name}}</span>
 					<i class="fa fa-angle-down"></i>
 				</a>
 
@@ -68,22 +68,52 @@
 			<li>
 				<ul>
 					<li class="active">
-						<a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+						<a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
 							<i class="fa fa-home"></i>
 							<span>Dashboard</span>
 						</a>
 					</li> 
-					<li class="active">
-						<a routerLink="/vendors" routerLinkActive="active" *ngIf="userData.role == 'admin'">
-							<i class="fa fa-user"></i>
-							<span>Manage Vendors</span>
-						</a>
-					</li>
+					
 					<li>
 						<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'">
 							<i class="fa fa-user"></i>
 							<span>Manage Users</span>
 						</a>
+					</li>
+					
+					<li class="active">
+						<a routerLink="/vendors" *ngIf="userData.role == 'admin'">
+							<i class="fa fa-group"></i>
+							<span>Manage Vendors</span>
+						</a>
+					</li>
+					
+					<li *ngIf="userData.role == 'admin'">
+                        <a href="#"><i class="fa fa-newspaper"></i> Contract Components</a>
+
+                        <ul>
+							<li>
+								<a routerLink="/global-parts" routerLinkActive="active">
+									<span>Manage Global Parts</span>
+								</a>						
+							</li>
+                            <li>
+								<a routerLink="/categories" routerLinkActive="active">
+									<span>Manage Categories</span>
+								</a>								
+							</li>
+							<li>
+								<a routerLink="/industries" routerLinkActive="active">
+									<span>Manage Industries</span>
+								</a>						
+							</li>	
+							<li>
+								<a routerLink="/contract/types" routerLinkActive="active">
+									<span>Manage Types</span>
+								</a>						
+							</li>							
+                        </ul>
+                    
 					</li>	
 				</ul>
 			</li>

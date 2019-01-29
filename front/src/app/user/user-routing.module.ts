@@ -10,6 +10,9 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ViewComponent } from './view/view.component';
 import { VendorViewComponent } from './vendor-view/vendor-view.component';
 
+import { AdminViewComponent } from './admin-view/admin-view.component';
+import { AdminEditComponent } from './admin-edit/admin-edit.component';
+
 const routes: Routes = [
   {path: 'settings/users', component: UserListComponent},
   {path: 'users', component: UserListComponent},
@@ -24,8 +27,11 @@ const routes: Routes = [
   {path: 'underconstruction', component: NotfoundComponent},
   {path: 'user/change-password', component: ChangePasswordComponent},
   {path: 'vendor/change-password', component: ChangePasswordComponent},
+  {path: 'admin/change-password', component: ChangePasswordComponent},
   {path: 'users/view/:id', component: ViewComponent},
   {path: 'vendor/view/:id', component: VendorViewComponent},
+  {path: 'admin/view/:id', component: AdminViewComponent},
+  {path: 'admin/edit/:id', component: AdminEditComponent},
   
 ];
 

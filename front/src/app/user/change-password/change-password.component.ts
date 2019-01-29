@@ -3,6 +3,7 @@ import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-change-password',
@@ -15,7 +16,7 @@ export class ChangePasswordComponent implements OnInit {
   Userform: FormGroup;
   role: string = 'users';
   
-  constructor(private userService: UserService, private auth: AuthService, private fb: FormBuilder, private messageService: MessageService) { }
+  constructor(private userService: UserService, private auth: AuthService, private fb: FormBuilder, private messageService: MessageService, private _location: Location) { }
 
 	ngOnInit() {
 		this.Userform = this.fb.group({        
@@ -49,5 +50,9 @@ export class ChangePasswordComponent implements OnInit {
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Password updated successfully'});		
 		});
 	}
+	
+	goBack() {
+        this._location.back();
+    }
 
 }

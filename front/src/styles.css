@@ -6838,3 +6838,4 @@ body{ background-color:#FFFFFF; color:#000000; }
     background: transparent;
     border: none;
 }
+.ui-dropdown{width:100% !important;} 
