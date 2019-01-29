@@ -21,7 +21,7 @@ import { MessagesModule } from 'primeng/messages';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { NotfoundComponent } from './notfound/notfound.component';
-
+import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
 import {InputMaskModule} from 'primeng/inputmask';
 import {CalendarModule} from 'primeng/calendar';
 import {InputTextareaModule} from 'primeng/inputtextarea';
@@ -37,6 +37,7 @@ import { AdminEditComponent } from './admin-edit/admin-edit.component';
 
 @NgModule({
   imports: [
+    Ng4GeoautocompleteModule.forRoot(),
     CommonModule,
     UserRoutingModule,
     FormsModule,
