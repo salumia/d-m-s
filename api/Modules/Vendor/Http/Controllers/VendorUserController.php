@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Modules\Contact\Entities\Contact;
 
 class VendorUserController extends Controller{
    
@@ -41,7 +42,11 @@ class VendorUserController extends Controller{
         $data = $request->post();
 		$data['password'] = Hash::make($data['password']);
         $user = VendorUser::create($data);
-
+		
+		if(Contact::whereEmail($data['email'])->count() > 0 ){
+			Contact::whereEmail($data['email'])->update(array('user_id' => $user->id, 'type' => 'vendor'));
+		}
+		
         return new Response([
             'message' => 'Vendor created successfully',
             'user' => $user
@@ -146,9 +151,37 @@ class VendorUserController extends Controller{
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($user)
     {
-        //
+		$user = VendorUser::find($user);
+		/* if(Part::where([['industry_id','=',$industry->id]])->count() > 0){
+			$response = new Response([
+				'message' => 'Industry can not be deleted',
+				'statusCode' => 202,
+				'industries' => $industry
+			]);
+			return $response;
+		} else { */
+		
+			// Delete the user
+			try {				
+				//print_r($user->id);die;
+				$user->delete();
+			}
+			catch(\Exception $e) {
+				$response = new Response([
+					'message' => $e->getMessage(),
+					'user' => $user
+				]);
+				$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+				return $response;
+			}
+
+			return new Response([
+				'message' => 'Vendor deleted successfully',
+				'user' => $user
+			]);
+		//}
     }
 
 }    

@@ -4,8 +4,10 @@ import { AuthService } from '../auth/auth.service';
 import { ConfigServiceService } from '../config-service.service';
 import { User } from './user';
 import { Vendor } from './vendor';
+import { Admin } from './admin';
 import { UserChangeResponse } from './user-change-response';
 import { VendorChangeResponse } from './vendor-change-response';
+import { AdminChangeResponse } from './admin-change-response';
 
 @Injectable()
 export class UserService {
@@ -32,6 +34,16 @@ export class UserService {
       }
     });
   }
+  getAdmin(id: number) {
+    const token = this.auth.getToken();
+    return this.http.get<Admin>(this.apiUrl + '/admin/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).map(res => {
+      return new Admin(res);
+    });
+  }  
   getVendor(id: number) {
     const token = this.auth.getToken();
     return this.http.get<Vendor>(this.apiUrl + '/vendors/' + id, {
@@ -51,17 +63,6 @@ export class UserService {
     }).map(res => {
       return new User(res);
     });
-  }   
-  
-  getAdmin(id: number) {
-    const token = this.auth.getToken();
-    return this.http.get<User>(this.apiUrl + '/admin/' + id, {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    }).map(res => {
-      return new User(res);
-    });
   }
   
   saveVendor(id: number, data: Vendor) {
@@ -74,6 +75,23 @@ export class UserService {
 		});
 	} else {
 		return this.http.post<VendorChangeResponse>(this.apiUrl + '/vendors', data, {
+			headers: {
+				Authorization: 'Bearer ' + token
+			}
+		});
+	  }
+  }
+  
+  saveAdmin(id: number, data: Admin) {
+    const token = this.auth.getToken();
+	  if(id > 0 ){
+		return this.http.put<AdminChangeResponse>(this.apiUrl + '/admin/' + id, data, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	} else {
+		return this.http.post<AdminChangeResponse>(this.apiUrl + '/admin', data, {
 			headers: {
 				Authorization: 'Bearer ' + token
 			}
@@ -171,5 +189,14 @@ export class UserService {
             }
         });
     }
+	
+	deleteUser(id: number, role = 'users') {
+		const token = this.auth.getToken();
+		return this.http.delete<UserChangeResponse>(this.apiUrl + '/'+ role +'/' + id, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	}
 
 }

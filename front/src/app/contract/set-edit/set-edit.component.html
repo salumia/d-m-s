@@ -1,0 +1,62 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="row">	
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+</div>
+<div class="panel">
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-9"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-industry"></i> "{{ set?.title }}" Set of terms and conditions</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-3"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5 text-right"  *ngIf="id > 0">ID: {{ id }}</h2>
+				<!-- Page Title End -->
+			</div>
+		</div>
+		
+			<div class="tab-pane fade show active" id="tab01">
+				<form id="setform" [formGroup]="setform" *ngIf="!loadSpinner" (ngSubmit)="saveSet()" >
+					<input type="hidden" [(ngModel)]="set.user_id" formControlName="user_id" />
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Title: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="title" id="title"  [(ngModel)]="set.title" formControlName="title" />
+						</div>
+					</div>		
+					<div class="form-group row">
+						<div class="col-md-12">	
+							<p-pickList [source]="sourceParts" [target]="selectedParts" sourceHeader="Available Parts" targetHeader="Selected Parts" [responsive]="true" filterBy="get_industry_data.name" dragdrop="true" sourceFilterPlaceholder="Search by industry" targetFilterPlaceholder="Search by industry" [sourceStyle]="{'height':'600px'}" [targetStyle]="{'height':'600px'}">
+								<ng-template let-part pTemplate="item">
+									<div class="ui-helper-clearfix">
+										<div class="ui-g">
+											<div class="ui-g-6"><strong>Title</strong>: {{part.title}}</div>
+											<div class="ui-g-6 text-right"><strong>Industry</strong>: {{part.get_industry_data.name}}</div>
+										</div>
+										<div class="ui-g">
+											<div class="ui-g-12">{{part.body}}</div>
+										</div>
+									</div>
+								</ng-template>
+							</p-pickList>  
+						</div>						
+					</div>						
+					<div class="row mt-3">
+						<div class="col-md-9 offset-md-5">
+							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!setform.valid">Save</button>
+							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
+						</div>
+					</div>
+				</form>
+			</div>
+	
+	</div>
+</div>

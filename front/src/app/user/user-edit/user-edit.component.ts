@@ -28,26 +28,24 @@ export class UserEditComponent implements OnInit {
 	enableDesignation:boolean = false;
 	disableFieldsFlag:boolean = true;
 	loadSpinner: boolean = false;
-	userSettings: any = {
-		inputPlaceholderText: 'This is the placeholder text doring component initialization'
-	};
+	userSettings: any = {};
+	
+	showPassword: boolean;
+	
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
-    aroute.params.subscribe(params => {
-      this.id = params['id'];
-      if(this.id > 0){
-		  this.loadSpinner = true;
-	  }
-    });
-  }
-	autoCompleteCallback1(event){
-		console.log(event);
-	}	
+		this.showPassword = false;
+		aroute.params.subscribe(params => {
+			this.id = params['id'];
+			if(this.id > 0){
+				this.loadSpinner = true;
+			}
+		});		
+	}
+	
   ngOnInit() {
 
-	
-		
-		this.userSettings['inputPlaceholderText'] = 'This is the placeholder text after doing some external operation after some time';
-		this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
+	this.userSettings['inputPlaceholderText'] = 'Enter Area Name';
+	this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
 
 	this.loggedInUser = this.auth.getAuth();
 	
@@ -59,7 +57,7 @@ export class UserEditComponent implements OnInit {
 	this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl(''),
-			'gender': new FormControl('', Validators.required),
+			/* 'gender': new FormControl('', Validators.required), */
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
 			'phone': new FormControl('', Validators.required),
 			'fax': new FormControl('', Validators.required),
@@ -88,17 +86,19 @@ export class UserEditComponent implements OnInit {
       { label: '(select)', value: null },
       { label: 'H.O.D', value: 'hod' }  
     ];
-	  if(this.id > 0 ){
+	if(this.id > 0 ){
 		this.loadUser();
 		if(!this.disableFieldsFlag){
 			this.enableDepartment = true;
 			this.enableDesignation = true;
 		}
-	  }else{
+	}else{
 		this.Userform.controls['password'].setValidators(Validators.required);
 		this.disableFieldsFlag = false;
 		this.enableDepartment = true;
-	  }
+	}
+	/* this.googleAddress = JSON.parse('{"result":{"address_components":[{"long_name":"Model Town","short_name":"Model Town","types":["sublocality_level_1","sublocality","political"]},{"long_name":"Yamuna Nagar","short_name":"Yamuna Nagar","types":["locality","political"]},{"long_name":"Yamuna Nagar","short_name":"Yamuna Nagar","types":["administrative_area_level_2","political"]},{"long_name":"Haryana","short_name":"HR","types":["administrative_area_level_1","political"]},{"long_name":"India","short_name":"IN","types":["country","political"]},{"long_name":"135001","short_name":"135001","types":["postal_code"]}],"formatted_address" : "#554-A, Model Town, Yamuna Nagar, Haryana 135001, India"},"status":"OK"}'); */
+
   }
   
 	loadUser() {
@@ -111,15 +111,6 @@ export class UserEditComponent implements OnInit {
 
 	}
 	
-	// initAutocomplete() {
-	// 	console.log('working');
-	// 	const autocomplete = new google.maps.places.Autocomplete(
-	// 			/** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-	// 			{types: ['geocode']});
-	// 			const place = autocomplete.getPlace();
-	// 			console.log(place);
-	// 		//autocomplete.addListener('place_changed', fillInAddress);
-	// 	}
     isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -139,45 +130,105 @@ export class UserEditComponent implements OnInit {
         });
         return q;
     }     
-	
-	
-  saveUser() {
-	  console.log(this.user);
-    this.userService.saveUser(this.id, this.user).subscribe(res => {
+		
+	saveUser() {
+		this.userService.saveUser(this.id, this.user).subscribe(res => {
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
+			setTimeout(() => {
+				this.router.navigate(['users']);
+			}, 2000);
+		});
+	}
 
-		this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
-		setTimeout(() => {
-			this.router.navigate(['users']);
-		}, 2000);
-    });
-  }
-
-  logoutUser() {
-    this.userService.logoutUser(this.id).subscribe(res => {
-
-      // Display message for 2 seconds
-      this.msgs.push({severity: 'success', summary: 'User Updated', detail: res.message});
-      setTimeout(() => {
-        this.msgs = [];
-      }, 2000);
-
-      // Reload User
-      this.loadUser();
-
-    });
-  }
+	logoutUser() {
+		this.userService.logoutUser(this.id).subscribe(res => {
+			this.msgs.push({severity: 'success', summary: 'User Updated', detail: res.message});
+			setTimeout(() => {
+				this.msgs = [];
+			}, 2000);
+			// Reload User
+			this.loadUser();
+		});
+	}
   
 	goBack() {
         this._location.back();
     }
 	
 	toggle_password() {
-		/* if( $("#newPassword").attr('type') == "text" ){
-			$("#newPassword").attr('type',"password");
-		} else {
-			$("#newPassword").attr('type',"text");
-		} */
+		this.showPassword = !this.showPassword;
+		/* if( googleAddress.status == "OK"){	
+			this.user.address = googleAddress.result.formatted_address;
+			for (let i = 0; i < 6; i++) {
+				
+				if(googleAddress.result.address_components[i].types[0] == "sublocality_level_1" ){
+					console.log("sublocality_level_1 : " + googleAddress.result.address_components[i].long_name);
+				}
+				
+				if(googleAddress.result.address_components[i].types[0] == "locality" ){
+					console.log("locality : " + googleAddress.result.address_components[i].long_name);
+					this.user.city = googleAddress.result.address_components[i].long_name;
+				}
+				
+				if(googleAddress.result.address_components[i].types[0] == "administrative_area_level_2" ){
+					console.log("City : " + googleAddress.result.address_components[i].long_name);
+				}
+				
+				if(googleAddress.result.address_components[i].types[0] == "administrative_area_level_1" ){
+					console.log("State : " + googleAddress.result.address_components[i].long_name);
+				}
+				
+				if(googleAddress.result.address_components[i].types[0] == "country" ){
+					console.log("country : " + googleAddress.result.address_components[i].long_name);
+				}
+				
+				if(googleAddress.result.address_components[i].types[0] == "postal_code" ){
+					console.log("postal_code : " + googleAddress.result.address_components[i].long_name);
+					this.user.zip = googleAddress.result.address_components[i].long_name;
+				}
+			}
+		} */		
     }
 
+	autoCompleteCallback1(googleAddress:any){
+		console.log(googleAddress);
+		if( googleAddress.status == "OK" || googleAddress.response){
+			
+			if(typeof googleAddress.result == "undefined"){
+				var temp = googleAddress.data;
+			} else {
+				var temp = googleAddress.result;
+			}
+			this.user.address = temp.formatted_address;
+			for (let i = 0; i < temp.address_components.length; i++) {
+				
+				if(temp.address_components[i].types[0] == "sublocality_level_1" ){
+					console.log("sublocality_level_1 : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "locality" ){
+					console.log("locality : " + temp.address_components[i].long_name);
+					this.user.city = temp.address_components[i].long_name;
+				}
+				
+				if(temp.address_components[i].types[0] == "administrative_area_level_2" ){
+					console.log("City : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "administrative_area_level_1" ){
+					console.log("State : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "country" ){
+					console.log("country : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "postal_code" ){
+					console.log("postal_code : " + temp.address_components[i].long_name);
+					this.user.zip = temp.address_components[i].long_name;
+				}
+			}
+		}
+	}
 
 }

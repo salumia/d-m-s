@@ -7,8 +7,7 @@ export class AuthResponse {
 export class AuthData {
 
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   role: string;
   department: number;
@@ -18,8 +17,7 @@ export class AuthData {
 
   constructor(data: any) {
     this.id = data.id;
-    this.first_name = data.first_name;
-    this.last_name = data.last_name;
+    this.name = data.name;
     this.email = data.email;
     this.role = data.role;
     this.department = data.department;
