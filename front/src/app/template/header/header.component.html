@@ -18,8 +18,7 @@
 	<a href="javascript:void(0);" class="navbar--btn" data-toggle="sidebar" title="Toggle Sidebar" *ngIf="loggedInMenus">
 		<i class="fa fa-bars"></i>
 	</a>
-	<!-- Sidebar Toggle Button End -->
-	
+	<!-- Sidebar Toggle Button End -->	
 	<div class="navbar--nav" *ngIf="!loggedInMenus">
 		<ul class="nav">
 			<li class="nav-item">
@@ -37,7 +36,12 @@
 	
 	<div class="navbar--nav ml-auto">
 		<ul class="nav">
-
+			<li class="nav-item">
+				<a href="#" class="nav-link">
+					<i class="fa fa-bell"></i>
+					<span class="badge text-white bg-blue">7</span>
+				</a>
+			</li>
 			<!-- Nav User Start -->
 			<li class="nav-item dropdown nav--user online" *ngIf="loggedInMenus">
 				<a href="javascript:return false;" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
@@ -85,6 +89,37 @@
 						<a routerLink="/vendors" *ngIf="userData.role == 'admin'">
 							<i class="fa fa-group"></i>
 							<span>Manage Vendors</span>
+						</a>
+					</li>
+					
+					<li class="active">
+						<a routerLink="/sets" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-group"></i>
+							<span>Manage Sets</span>
+						</a>
+					</li>
+					<li class="active">
+						<a routerLink="/parts" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-group"></i>
+							<span>Manage Parts</span>
+						</a>
+					</li>
+					<li class="active">
+						<a routerLink="/parts" *ngIf="userData.role == 'user'">
+							<i class="fa fa-group"></i>
+							<span>Manage Parts</span>
+						</a>
+					</li>
+					<li class="active">
+						<a routerLink="/contacts" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-group"></i>
+							<span>Manage Contacts</span>
+						</a>
+					</li>
+					<li class="active">
+						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-group"></i>
+							<span>Create Contract</span>
 						</a>
 					</li>
 					

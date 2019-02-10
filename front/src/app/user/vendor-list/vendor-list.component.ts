@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
 import { Vendor } from '../vendor';
-import { Message } from 'primeng/api';
+import { Message, SelectItem, ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
@@ -19,22 +19,35 @@ export class VendorListComponent implements OnInit {
 	msgs: Message[] = [];
 	loggedInUser: Vendor;
 	cols: any[];
+	loadSpinner = true;
+	statuses: SelectItem[];
 
-	constructor(private userService: UserService, private authService: AuthService, private messageService: MessageService) {}
+	constructor(private userService: UserService, private authService: AuthService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
 	ngOnInit() {
 		this.cols = [
 			{ field: 'shop_name', header: 'Company Name' },
 			{ field: 'name', header: 'Contact Name' },
-			{ field: 'email', header: 'Contact Email' }
+			{ field: 'email', header: 'Contact Email' },
+			{ field: 'role', header: 'Status' }
 		];
+		
+		this.statuses = [
+            { label: 'Status', value: null },
+            { label: 'Enabled', value: 'vendor' },
+            { label: 'Disabled', value: 'disabled' }
+        ];
 		  
 		this.loadUsers();
 		this.loggedInUser = this.authService.getAuth();
 	}
 
 	loadUsers() {
-		this.userService.getVendors().subscribe(res => this.users = res);
+		this.userService.getVendors().subscribe(res => {				
+				this.users = res;
+				this.loadSpinner = false;
+			}		
+		);
 	}
 
 	changePassword(user_id: number) {
@@ -76,6 +89,26 @@ export class VendorListComponent implements OnInit {
 			this.loadUsers();
 
 		});
+	}
+	
+	deleteUser(id: number) {
+		this.confirmationService.confirm({
+			message: 'Are you sure ?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                this.userService.deleteUser(id, 'vendors').subscribe(res => {
+					console.log(res)
+					if(res.statusCode == 202){
+						this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: res.message});
+					} else {
+						this.messageService.add({key: 'top-corner', severity: 'success', summary: 'User Deleted', detail: res.message});
+						// Reload Categories
+						this.loadUsers();
+					}
+				});
+            }
+        });
 	}
 
 }

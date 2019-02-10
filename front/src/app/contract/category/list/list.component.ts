@@ -3,7 +3,7 @@ import { AuthService } from '../../../auth/auth.service';
 import { CategoryService } from '../../category.service';
 import { User } from '../../../user/user';
 import { Category } from '../../category';
-import { Message } from 'primeng/api';
+import { Message, SelectItem, ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
@@ -17,21 +17,49 @@ export class ListComponent implements OnInit {
 	msgs: Message[] = [];
 	loggedInUser: User;
 	cols: any[];
+	loadSpinner = true;
+	statuses: SelectItem[];
 
-	constructor(private authService: AuthService, private categoryService: CategoryService, private messageService: MessageService) {}
+	constructor(private authService: AuthService, private categoryService: CategoryService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
 	ngOnInit() {
 		this.cols = [
-			{ field: 'id', header: 'Id' },
-			{ field: 'name', header: 'Name' }
+			/* { field: 'id', header: 'Id' }, */
+			{ field: 'name', header: 'Name' },
+			{ field: 'status', header: 'Status' }
 		];
-		  
+		
+		this.statuses = [
+            { label: 'Status', value: null },
+            { label: 'Enabled', value: '1' },
+            { label: 'Disabled', value: 'disabled' }
+        ];
+		
 		this.loadCategories();
 		this.loggedInUser = this.authService.getAuth();
 	}
 
 	loadCategories() {
-		this.categoryService.getCategories().subscribe(res => this.categories = res);
+		this.categoryService.getCategories().subscribe(res =>  { 
+				this.categories = res;
+				this.loadSpinner = false; 
+			}
+		);
+	}
+	
+	deleteCategory(id: number) {
+		this.confirmationService.confirm({
+			message: 'Do you want to delete this record?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                this.categoryService.deleteCategory(id).subscribe(res => {		
+					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Category Deleted', detail: res.message});
+					// Reload Categories
+					this.loadCategories();
+				});
+            }
+        });
 	}
 	
 	disableCategory(id: number) {

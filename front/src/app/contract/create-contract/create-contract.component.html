@@ -1,0 +1,126 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="row">	
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+</div>
+<div class="panel">
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-industry"></i> Create Contract</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5 text-right"  *ngIf="id > 0">ID: {{ id }}</h2>
+				<!-- Page Title End -->
+			</div>
+		</div>
+		
+			<div class="tab-pane fade show active" id="tab01">
+				<form id="contractform" [formGroup]="contractform" *ngIf="!loadSpinner" (ngSubmit)="saveContract()" >
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Select Industry: *</span>
+
+						<div class="col-md-9">
+						
+							<p-dropdown [options]="industries" (onChange)="getIndustryParts($event)" [(ngModel)]="contract.industry_id" formControlName="industry_id"></p-dropdown>
+						</div>
+					</div>	
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Select Category: *</span>
+
+						<div class="col-md-9">
+							<p-dropdown [options]="categories" [(ngModel)]="contract.category_id" formControlName="category_id"></p-dropdown>
+						</div>
+					</div>
+										
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Select Contact: </span>
+
+						<div class="col-md-9">
+							<p-dropdown [options]="contacts" [(ngModel)]="contract.email" formControlName="email"></p-dropdown>
+						</div>
+					</div>	
+					
+					<div class="form-group row">
+						<span class="label-text col-md-12 col-form-label">Terms and Conditions constructor *</span>
+					</div>
+					
+					<div class="form-group row">
+						<div class="col-md-8">		
+
+						<p-fieldset *ngFor="let part of user_contract_parts; let i = index">
+							<p-header>
+								<div class="row">
+									<div class="col-md-7">
+										<strong>{{i + 1}}. </strong> {{part.title}} 
+									</div>
+									<div class="col-md-5 text-right">										
+										<p-button label="Edit" icon="fa fa-pencil" (onClick)="showEditDialog(i)"></p-button>
+										<p-button label="Delete" icon="fa fa-trash" (onClick)="deleteTerm(i)"></p-button>
+									</div>
+								</div>
+							</p-header>
+							{{part.body}} 							
+						</p-fieldset>
+						
+						</div>
+						<div class="col-md-4">
+							<div class="col-md-12" *ngIf="userSets.length > 0">
+								<p-listbox [options]="userSets" filter="filter" (onChange)="onSelectSet($event.value)" optionLabel="label">
+								  <p-header>
+									<i class="fa fa-car"></i>
+									Active Sets
+								  </p-header>
+								</p-listbox>
+							</div>
+							<div class="col-md-12" *ngIf="industryParts.length > 0">
+								<p-listbox [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
+								  <p-header>
+									<i class="fa fa-car"></i>
+									Industry Parts
+								  </p-header>
+								</p-listbox>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row mt-3">
+						<div class="col-md-9 offset-md-3">
+							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!contractform.valid">Create</button>
+							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
+						</div>
+					</div>
+				</form>
+			</div>
+	
+	</div>
+</div>
+<p-confirmDialog header="Confirmation" closeOnEscape="true" closable="false" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+
+<p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+	<form (submit)="saveContact()">
+ 	<div style="width:500px;">	
+		<div class="form-group row">
+			<span class="label-text col-md-3 col-form-label">Title: *</span>
+			<div class="col-md-9">			
+				<input type="text" pInputText class="form-control" name="title" [(ngModel)]="selectedPart.title" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<span class="label-text col-md-3 col-form-label">Text: *</span>
+			<div class="col-md-9">			
+				<textarea name="body" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
+			</div>
+		</div>
+	</div>
+	</form>
+</p-dialog>

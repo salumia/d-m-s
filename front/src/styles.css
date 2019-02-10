@@ -6838,4 +6838,47 @@ body{ background-color:#FFFFFF; color:#000000; }
     background: transparent;
     border: none;
 }
-.ui-dropdown{width:100% !important;} 
+.col-md-9 .ui-dropdown{width:100% !important;}
+
+li .ui-helper-clearfix{ border: 1px solid red; }
+
+.custom-white, .ui-table-caption{
+	background: white;
+	border: none;
+}
+.ui-table .ui-table-thead > tr.custom-white > th {
+    background: white;
+    border: none;
+    padding: 0 20px 15px 0;
+}
+.table-responsive{
+	overflow:inherit;
+}
+
+.ui-table .ui-paginator-top {
+    background: white;
+    border: none;
+    text-align: right;
+}
+
+.ui-table .ui-paginator-top .ui-paginator-element {
+    display: none !important;
+}
+
+.ui-paginator-top .ui-dropdown{
+	margin-bottom:-60px;
+}
+
+.custom-white .recordsPerPageTitle{
+	padding-right: 60px !important;
+	text-align: right;
+}
+legend {
+    font-size: 1em !important;
+}
+.ui-listbox{ width:100%; margin-bottom: 20px; }
+.btn.listing-actions{
+	color: #FFFFFF !important;
+	border-radius: 3px;
+	padding: 5px 13px;
+}

@@ -58,6 +58,15 @@ export class IndustryService {
 	}
   }
   
+  deleteIndustry(id: number) {
+    const token = this.auth.getToken();
+    return this.http.delete<IndustryChangeResponse>(this.apiUrl + '/industry/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
+  
   disableIndustry(id: number) {
     const token = this.auth.getToken();
     return this.http.post<IndustryChangeResponse>(this.apiUrl + '/industry/disable-industry/' + id, null, {

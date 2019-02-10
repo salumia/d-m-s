@@ -48,6 +48,15 @@ export class ContractTypeService {
 		});
 	}
   }
+ 
+  deleteContractType(id: number) {
+    const token = this.auth.getToken();
+    return this.http.delete<ContractTypeChangeResponse>(this.apiUrl + '/contract-type/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   
   disableContractType(id: number) {
     const token = this.auth.getToken();

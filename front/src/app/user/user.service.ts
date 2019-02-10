@@ -189,5 +189,14 @@ export class UserService {
             }
         });
     }
+	
+	deleteUser(id: number, role = 'users') {
+		const token = this.auth.getToken();
+		return this.http.delete<UserChangeResponse>(this.apiUrl + '/'+ role +'/' + id, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	}
 
 }

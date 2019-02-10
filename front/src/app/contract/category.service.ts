@@ -13,6 +13,15 @@ export class CategoryService {
   constructor(private http: HttpClient, private auth: AuthService, config: ConfigServiceService) {
     this.apiUrl = config.getApiUrl();
   }
+  
+  getCategoryList() {
+	const token = this.auth.getToken();
+	return this.http.get<any>(this.apiUrl + '/category-list',{
+	  headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  } 
 
   getCategories() {
     const token = this.auth.getToken();
@@ -47,6 +56,15 @@ export class CategoryService {
 			}
 		});
 	}
+  }
+  
+  deleteCategory(id: number) {
+    const token = this.auth.getToken();
+    return this.http.delete<CategoryChangeResponse>(this.apiUrl + '/category/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
   }
   
   disableCategory(id: number) {

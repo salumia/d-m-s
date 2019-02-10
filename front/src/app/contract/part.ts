@@ -5,6 +5,7 @@ export class Part {
 	body: string;
 	special: string;
 	type: number;
+	user_id: number;
 	industry_id: number;
 	status: number;
 	
@@ -20,10 +21,9 @@ export class Part {
 		this.internal_title = data.internal_title;
 		this.body = data.body;
 		this.type = data.type;
+		this.user_id = data.user_id;
 		this.industry_id = data.industry_id;
 		this.status = data.status;
-		console.log("data.get_industry_data");
-		console.log(data.get_industry_data);
 		this.industry_data = data.get_industry_data;
 		
 		this.created_at = new Date(Date.parse(data.created_at));

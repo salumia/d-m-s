@@ -48,18 +48,18 @@ export class GlobalEditComponent implements OnInit {
 			});
 
 		if(this.id > 0 ){
-			this.loadPart();
+			this.loadTermSet();
 		}
 	}
 	
 	loadIndustries() {
 		this.industryService.getIndustryList().subscribe(res => {
 		  this.industries = res;
-		  this.industries.unshift({label: 'Select', value: ''},{label: 'All', value: 0});
+		  this.industries.unshift({label: 'Select', value: ''});
 		});
 	}
   
-	loadPart() {
+	loadTermSet() {
 		// Load Part
 		this.partService.getPart(this.id).subscribe(res => {
 		  this.part = res;

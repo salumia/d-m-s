@@ -1,0 +1,16 @@
+{
+    "name": "Set",
+    "alias": "set",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Set\\Providers\\SetServiceProvider"
+    ],
+    "aliases": {},
+    "files": [
+        "start.php"
+    ],
+    "requires": []
+}

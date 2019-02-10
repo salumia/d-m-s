@@ -108,4 +108,9 @@ class CategoriesController extends Controller
             'category' => $category
         ]);
     }
+	
+	public function getCategoryArray(Request $request)
+    {
+       return new Response(Category::select('id as value', 'name as label')->get());
+    }
 }

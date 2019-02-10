@@ -13,6 +13,7 @@ class ContractPart extends Model
 		'body',
 		'special',
 		'type',
+		'user_id',
 		'industry_id',
 		'status'
 	];

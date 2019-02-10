@@ -13,10 +13,17 @@ export class PartService {
   constructor(private http: HttpClient, private auth: AuthService, config: ConfigServiceService) {
     this.apiUrl = config.getApiUrl();
   }
-
+  getIndustryParts(id:number,userId:number) {
+	const token = this.auth.getToken();
+    return this.http.get<any[]>(this.apiUrl + '/part/industry/'+id+'/'+userId, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   getGlobalParts() {
     const token = this.auth.getToken();
-    return this.http.get<Part[]>(this.apiUrl + '/contract-part/global', {
+    return this.http.get<Part[]>(this.apiUrl + '/part/global', {
       headers: {
         Authorization: 'Bearer ' + token
       }
@@ -25,7 +32,25 @@ export class PartService {
   
   getParts() {
     const token = this.auth.getToken();
-    return this.http.get<Part[]>(this.apiUrl + '/contract-part', {
+    return this.http.get<Part[]>(this.apiUrl + '/part', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }  
+  
+  getUserParts(id:number) {
+    const token = this.auth.getToken();
+    return this.http.get<Part[]>(this.apiUrl + '/part/user/'+id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
+  
+  getAvailableParts(id:number, set:number = 0) {
+    const token = this.auth.getToken();
+    return this.http.get<Part[]>(this.apiUrl + '/part/available/'+id+'/'+set, {
       headers: {
         Authorization: 'Bearer ' + token
       }
@@ -34,7 +59,7 @@ export class PartService {
   
   getPart(id: number) {
     const token = this.auth.getToken();
-    return this.http.get<Part>(this.apiUrl + '/contract-part/' + id, {
+    return this.http.get<Part>(this.apiUrl + '/part/' + id, {
       headers: {
         Authorization: 'Bearer ' + token
       }
@@ -45,18 +70,27 @@ export class PartService {
    savePart(id: number, data: Part) {
     const token = this.auth.getToken();
 	if(id > 0 ){
-		return this.http.put<PartChangeResponse>(this.apiUrl + '/contract-part/' + id, data, {
+		return this.http.put<PartChangeResponse>(this.apiUrl + '/part/' + id, data, {
 		  headers: {
 			Authorization: 'Bearer ' + token
 		  }
 		});
 	} else {
-		return this.http.post<PartChangeResponse>(this.apiUrl + '/contract-part', data, {
+		return this.http.post<PartChangeResponse>(this.apiUrl + '/part', data, {
 			headers: {
 				Authorization: 'Bearer ' + token
 			}
 		});
 	}
+  }
+  
+  deletePart(id: number) {
+    const token = this.auth.getToken();
+    return this.http.delete<PartChangeResponse>(this.apiUrl + '/part/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
   }
   
   disablePart(id: number) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
 import { User } from '../user';
-import { Message } from 'primeng/api';
+import { Message, SelectItem, ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
@@ -19,22 +19,34 @@ export class UserListComponent implements OnInit {
 	msgs: Message[] = [];
 	loggedInUser: User;
 	cols: any[];
+	loadSpinner = true;
+	statuses: SelectItem[];
 
-	constructor(private userService: UserService, private authService: AuthService, private messageService: MessageService) {}
+	constructor(private userService: UserService, private authService: AuthService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
 	ngOnInit() {
 		this.cols = [
-			// { field: 'shop_name', header: 'Company Name' },
 			{ field: 'name', header: 'Contact Name' },
-			{ field: 'email', header: 'Contact Email' }
+			{ field: 'email', header: 'Contact Email' },
+			{ field: 'role', header: 'Status' }
 		];
+		
+		this.statuses = [
+            { label: 'Status', value: null },
+            { label: 'Enabled', value: 'user' },
+            { label: 'Disabled', value: 'disabled' }
+        ];
 		  
 		this.loadUsers();
 		this.loggedInUser = this.authService.getAuth();
 	}
 
 	loadUsers() {
-		this.userService.getUsers().subscribe(res => this.users = res);
+		this.userService.getUsers().subscribe(res => {				
+				this.users = res;
+				this.loadSpinner = false;
+			}
+		);
 	}
 
 	changePassword(user_id: number) {
@@ -75,6 +87,26 @@ export class UserListComponent implements OnInit {
 			this.loadUsers();
 
 		});
+	}
+	
+	deleteUser(id: number) {
+		this.confirmationService.confirm({
+			message: 'Are you sure ?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            accept: () => {
+                this.userService.deleteUser(id).subscribe(res => {
+					console.log(res)
+					if(res.statusCode == 202){
+						this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: res.message});
+					} else {
+						this.messageService.add({key: 'top-corner', severity: 'success', summary: 'User Deleted', detail: res.message});
+						// Reload Categories
+						this.loadUsers();
+					}
+				});
+            }
+        });
 	}
 
 }

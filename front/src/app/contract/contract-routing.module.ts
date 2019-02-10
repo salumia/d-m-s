@@ -12,6 +12,15 @@ import { ContractTypeEditComponent } from './type/contract-type-edit/contract-ty
 import { GlobalEditComponent } from './part/global-edit/global-edit.component';
 import { GlobalListComponent } from './part/global-list/global-list.component';
 
+import { PartEditComponent } from './part/part-edit/part-edit.component';
+import { PartListComponent } from './part/part-list/part-list.component';
+
+import { SetListComponent } from './set-list/set-list.component';
+import { SetEditComponent } from './set-edit/set-edit.component';
+
+
+import { CreateContractComponent } from './create-contract/create-contract.component';
+
 const routes: Routes = [
 
   {path: 'categories', component: ListComponent},
@@ -26,10 +35,19 @@ const routes: Routes = [
   {path: 'global-part/create', component: GlobalEditComponent},
   {path: 'global-part/edit/:id', component: GlobalEditComponent},
   
+  {path: 'parts', component: PartListComponent},
+  {path: 'part/create', component: PartEditComponent},
+  {path: 'part/edit/:id', component: PartEditComponent},
+  
   {path: 'contract/types', component: ContractTypeListComponent},
   {path: 'contract-type/create', component: ContractTypeEditComponent},
-  {path: 'contract-type/edit/:id', component: ContractTypeEditComponent}
+  {path: 'contract-type/edit/:id', component: ContractTypeEditComponent},
   
+  {path: 'sets', component: SetListComponent},
+  {path: 'set/create', component: SetEditComponent},
+  {path: 'set/edit/:id', component: SetEditComponent},
+  
+  {path: 'contract/create', component: CreateContractComponent},
 ];
 
 @NgModule({

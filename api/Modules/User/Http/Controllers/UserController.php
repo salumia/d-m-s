@@ -11,6 +11,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
 
 use Modules\User\Entities\EmployeeFiles;
+use Modules\Contact\Entities\Contact;
 
 class UserController extends Controller
 {
@@ -38,8 +39,13 @@ class UserController extends Controller
     {
         $data = $request->post();
 		$data['password'] = Hash::make($data['password']);
+		
         $user = User::create($data);
-
+		
+		if(Contact::whereEmail($data['email'])->count() > 0 ){
+			Contact::whereEmail($data['email'])->update(array('user_id' => $user->id, 'type' => 'user'));
+		}
+		
         return new Response([
             'message' => 'User created successfully',
             'user' => $user
@@ -96,23 +102,34 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Delete the user
-        try {
-            $user->delete();
-        }
-        catch(\Exception $e) {
-            $response = new Response([
-                'message' => $e->getMessage(),
-                'user' => $user
-            ]);
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            return $response;
-        }
+		/* if(Part::where([['industry_id','=',$industry->id]])->count() > 0){
+			$response = new Response([
+				'message' => 'Industry can not be deleted',
+				'statusCode' => 202,
+				'industries' => $industry
+			]);
+			return $response;
+		} else { */
+		
+			// Delete the user
+			try {				
+				//print_r($user->id);die;
+				$user->delete();
+			}
+			catch(\Exception $e) {
+				$response = new Response([
+					'message' => $e->getMessage(),
+					'user' => $user
+				]);
+				$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+				return $response;
+			}
 
-        return new Response([
-            'message' => 'User updated successfully',
-            'user' => $user
-        ]);
+			return new Response([
+				'message' => 'User deleted successfully',
+				'user' => $user
+			]);
+		//}
     }
     //</editor-fold>
     //<editor-fold desc="Utility Operations">

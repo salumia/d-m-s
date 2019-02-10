@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 use Modules\Contract\Entities\Industry;
+use Modules\Contract\Entities\Part;
 
 class IndustriesController extends Controller
 {
@@ -68,23 +69,32 @@ class IndustriesController extends Controller
      */
     public function destroy(Industry $industry)
     {
-        // Delete the Page
-        try {
-			$industry->delete();
-        }
-        catch(\Exception $e) {
-            $response = new Response([
-                'message' => $e->getMessage(),
-                'industries' => $industry
-            ]);
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            return $response;
-        }
+		if(Part::where([['industry_id','=',$industry->id]])->count() > 0){
+			$response = new Response([
+				'message' => 'Industry can not be deleted',
+				'statusCode' => 202,
+				'industries' => $industry
+			]);
+			return $response;
+		} else {
+			 // Delete the Page
+			try {
+				$industry->delete();
+			}
+			catch(\Exception $e) {
+				$response = new Response([
+					'message' => $e->getMessage(),
+					'industries' => $industry
+				]);
+				$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+				return $response;
+			}
 
-        return new Response([
-            'message' => 'Industry deleted successfully',
-            'industries' => $industry
-        ]);
+			return new Response([
+				'message' => 'Industry deleted successfully',
+				'industries' => $industry
+			]);
+		}       
     }
 	
 	public function disableIndustry(Industry $industry) {
