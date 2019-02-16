@@ -75,15 +75,15 @@ class PartsController extends Controller
 													->where('set_id', $this->set);
 												})
 											->where(function($q) {
-												 $q->where('type', '1')
+												$q->where(['type'=>1, 'status'=>1])
 												   ->orWhere('user_id', $this->user);
 											 })
 											->get();
 			
 		} else {
 			$availableParts  = Part::where(function($q) {
-								 $q->where('type', '1')
-								   ->orWhere('user_id', $this->user);
+								 $q->where(['type'=>1, 'status'=>1]) //Global
+								   ->orWhere('user_id',$this->user); //User Specific
 							 })
 							->get();
 		}

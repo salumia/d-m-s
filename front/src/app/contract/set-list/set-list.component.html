@@ -23,14 +23,17 @@
 		
 		<ng-template pTemplate="header" let-columns>			
 			<tr class="custom-white">
-				<th *ngFor="let col of columns" [ngSwitch]="col.field">				
-					<input *ngSwitchCase="'title'" pInputText type="text" (input)="setListing.filter($event.target.value, col.field, col.filterMatchMode)" placeholder="Title">	
-					<p-dropdown *ngSwitchCase="'status'" [style]="{'width':'100%'}" [options]="statuses" (onChange)="setListing.filter($event.value, col.field, 'equals')"></p-dropdown>	
+				<th colspan="2">				
+					<input type="text" class="global-search" pInputText placeholder="Search" (input)="setListing.filterGlobal($event.target.value, 'contains')" style="width:50%; margin-right:2%; ">
+					
+					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="statuses" (onChange)="setListing.filter($event.value, 'status', 'equals')"></p-dropdown>
 				</th>
+				
 				<th class="recordsPerPageTitle">
-					Records to Display:
+					Records to Display:	
 				</th>
 			</tr>
+			
 			<tr>       
 				<ng-container *ngFor="let col of columns">
 					<th width="200" [pSortableColumn]="col.field" *ngIf="col.header != ''" >
@@ -48,14 +51,24 @@
           <td>{{ set.title }}</td>
           <td> 
 		    <span *ngIf="set.status == 0">
-              <p-button label="Enable" icon="fa fa-close" styleClass="ui-button-success" (onClick)="enableSet(set.id)"></p-button>
+              Disabled
             </span> 
 			<span *ngIf="set.status == 1">
-              <p-button label="Disable" icon="fa fa-close" styleClass="ui-button-danger" (onClick)="disableSet(set.id)"></p-button>
+              Enabled
             </span>
 		  </td>
-          <td>			            
-            <p-button label="Edit" icon="fa fa-pencil-square-o" [routerLink]="'/set/edit/' + set.id"></p-button>
+          <td>
+			<span *ngIf="set.status == 0">
+              <a title="Enable" class='btn bg-success listing-actions' (click)="enableSet(set.id)"><i class="fa fa-check"></i></a>
+            </span> 
+			<span *ngIf="set.status == 1">
+              <a title="Disable" class='btn bg-danger listing-actions' (click)="disableSet(set.id)" ><i class="fa fa-close"></i></a>
+            </span> 
+			
+			<a title="Edit" class='btn bg-primary listing-actions' [routerLink]="'/set/edit/' + set.id" ><i class="fa fa-pencil"></i></a>
+			
+			<a title="Delete" class='btn bg-danger listing-actions' (click)="deleteSet(set.id)" ><i class="fa fa-trash"></i></a>
+			
           </td>
         </tr>
       </ng-template>
@@ -63,3 +76,4 @@
 	</div>
   </div>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

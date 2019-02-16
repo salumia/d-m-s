@@ -73,18 +73,24 @@ export class SetEditComponent implements OnInit {
 	}
   
 	saveSet() {
-		this.setService.saveSet(this.id, this.set).subscribe(res => {
-			if(res.sets.id > 0){
-				this.setService.saveSetTerms(res.sets.id, this.selectedParts).subscribe(res => {
-					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
-					setTimeout(() => {
-						this.router.navigate(['sets']);
-					}, 2000);
-				});
-			} else {
-				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Something went wrong."});
-			}		
-		});
+		if(this.selectedParts.length > 0){	
+			this.loadSpinner = true;
+			this.setService.saveSet(this.id, this.set).subscribe(res => {
+				if(res.sets.id > 0){
+					this.setService.saveSetTerms(res.sets.id, this.selectedParts).subscribe(res => {
+						this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
+						setTimeout(() => {
+							this.router.navigate(['sets']);
+						}, 2000);
+					});
+				} else {
+					this.loadSpinner = false;
+					this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Something went wrong."});
+				}		
+			});
+		} else {
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please select some parts"});
+		}
 	}
 	
 	goBack() {

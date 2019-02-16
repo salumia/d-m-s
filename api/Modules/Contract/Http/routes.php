@@ -2,8 +2,13 @@
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\Contract\Http\Controllers'], function()
 {
+	Route::post('contract/saveparts/{contract}/{user}', 'ContractController@saveContractParts');
+	Route::post('contract/updateparts/{contract}/{user}', 'ContractController@updateContractParts');
 	Route::resource('contract', 'ContractController');//->middleware('auth:api');
-	
+	Route::get('contract/user/{id}/{role}', 'ContractController@userContracts');
+	Route::get('contract/part/{id}', 'ContractController@contractPartData');
+	Route::post('contract/update-status/{id}', 'ContractController@updateContractStatus');
+		
 	Route::resource('category', 'CategoriesController');
 	Route::post('category/disable-category/{category}', 'CategoriesController@disableCategory');
     Route::post('category/enable-category/{category}', 'CategoriesController@enableCategory');
@@ -24,5 +29,5 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::get('part/available/{user}/{set}', 'PartsController@availableParts');
 	Route::resource('part', 'PartsController');	
 	Route::post('part/disable-part/{part}', 'PartsController@disablePart');
-    Route::post('part/enable-part/{part}', 'PartsController@enablePart');
+    Route::post('part/enable-part/{part}', 'PartsController@enablePart');    
 });

@@ -5,29 +5,29 @@
 		<!-- Page Title Start -->
 		<h2 class="page--title h5"><i class="fa fa-user"></i> contacts</h2>
 		<!-- Page Title End -->
-	</div>
+	</div><!-- 
 	<div class="col-lg-6 text-right">
 		<p-button label="Create Contact" icon="fa fa-user" (onClick)="showAddContactDialog()"></p-button>   
-	</div>    
+	</div>  -->   
+	<div class="col-lg-6 text-right">
+		<a (click)="showAddContactDialog()" style="color:white;" class="btn btn-rounded btn-warning"><i class="fa fa-user"></i> Create Contact</a>
+	</div> 
 	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner"> 
 		<p-progressSpinner ></p-progressSpinner>		
 	</div>
 	<div class="table-responsive">	
     <p-table #contactListing [columns]="cols" [value]="contacts" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" paginatorPosition="both" *ngIf="contacts?.length > 0">
-		<!-- <ng-template pTemplate="caption">
-			<div class="custom-white" style="text-align: right">        
-				<i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-				<input type="text" pInputText size="50" placeholder="Search" (input)="contactListing.filterGlobal($event.target.value, 'contains')" style="width:auto">                
-			</div>
-		</ng-template> -->
-		
 		<ng-template pTemplate="header" let-columns>
 			
 			<tr class="custom-white">
-				<th *ngFor="let col of columns" [ngSwitch]="col.field">
+				<th colspan="2">				
+					<input type="text" class="global-search" pInputText placeholder="Search" (input)="contactListing.filterGlobal($event.target.value, 'contains')" style="width:50%; margin-right:2%; ">
+					
+					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="statuses" (onChange)="contactListing.filter($event.value, 'status', 'equals')"></p-dropdown>
+				</th>
 				
-					<input *ngSwitchCase="'email'" pInputText type="text" (input)="contactListing.filter($event.target.value, col.field, col.filterMatchMode)" placeholder="Email">
-					<p-dropdown *ngSwitchCase="'status'" [style]="{'width':'100%'}" [options]="statuses" (onChange)="contactListing.filter($event.value, col.field, 'equals')"></p-dropdown>
+				<th class="recordsPerPageTitle">
+					Records to Display:	
 				</th>
 			</tr>
 			
@@ -48,15 +48,24 @@
           <td>{{ contact.email }}</td>
           <td>
 			<span *ngIf="contact.status == 0">
-				<p-button label="Enable" icon="fa fa-close" styleClass="ui-button-success" (onClick)="enableContact(contact.id)"></p-button>
+				Disabled
 			</span> 
 			<span *ngIf="contact.status == 1">
-				<p-button label="Disable" icon="fa fa-close" styleClass="ui-button-danger" (onClick)="disableContact(contact.id)"></p-button>
+				Enabled
 			</span>
 		  </td>
           <td>
-			<p-button label="Delete" icon="fa fa-trash" styleClass="ui-button-danger" (onClick)="deleteContact(contact.id)"></p-button>
-			<p-button label="View" icon="fa fa-search" (onClick)="viewContact(contact.id)" *ngIf="contact.user_id > 0"></p-button>    			
+
+			<span *ngIf="contact.status == 0">
+              <a title="Enable" class='btn bg-success listing-actions' (click)="enableContact(contact.id)"><i class="fa fa-check"></i></a>
+            </span> 
+			<span *ngIf="contact.status == 1">
+              <a title="Disable" class='btn bg-danger listing-actions' (click)="disableContact(contact.id)" ><i class="fa fa-close"></i></a>
+            </span> 			
+			
+			<a title="View" class='btn bg-primary listing-actions'  *ngIf="contact.user_id" (click)="viewContact(contact.id)" ><i class="fa fa-search"></i></a>
+			<a title="Delete" class='btn bg-danger listing-actions' (click)="deleteContact(contact.id)" ><i class="fa fa-trash"></i></a>
+			
           </td>
         </tr>
       </ng-template>

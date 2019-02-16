@@ -2,5 +2,5 @@ import { Contract } from './contract';
 
 export class ContractChangeResponse {
   message: string;
-  contract: Contract;
+  contracts: Contract;
 }

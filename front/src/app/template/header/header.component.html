@@ -116,6 +116,13 @@
 							<span>Manage Contacts</span>
 						</a>
 					</li>
+					
+					<li class="active">
+						<a routerLink="/contracts" *ngIf="userData.role != 'admin'">
+							<i class="fa fa-group"></i>
+							<span>Manage Contracts</span>
+						</a>
+					</li>
 					<li class="active">
 						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
 							<i class="fa fa-group"></i>

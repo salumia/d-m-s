@@ -20,6 +20,8 @@ import { SetEditComponent } from './set-edit/set-edit.component';
 
 
 import { CreateContractComponent } from './create-contract/create-contract.component';
+import { ContractReviewComponent } from './contract-review/contract-review.component';
+import { ContractListComponent } from './contract-list/contract-list.component';
 
 const routes: Routes = [
 
@@ -48,6 +50,9 @@ const routes: Routes = [
   {path: 'set/edit/:id', component: SetEditComponent},
   
   {path: 'contract/create', component: CreateContractComponent},
+  {path: 'contract/edit/:id', component: CreateContractComponent},
+  {path: 'contract/review/:id', component: ContractReviewComponent},
+  {path: 'contracts', component: ContractListComponent},
 ];
 
 @NgModule({

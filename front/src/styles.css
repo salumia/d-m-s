@@ -6840,8 +6840,6 @@ body{ background-color:#FFFFFF; color:#000000; }
 }
 .col-md-9 .ui-dropdown{width:100% !important;}
 
-li .ui-helper-clearfix{ border: 1px solid red; }
-
 .custom-white, .ui-table-caption{
 	background: white;
 	border: none;
@@ -6881,4 +6879,30 @@ legend {
 	color: #FFFFFF !important;
 	border-radius: 3px;
 	padding: 5px 13px;
+}
+
+.ui-fieldset {
+    margin-bottom: 10px !important;
+}
+.delete{
+	text-decoration: line-through
+}
+
+.ui-picklist-target-controls, .ui-picklist-source-controls {
+    display: none !important;
+}
+
+.ui-picklist.ui-picklist-responsive .ui-picklist-listwrapper{
+	width:45%;
+}
+
+.ui-button-icon-only .fa{
+	position: unset;
+}
+
+span.global{ background: red;padding: 5px; color: white; }
+li .ui-helper-clearfix{ border:5px solid #f5f5f5; }
+
+.terms-constructor-box{
+	border: 2px solid #f5f5f5;
 }

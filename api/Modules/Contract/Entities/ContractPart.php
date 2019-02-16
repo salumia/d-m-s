@@ -4,21 +4,23 @@ namespace Modules\Contract\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Contract\Entities\Industry;
+use Modules\Contract\Entities\ContractLog;
 
 class ContractPart extends Model
 {
     protected $fillable = [
 		'title',
-		'internal_title',
 		'body',
-		'special',
-		'type',
 		'user_id',
-		'industry_id',
-		'status'
+		'contract_id',
+		'is_deleted',
+		'is_edited',
+		'modified',
+		'newly_added',
 	];
 	
-	public function getIndustryData() {
-        return $this->belongsTo(Industry::class,'industry_id');
+	public function getLogData() {
+        return $this->hasOne(ContractLog::class,'part_id');
     }
+	
 }

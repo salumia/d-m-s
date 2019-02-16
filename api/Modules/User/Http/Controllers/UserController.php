@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 use Modules\User\Entities\EmployeeFiles;
 use Modules\Contact\Entities\Contact;
+use Modules\Contract\Entities\Contract;
 
 class UserController extends Controller
 {
@@ -44,6 +45,10 @@ class UserController extends Controller
 		
 		if(Contact::whereEmail($data['email'])->count() > 0 ){
 			Contact::whereEmail($data['email'])->update(array('user_id' => $user->id, 'type' => 'user'));
+		}
+		
+		if(Contract::whereEmail($data['email'])->count() > 0 ){
+			Contract::whereEmail($data['email'])->update(array('receiver_id' => $user->id, 'receiver_role' => 'user'));
 		}
 		
         return new Response([

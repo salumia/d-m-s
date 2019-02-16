@@ -55,6 +55,10 @@ import { CreateContractComponent } from './create-contract/create-contract.compo
 
 import {FieldsetModule} from 'primeng/fieldset';
 import {ListboxModule} from 'primeng/listbox';
+import { ContractListComponent } from './contract-list/contract-list.component';
+import { ContractReviewComponent } from './contract-review/contract-review.component';
+
+import {CardModule} from 'primeng/card';
 
 @NgModule({
   imports: [
@@ -84,10 +88,11 @@ import {ListboxModule} from 'primeng/listbox';
 	ConfirmDialogModule,
 	BrowserAnimationsModule,
 	FieldsetModule,
-	ListboxModule
+	ListboxModule,
+	CardModule
   ],
   providers: [AuthService, UserService, CategoryService, IndustryService, ContractTypeService, PartService, SetService, ConfirmationService, ContractService],
-  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent]
+  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent]
 })
 export class ContractModule {
   constructor(auth: AuthService, router: Router) {

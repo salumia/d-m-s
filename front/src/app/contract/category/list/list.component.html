@@ -14,21 +14,9 @@
 	</div>
 	<div class="table-responsive">	
     <p-table #categoryListing [columns]="cols" [value]="categories" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" paginatorPosition="both" *ngIf="categories?.length > 0">
-		<!-- <ng-template pTemplate="caption">
-			<div class="custom-white" style="text-align: right">    
-				<i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-				<input type="text" pInputText size="50" placeholder="Search" (input)="categoryListing.filterGlobal($event.target.value, 'contains')" style="width:auto">                
-			</div>
-		</ng-template> -->
 		
 		<ng-template pTemplate="header" let-columns>			
 			<tr class="custom-white">
-				<!-- <th *ngFor="let col of columns" [ngSwitch]="col.field">
-				
-					<input *ngSwitchCase="'name'" pInputText type="text" (input)="categoryListing.filter($event.target.value, col.field, col.filterMatchMode)" placeholder="Name">
-					<p-dropdown *ngSwitchCase="'status'" [style]="{'width':'100%'}" [options]="statuses" (onChange)="categoryListing.filter($event.value, col.field, 'equals')"></p-dropdown>
-					
-				</th> -->
 				<th colspan="2">				
 					<input type="text" class="global-search" pInputText placeholder="Search" (input)="categoryListing.filterGlobal($event.target.value, 'contains')" style="width:50%; margin-right:2%; ">
 					
@@ -63,15 +51,7 @@
 				Enabled
 			</span>
 		  </td>
-          <td>	
-			<!-- <span *ngIf="category.status == 0">
-				<p-button label="Enable" icon="fa fa-check" styleClass="ui-button-success" (onClick)="enableCategory(category.id)"></p-button>
-			</span> 
-			<span *ngIf="category.status == 1">
-				<p-button label="Disable" icon="fa fa-close" styleClass="ui-button-danger" (onClick)="disableCategory(category.id)"></p-button>
-			</span>		  
-            <p-button label="Edit" icon="fa fa-pencil-square-o" [routerLink]="'/category/edit/' + category.id"></p-button>
-			<p-button label="Delete" icon="fa fa-trash" styleClass="ui-button-danger" (onClick)="deleteCategory(category.id)"></p-button> -->
+          <td>
 			
 			<span *ngIf="category.status == 0">
               <a title="Enable" class='btn bg-success listing-actions' (click)="enableCategory(category.id)"><i class="fa fa-check"></i></a>

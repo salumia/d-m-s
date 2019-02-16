@@ -25,9 +25,10 @@ import { Location} from '@angular/common';
 export class CreateContractComponent implements OnInit {
 @ViewChild('documentsChild') documentsChild;
 	id: number;
-	contract: Contract;
+	contract: Contract = {};
 	msgs: Message[] = [];
 	contractform: FormGroup;
+	listform: FormGroup;
 	loadComponents: boolean = false;
 	loggedInUser: any;
 	loadSpinner: boolean = false;
@@ -41,39 +42,49 @@ export class CreateContractComponent implements OnInit {
 	user_contract_parts: any[];
 	
 	selectedPart: any = {};
+	listPart: any;
+	listSet: any;
+	
+	addContactVisible = false;	
+	newContactEmail:any = "";
 
 	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
-			if(this.id > 0){
-			  this.loadSpinner = true;
-			}
+			this.loadSpinner = true;
 		});
 	}
 
 	ngOnInit() {
 		this.loggedInUser = this.auth.getAuth();
-		this.loadIndustries();
-		this.loadCategories();
-		this.loadContacts();
+		if(this.id > 0 ){
+			this.loadContract();
+		}
+		this.loadIndustries();		
 		this.getUserSets();
+		
 		this.contractform = this.fb.group({
 			'industry_id': new FormControl('', Validators.required),
 			'category_id': new FormControl('', Validators.required),			
 			'email': new FormControl('')				
 		});
-		this.user_contract_parts = [
-			{ title: 'first', body: "The story begins as Don Vito Corleone, the head of a New York Mafia family, oversees his daughter's wedding. His beloved son Michael has just come home from the war, but does not intend to become part of his father's business. Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family." },
-			{ title: 'second', body: "His beloved son Michael has just come home from the war, but does not intend to become part of his father's business. Through Michael's life the nature of the family business becomes clear. The business of the family is just like the head of the family, kind and benevolent to those who give respect, but given to ruthless violence whenever anything stands against the good of the family." },
-			{ title: 'Third', body: 'Lorem Ipsum for 3rd term' }
-		];
 		
+	}
+	
+	loadContract() {
+		// Load Industry
+		this.contractService.getContract(this.id).subscribe(res => {
+			console.log(res);
+		  this.contract = res;
+		  this.user_contract_parts = res.get_contract_parts;
+		});
 	}
 	
 	loadIndustries() {
 		this.industryService.getIndustryList().subscribe(res => {
 		  this.industries = res;
 		  this.industries.unshift({label: 'Select', value: ''});
+		  this.loadCategories();		
 		});
 	}
 	
@@ -81,6 +92,8 @@ export class CreateContractComponent implements OnInit {
 		this.categoryService.getCategoryList().subscribe(res => {
 		  this.categories = res;
 		  this.categories.unshift({label: 'Select', value: ''});
+		  this.loadSpinner = false;
+		  this.loadContacts();
 		});
 	}
 	
@@ -88,7 +101,7 @@ export class CreateContractComponent implements OnInit {
 		this.contactService.getContactList(this.loggedInUser.id).subscribe(res => {
 		  this.contacts = res;
 		  this.contacts.unshift({label: 'Select', value: ''});
-		  console.log(this.contacts);
+		  console.log(this.contacts);		  
 		});
 	}
 	
@@ -102,25 +115,37 @@ export class CreateContractComponent implements OnInit {
 	}	
 	
 	getUserSets() {	
-		this.setService.getUserSets(this.loggedInUser.id).subscribe(res => {
+		this.setService.getUserSetsArray(this.loggedInUser.id).subscribe(res => {
 			this.userSets = res;
 			console.log(this.userSets);
 		});
 	}
     
 	saveContract() {
-		/* this.contract.sender_id = this.loggedInUser.id;
-		console.log(this.contract);
+		this.loadSpinner = true;
+		this.contract.sender_id = this.loggedInUser.id;
+		if(this.contract.email != ""){
+			this.contract.sender_flag = 1;
+			this.contract.receiver_flag = 2;
+			this.contract.status = 1 
+		}
 		this.contractService.saveContract(this.id, this.contract).subscribe(res => {
-			console.log(res);
-			this.saveContractTerms(res.contracts.id);
-			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});			
-		}); */
+			if(this.id > 0){
+				this.saveContractTerms(res.contracts.id);	
+			}else {
+				this.saveContractTerms(res.contracts.id);	
+			}			
+		});
 	}
 	
+	
 	saveContractTerms(id) {
-		console.log(id);
-		console.log(this.user_contract_parts);
+		this.contractService.saveContractTerms(id, this.user_contract_parts, this.loggedInUser.id).subscribe(res => {
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});	
+			setTimeout(() => {
+				this.router.navigate(['contracts']);
+			}, 2000);
+		});
 	}
 	
 	showEditDialog(index){
@@ -134,23 +159,51 @@ export class CreateContractComponent implements OnInit {
 	}
 	
 	onSelectSet(set){
-		console.log(set);
 		this.confirmationService.confirm({
 			message: 'Are you sure?',
             header: 'Replace Set Confirmation',
             icon: 'pi pi-info-circle',
             accept: () => {
-				this.user_contract_parts = set.value;
-			}
+				this.listSet = {};
+				this.user_contract_parts = set.value;	
+			},
+			reject: () => {}
 		});
 	}
 	
 	onSelectTerm(event){
-		console.log(event);
-		this.user_contract_parts.push({title:event.label, body:event.value.body});
+		this.listPart = {};
+		this.user_contract_parts.push({title:event.label, body:event.value.body});		
 	}
 	
 	goBack() {
         this._location.back();
     }
+	
+	showAddContactDialog() {
+		this.addContactVisible = true;
+	}
+	
+	saveContact(){
+		this.msgs = [];        
+		for (const contact of this.contacts) {
+		  if (contact.value === this.newContactEmail) {
+			this.msgs.push({severity:'error', summary:'Error ', detail:'This Email is already in your contacts'});
+		  }
+		}
+		
+		if(this.msgs.length == 0){
+			this.contactService.saveContact(this.loggedInUser.id, this.newContactEmail).subscribe(res => {
+				this.contract.email = this.newContactEmail;
+				this.msgs.push({severity:'success', summary:'Success ', detail:'Contact Added'});
+				this.newContactEmail = "";
+				// Reload Contacts
+				this.loadContacts();
+				setTimeout(() => {
+					this.msgs = [];     					
+					this.addContactVisible = false;
+				}, 2000);
+			});
+		}
+	}
 }

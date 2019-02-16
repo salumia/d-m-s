@@ -9,6 +9,7 @@ use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\Contact\Entities\Contact;
+use Modules\Contract\Entities\Contract;
 
 class VendorUserController extends Controller{
    
@@ -45,6 +46,10 @@ class VendorUserController extends Controller{
 		
 		if(Contact::whereEmail($data['email'])->count() > 0 ){
 			Contact::whereEmail($data['email'])->update(array('user_id' => $user->id, 'type' => 'vendor'));
+		}
+		
+		if(Contract::whereEmail($data['email'])->count() > 0 ){
+			Contract::whereEmail($data['email'])->update(array('receiver_id' => $user->id, 'receiver_role' => 'vendor'));
 		}
 		
         return new Response([

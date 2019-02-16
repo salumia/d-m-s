@@ -25,7 +25,7 @@ class SetController extends Controller
 		return new Response($sets);
     }
 		
-	public function getUserSets($user)
+	public function getUserSetsArray($user)
     {
 		$sets = Set::where(['user_id'=>$user, 'status'=>1])->get();
 		$data = [];
@@ -41,6 +41,15 @@ class SetController extends Controller
 			$data[] = $temp;
 		}
 		return new Response($data);
+    }
+	
+	public function getUserSets($user)
+    {
+		$sets = Set::where(['user_id'=>$user])->get();
+		foreach($sets as $item) {
+			$item->getParts;
+		}
+		return new Response($sets);
     }
 
     /**
@@ -94,11 +103,13 @@ class SetController extends Controller
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy(Set $set)
+    public function destroy($set)
     {
+		$set = Set::find($set);
         // Delete the Page
         try {
 			$set->delete();
+			SetPart::where([['set_id','=',$set->id]])->delete();
         }
         catch(\Exception $e) {
             $response = new Response([

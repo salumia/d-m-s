@@ -20,10 +20,14 @@ export class SignupComponent implements OnInit {
 	designations: SelectItem[];
 	msgs: Message[] = [];
 	Userform: FormGroup;
+	userSettings: any = {};
 
 	constructor(private userService: UserService, private router: Router, private fb: FormBuilder, private messageService: MessageService) {}
 
 	ngOnInit() {
+		this.userSettings['inputPlaceholderText'] = 'Find Street Address';
+		this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
+		
 		this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl('', Validators.required),
@@ -74,4 +78,45 @@ export class SignupComponent implements OnInit {
 		  detail: detail
 		});
 	  }
+	  
+	autoCompleteCallback1(googleAddress:any){
+		console.log(googleAddress);
+		if( googleAddress.status == "OK" || googleAddress.response){
+			
+			if(typeof googleAddress.result == "undefined"){
+				var temp = googleAddress.data;
+			} else {
+				var temp = googleAddress.result;
+			}
+			this.user.address = temp.formatted_address;
+			for (let i = 0; i < temp.address_components.length; i++) {
+				
+				if(temp.address_components[i].types[0] == "sublocality_level_1" ){
+					console.log("sublocality_level_1 : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "locality" ){
+					console.log("locality : " + temp.address_components[i].long_name);
+					this.user.city = temp.address_components[i].long_name;
+				}
+				
+				if(temp.address_components[i].types[0] == "administrative_area_level_2" ){
+					console.log("City : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "administrative_area_level_1" ){
+					console.log("State : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "country" ){
+					console.log("country : " + temp.address_components[i].long_name);
+				}
+				
+				if(temp.address_components[i].types[0] == "postal_code" ){
+					console.log("postal_code : " + temp.address_components[i].long_name);
+					this.user.zip = temp.address_components[i].long_name;
+				}
+			}
+		}
+	}
 }

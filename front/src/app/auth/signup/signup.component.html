@@ -29,6 +29,11 @@
 	  </div>	  
 	  <div class="ui-g ui-fluid">
 		<div class="ui-inputgroup ui-g-12">
+			<ng4geo-autocomplete [userSettings]="userSettings"  (componentCallback)="autoCompleteCallback1($event)"></ng4geo-autocomplete>
+		</div>
+	</div>
+	  <div class="ui-g ui-fluid">
+		<div class="ui-inputgroup ui-g-12">
 		  <textarea rows="5" placeholder=" Address" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
 		</div>
 	  </div>

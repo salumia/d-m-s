@@ -1,13 +1,14 @@
 <p-growl [(value)]="msgs" key="top-corner"></p-growl>
 <div class="row">	
-	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
-		<p-progressSpinner ></p-progressSpinner>		
-	</div>
+	
 	<div class="col-lg-12"> 
 		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
 	</div>
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
 </div>
-<div class="panel">
+<div class="panel" *ngIf="!loadSpinner">
 	<div class="records--body">
 		<div class="title">
 			<div class="col-lg-6"> 
@@ -23,7 +24,7 @@
 		</div>
 		
 			<div class="tab-pane fade show active" id="tab01">
-				<form id="contractform" [formGroup]="contractform" *ngIf="!loadSpinner" (ngSubmit)="saveContract()" >
+				<form id="contractform" [formGroup]="contractform" (ngSubmit)="saveContract()" >
 					<div class="form-group row">
 						<span class="label-text col-md-3 col-form-label">Select Industry: *</span>
 
@@ -43,18 +44,24 @@
 										
 					<div class="form-group row">
 						<span class="label-text col-md-3 col-form-label">Select Contact: </span>
-
+						
 						<div class="col-md-9">
 							<p-dropdown [options]="contacts" [(ngModel)]="contract.email" formControlName="email"></p-dropdown>
+							<a href="javascript:void(0);" (click)="showAddContactDialog()"><i class="fa fa-user"></i> Add Contact</a>
 						</div>
 					</div>	
 					
 					<div class="form-group row">
 						<span class="label-text col-md-12 col-form-label">Terms and Conditions constructor *</span>
 					</div>
+					<!-- <div class="form-group row">
+						<div class="col-md-8">	
+							<textarea rows="5" cols="30" pInputTextarea></textarea>
+						</div>
+					</div> -->
 					
 					<div class="form-group row">
-						<div class="col-md-8">		
+						<div class="col-md-8 terms-constructor-box">		
 
 						<p-fieldset *ngFor="let part of user_contract_parts; let i = index">
 							<p-header>
@@ -74,7 +81,7 @@
 						</div>
 						<div class="col-md-4">
 							<div class="col-md-12" *ngIf="userSets.length > 0">
-								<p-listbox [options]="userSets" filter="filter" (onChange)="onSelectSet($event.value)" optionLabel="label">
+								<p-listbox [(ngModel)]="listSet" [ngModelOptions]="{standalone: true}" [options]="userSets" filter="filter" (onChange)="onSelectSet($event.value)" optionLabel="label">
 								  <p-header>
 									<i class="fa fa-car"></i>
 									Active Sets
@@ -82,7 +89,7 @@
 								</p-listbox>
 							</div>
 							<div class="col-md-12" *ngIf="industryParts.length > 0">
-								<p-listbox [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
+								<p-listbox [(ngModel)]="listPart" [ngModelOptions]="{standalone: true}" [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
 								  <p-header>
 									<i class="fa fa-car"></i>
 									Industry Parts
@@ -94,7 +101,7 @@
 					
 					<div class="row mt-3">
 						<div class="col-md-9 offset-md-3">
-							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!contractform.valid">Create</button>
+							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!contractform.valid">Save</button>
 							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
 						</div>
 					</div>
@@ -103,7 +110,6 @@
 	
 	</div>
 </div>
-<p-confirmDialog header="Confirmation" closeOnEscape="true" closable="false" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 
 <p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
@@ -120,6 +126,32 @@
 			<div class="col-md-9">			
 				<textarea name="body" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
 			</div>
+		</div>
+	</div>
+	</form>
+</p-dialog>
+
+<p-confirmDialog closeOnEscape="true" closable>
+</p-confirmDialog>
+
+<p-dialog header="New Contact" [(visible)]="addContactVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
+	<form (submit)="saveContact()">
+ 	<div class="panel" style="width:400px;">	
+	    <p-messages [(value)]="msgs"></p-messages>
+		<div class="row">
+		  <div class="col-md-4">
+			<h5>Email</h5>
+		  </div>
+		  <div class="col-md-8">
+			<input id="newContactEmail" name="newContactEmail" type="email" [(ngModel)]="newContactEmail" />
+		  </div>
+		</div>	
+		<div class="row">
+		  <div class="col-md-4 text-right">
+		  </div>
+		  <div class="col-md-8">
+			<p-button type="submit" label="Save"></p-button>
+		  </div>
 		</div>
 	</div>
 	</form>

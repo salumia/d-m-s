@@ -1,0 +1,256 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="row">	
+	
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+</div>
+<div class="panel" *ngIf="!loadSpinner">
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-industry"></i> Contract</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5 text-right"  *ngIf="id > 0">ID: {{ id }}</h2>
+				<!-- Page Title End -->
+			</div>
+		</div>
+		
+			<div class="tab-pane fade show active" id="tab01">
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Category: </span>
+
+						<div class="col-md-9">
+						{{contract.get_category_data.name}}
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">First Party: </span>
+
+						<div class="col-md-9">
+						{{contract.get_sender_data.name}} , {{contract.get_sender_data.email}} ,  {{contract.get_sender_data.shop_name}} ,{{contract.get_sender_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Second Party: </span>
+
+						<div class="col-md-9">
+						{{contract.get_receiver_data.name}} , {{contract.get_receiver_data.email}} , {{contract.get_receiver_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-12 col-form-label">Terms and Conditions *</span>
+					</div>
+					
+					
+					<div class="form-group row">
+						<div class="col-md-8 terms-constructor-box">		
+
+						<p-fieldset *ngFor="let part of user_contract_parts; let i = index">
+							<p-header>
+								<div class="row" [ngClass]="{delete: part.is_deleted||part.tmp_deleted}">
+									<div class="col-md-5">
+										<strong>{{i + 1}}. </strong> {{part.title}} 
+									</div>
+									<div class="col-md-7 text-right">										
+										<p-button label="Edit" *ngIf="!part.tmp_deleted&&!part.is_deleted" icon="fa fa-pencil" (onClick)="showEditDialog(i)"></p-button>
+										
+										<p-button label="Delete" *ngIf="!part.tmp_deleted&&!part.is_deleted" icon="fa fa-trash" (onClick)="deleteTerm(i)"></p-button>
+										
+										<p-button label="Reload" *ngIf="part.tmp_deleted&&!part.is_deleted" icon="fa fa-refresh" (onClick)="reloadTerm(i)"></p-button>
+										
+										<p-button label="Reload" *ngIf="part.is_deleted" icon="fa fa-refresh" (onClick)="reloadDeletedTerm(i)"></p-button>
+										
+										
+										
+										<button pButton type="button" title="See Changes" label="Modified E 2 D" *ngIf="part.is_edited&&part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>										
+										
+										<button pButton type="button" title="See Changes" label="Modified D" *ngIf="part.is_deleted&&!part.is_edited&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
+										<button pButton type="button" title="See Changes" label="Modified E" *ngIf="part.is_edited&&!part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
+										<button pButton type="button" title="See Changes" label="Modified D 2 RD" *ngIf="part.modified&&!part.is_edited&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>	
+										
+										<button pButton type="button" title="See Changes" label="Modified D 2 RD + E" *ngIf="part.modified&&part.is_edited&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
+										<button pButton type="button" title="Newly Added" label="New" *ngIf="part.newly_added" class="ui-button-danger"></button>	
+										
+									</div>
+								</div>
+							</p-header>
+							<div class="row" [ngClass]="{delete: part.is_deleted||part.tmp_deleted}">
+								<div class="col-md-12">	
+									{{part.body}} 	
+								</div>							
+							</div>							
+						</p-fieldset>
+						
+						</div>
+						<div class="col-md-4">
+							<div class="col-md-12" *ngIf="industries.length > 0">
+								<h3>Add More Terms</h3>
+							</div>
+							<div class="col-md-12" *ngIf="industries.length > 0">
+								<p-dropdown [options]="industries" [style]="{width: '100%'}" (onChange)="getIndustryParts($event)"></p-dropdown>
+							</div>
+							<div class="col-md-12" *ngIf="industryParts.length > 0">								
+								<p-listbox [(ngModel)]="listPart" [ngModelOptions]="{standalone: true}" [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
+								  <p-header>
+									<i class="fa fa-car"></i>
+									Industry Parts
+								  </p-header>
+								</p-listbox>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row mt-3">
+						<div class="col-md-10 offset-md-2">
+							<button type="button" *ngIf="!acceptButtonVisible" class="btn btn-rounded btn-primary" (click)="sendBackContract()">Send Back </button>
+							<button type="button" *ngIf="acceptButtonVisible" class="btn btn-rounded btn-success" (click)="acceptContract()">Accept</button>
+							<button type="button" class="btn btn-rounded btn-danger" (click)="rejectContract()">Reject</button>
+						</div>
+					</div>
+			</div>
+	
+	</div>
+</div>
+
+<p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000" (onHide)="onHideEditBox(selectedPart.id)">
+ 	<div style="width:500px;">	
+		<div class="form-group row">
+			<span class="label-text col-md-3 col-form-label">Title: *</span>
+			<div class="col-md-9">			
+				<input type="text" pInputText class="form-control" name="title" [(ngModel)]="selectedPart.title" />
+			</div>
+		</div>
+		<div class="form-group row">
+			<span class="label-text col-md-3 col-form-label">Text: *</span>
+			<div class="col-md-9">			
+				<textarea name="body" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
+			</div>
+		</div>
+	</div>
+</p-dialog>
+
+<p-dialog header="Compare" [(visible)]="showCompareBox" [modal]="true" [responsive]="true" [style]="{width: '700px'}" [minY]="30" [baseZIndex]="10000" (onHide)="onHideCompareBox()">
+ 	<div style="width:700px;">
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited&&compareData.is_deleted&&!compareData.modified&&!compareData.newly_added">
+			<div class="col-md-12 alert alert-danger">
+			  <strong>Delete!</strong> Modified term has been deleted.
+			</div>		
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_deleted&&!compareData.is_edited&&!compareData.modified&&!compareData.newly_added">
+			<div class="col-md-12 alert alert-danger">
+			  <strong>Delete!</strong> This term has been deleted.
+			</div>	
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited&&!compareData.is_deleted&&!compareData.modified&&!compareData.newly_added">
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Modified!</strong> This term has been modified.
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.get_log_data.title}}</h3>
+					<div>{{compareData.get_log_data.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.modified&&!compareData.is_edited&&!compareData.newly_added">	
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Revoked!</strong> Deleted term has been reloaded.
+			</div>		
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.modified&&compareData.is_edited&&!compareData.newly_added">
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Revoked & Updated!</strong> Deleted term has been reloaded and modified.
+			</div>	
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData == '' ">
+			<div class="col-md-12">	
+				<h2 class="text-center">Loading...</h2>
+			</div>
+		</div>
+	</div>
+</p-dialog>
+
+<p-confirmDialog closeOnEscape="true" closable></p-confirmDialog>

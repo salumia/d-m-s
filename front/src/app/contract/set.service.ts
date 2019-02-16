@@ -14,14 +14,23 @@ export class SetService {
     this.apiUrl = config.getApiUrl();
   }
 
-  getUserSets(id:number) {
+  getUserSetsArray(id:number) {
     const token = this.auth.getToken();
-    return this.http.get<any>(this.apiUrl + '/terms-set/user/'+id, {
+    return this.http.get<any>(this.apiUrl + '/terms-set-array/user/'+id, {
       headers: {
         Authorization: 'Bearer ' + token
       }
     });
   } 
+  
+  getUserSets(id:number) {
+    const token = this.auth.getToken();
+    return this.http.get<Set[]>(this.apiUrl + '/terms-set/user/'+id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   
   getPartSets() {
     const token = this.auth.getToken();
@@ -94,5 +103,14 @@ export class SetService {
       }
     });
   } 
+  
+  deleteSet(id: number) {
+    const token = this.auth.getToken();
+    return this.http.delete<SetChangeResponse>(this.apiUrl + '/terms-set/' + id, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   
 }
