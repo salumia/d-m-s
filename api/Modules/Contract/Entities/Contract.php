@@ -5,6 +5,7 @@ namespace Modules\Contract\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Contract\Entities\Category;
 use Modules\Contract\Entities\ContractPart;
+use Modules\Contract\Entities\ContractLog;
 
 use App\User;
 use App\VendorUser;
@@ -12,13 +13,18 @@ use App\VendorUser;
 class Contract extends Model
 {
     protected $fillable = [
+		'type',
+		'name',
+		'description',
 		'industry_id',
 		'category_id',
 		'sender_id',
 		'receiver_id',
+		'receiver_role',
 		'email',
 		'sender_flag',
 		'receiver_flag',
+		'signature',
 		'status'
 	];
 	
@@ -41,4 +47,9 @@ class Contract extends Model
 	public function getSenderData() {
         return $this->belongsTo(VendorUser::class,'sender_id');
     }
+	
+	public function getContractLog() {
+        return $this->hasMany(ContractLog::class,'contract_id');
+    }
+	
 }

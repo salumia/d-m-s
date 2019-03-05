@@ -8,11 +8,14 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::get('contract/user/{id}/{role}', 'ContractController@userContracts');
 	Route::get('contract/part/{id}', 'ContractController@contractPartData');
 	Route::post('contract/update-status/{id}', 'ContractController@updateContractStatus');
+	Route::post('contract/open/{id}', 'ContractController@openContract'); 
+	Route::get('contract/log/{id}', 'ContractController@getContractLog'); 
 		
 	Route::resource('category', 'CategoriesController');
 	Route::post('category/disable-category/{category}', 'CategoriesController@disableCategory');
     Route::post('category/enable-category/{category}', 'CategoriesController@enableCategory');
 	Route::get('category-list', 'CategoriesController@getCategoryArray');//->middleware('auth:api');
+Route::get('category-list/{user}', 'CategoriesController@getIndustryCategoryArray');//->middleware('auth:api');
 	
 	Route::resource('industry', 'IndustriesController');
 	Route::post('industry/disable-industry/{industry}', 'IndustriesController@disableIndustry');
@@ -22,12 +25,13 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::resource('contract-type', 'ContractTypesController');
 	Route::post('contract-type/disable/{type}', 'ContractTypesController@disableContractType');
     Route::post('contract-type/enable/{type}', 'ContractTypesController@enableContractType');
+	Route::get('contract-type-list', 'ContractTypesController@getTypesArray');
 	
-	Route::get('part/industry/{id}/{userId}', 'PartsController@industryParts');
+	Route::get('part/industry/{id}/{userId}/{role}', 'PartsController@industryParts');
 	Route::get('part/user/{id}', 'PartsController@userParts');
 	Route::get('part/global', 'PartsController@globalParts');
 	Route::get('part/available/{user}/{set}', 'PartsController@availableParts');
 	Route::resource('part', 'PartsController');	
 	Route::post('part/disable-part/{part}', 'PartsController@disablePart');
-    Route::post('part/enable-part/{part}', 'PartsController@enablePart');    
+    Route::post('part/enable-part/{part}', 'PartsController@enablePart');       
 });

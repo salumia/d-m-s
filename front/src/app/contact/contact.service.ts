@@ -42,13 +42,23 @@ export class ContactService {
       return new Contact(res);
     });
   } 
-   saveContact(vendor_id: number, email: any) {
+  
+   saveContact(vendor_id: number, data: any, id: number) {	    
 		const token = this.auth.getToken();
-		return this.http.post<any>(this.apiUrl + '/contact', { vendor_id:vendor_id, email: email }, {
-			headers: {
+		if(id > 0){
+			return this.http.put<any>(this.apiUrl + '/contact/' + id, data, {
+			  headers: {
 				Authorization: 'Bearer ' + token
-			}
-		});
+			  }
+			});
+		} else {
+			data.vendor_id = vendor_id;
+			return this.http.post<any>(this.apiUrl + '/contact', { data }, {
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
+			});
+		}
   }
   
   deleteContact(id: number) {
@@ -73,6 +83,25 @@ export class ContactService {
     const token = this.auth.getToken();
     return this.http.post<ContactChangeResponse>(this.apiUrl + '/contact/enable-contact/' + id, null, {
       headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  } 
+  
+  
+  emailSuggestions(id:number,query:string = 'a'){
+	const token = this.auth.getToken();
+	return this.http.get<any>(this.apiUrl + '/contact/suggestion/'+id+'/'+query ,{
+	  headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  } 
+  
+  searchContactList(id:number,query:string = ''){
+	const token = this.auth.getToken();
+	return this.http.get<any>(this.apiUrl + '/contact/search/'+id+'/'+query ,{
+	  headers: {
         Authorization: 'Bearer ' + token
       }
     });

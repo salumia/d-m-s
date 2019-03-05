@@ -36,12 +36,37 @@
 	
 	<div class="navbar--nav ml-auto">
 		<ul class="nav">
-			<li class="nav-item">
+			<!-- <li class="nav-item">
 				<a href="#" class="nav-link">
 					<i class="fa fa-bell"></i>
 					<span class="badge text-white bg-blue">7</span>
 				</a>
+			</li> -->
+			<li class="nav-item dropdown nav--user notification" *ngIf="loggedInMenus">
+				<a href="javascript:void(0);" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
+					<i class="fa fa-bell"></i>
+					<span class="badge text-white bg-blue" *ngIf="badge>0">{{badge}}</span>
+				</a>
+
+				<ul class="dropdown-menu">
+					<ng-container *ngFor="let notify of notifications">
+					<li [ngClass]="{viewed: notify.is_viewed == 1}">
+						<a *ngIf="notify.module=='contract'&&notify.type=='open'" [routerLink]="'/contract/preview/' + notify.ref_id" ><strong>Admin</strong> has changed contract back to open state</a>
+						<a *ngIf="notify.module=='contract'&&notify.type=='sent'" [routerLink]="'/contract/review/' + notify.ref_id" ><strong>{{notify.get_sender_data.name}}</strong> has created contract with you</a>
+						<a *ngIf="notify.module=='contract'&&notify.type=='review'" [routerLink]="'/contract/review/' + notify.ref_id" ><strong>{{notify.get_sender_data.name}}</strong> has sent back contract for review</a>
+						<a *ngIf="notify.module=='contract'&&notify.type=='accept'" [routerLink]="'/contract/preview/' + notify.ref_id" ><strong>{{notify.get_sender_data.name}}</strong> has accepted contract</a>
+						<a *ngIf="notify.module=='contract'&&notify.type=='reject'" [routerLink]="'/contract/preview/' + notify.ref_id" ><strong>{{notify.get_sender_data.name}}</strong> has rejected contract</a>
+						<div class="chat--info">
+							<span class="chat--time">{{notify.created_at}}</span>
+						</div>
+					</li>
+					<li class="dropdown-divider"></li>
+					</ng-container>
+				</ul>
+				
 			</li>
+			
+			<!-- Nav User End -->
 			<!-- Nav User Start -->
 			<li class="nav-item dropdown nav--user online" *ngIf="loggedInMenus">
 				<a href="javascript:return false;" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
@@ -105,12 +130,6 @@
 						</a>
 					</li>
 					<li class="active">
-						<a routerLink="/parts" *ngIf="userData.role == 'user'">
-							<i class="fa fa-group"></i>
-							<span>Manage Parts</span>
-						</a>
-					</li>
-					<li class="active">
 						<a routerLink="/contacts" *ngIf="userData.role == 'vendor'">
 							<i class="fa fa-group"></i>
 							<span>Manage Contacts</span>
@@ -156,7 +175,13 @@
 							</li>							
                         </ul>
                     
-					</li>	
+					</li>
+					<li *ngIf="userData.role == 'admin'">
+						<a routerLink="/contract-list">
+							<i class="fa fa-group"></i>
+							<span>Manage Contracts</span>
+						</a>
+					</li>					
 				</ul>
 			</li>
 

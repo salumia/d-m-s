@@ -30,6 +30,8 @@ export class ContactListComponent implements OnInit {
 		this.loggedInUser = this.authService.getAuth();
 		this.cols = [
 			/* { field: 'id', header: 'Sr No.' }, */
+			{ field: 'company', header: 'Company Name' },
+			{ field: 'name', header: 'Contact Name' },
 			{ field: 'email', header: 'Email' },
 			{ field: 'status', header: 'Status' }
 		];		
@@ -98,7 +100,7 @@ export class ContactListComponent implements OnInit {
 		this.addContactVisible = true;
 	}
 	
-	saveContact(){
+	/* saveContact(){
 		this.msgs = [];        
 		for (const contact of this.contacts) {
 		  if (contact.email === this.newContactEmail) {
@@ -123,5 +125,5 @@ export class ContactListComponent implements OnInit {
 		}
 		
 		
-	}
+	} */
 }

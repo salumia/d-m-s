@@ -13,6 +13,7 @@ use App\VendorUser as VendorUser;
 class ContactController extends Controller
 {
 	private $user;
+	private $query;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -29,9 +30,11 @@ class ContactController extends Controller
 			if($item->user_id != NULL){
 				if($item->type == "vendor"){
 					$item->getVendorData;
+					$item->get_user_data = $item->getVendorData;
 				} else {
 					$item->getUserData;
 				}
+				unset($item->getVendorData);
 			}
 		}
 		return new Response($userContacts);
@@ -45,6 +48,11 @@ class ContactController extends Controller
     public function store(Request $request)
     {
 		$data = $request->post();
+		if(isset($data['contact'])){
+			$data = $data["contact"];
+		} else {
+			$data = $data["data"];
+		}
 		if(User::whereEmail($data['email'])->count() > 0 ){
 			$user = User::whereEmail($data['email'])->first();
 			$data['user_id'] = $user->id;			
@@ -78,9 +86,19 @@ class ContactController extends Controller
      * @return Response
      */
     public function update(Contact $contact, Request $request)
-    {
+    {		
         // Load new data
         $data = $request->post();
+		
+		if(User::whereEmail($data['email'])->count() > 0 ){
+			$user = User::whereEmail($data['email'])->first();
+			$data['user_id'] = $user->id;	
+			$data['type'] = 'user';
+		} elseif(VendorUser::whereEmail($data['email'])->count() > 0 ){
+			$vendor = VendorUser::whereEmail($data['email'])->first();
+			$data['user_id'] = $vendor->id;
+			$data['type'] = 'vendor';
+		}
         // Update data
         $contact->update($data);
 
@@ -138,6 +156,42 @@ class ContactController extends Controller
     } 
 		
 	public function contactList($user) {
-       return new Response(Contact::select('email as value', 'email as label')->where(['vendor_id'=>$user,'status'=>1])->get());
+		return new Response(Contact::selectRaw('CONCAT(name, " ( ", email, " )") as label, email as value')->where(['vendor_id'=>$user,'status'=>1])->get());
     }
+	
+	public function searchContactList($id,$query) {
+		$this->user = $id;
+		$this->query = $query;
+		$contacts = Contact::selectRaw('CONCAT(name, " ( ", company, " )") as label,email as value')->where([['vendor_id', '=', $this->user],['status', '=', 1]])
+							->where(function ($query) {
+								$query->orWhere('name',"like",'%'.$this->query.'%')
+									  ->orWhere('company',"like",'%'.$this->query.'%');
+							})->get();
+		return new Response($contacts);
+		
+	}
+	public function suggestionList($id,$query) {
+		$this->user = $id;
+		/* $users = User::select('email')->where('email', 'like', '%'.$query.'%')->get();
+		
+		$vendors = VendorUser::select('email')->where([['id', '!=', $id],['email', 'like', '%'.$query.'%']])->get(); */
+		
+		$users = User::select('email as label', 'email as value')
+				->whereNotIn('email',function($query){
+					   $query->select('email')->from('contacts')->where('vendor_id',$this->user);
+					})
+				->get();
+		
+		$vendors = VendorUser::select('email as label', 'email as value')
+					->whereNotIn('email',function($query){
+					   $query->select('email')->from('contacts')->where('vendor_id',$this->user);
+					})
+					->where([['id', '!=', $this->user]])
+					->get();
+		
+		$users = collect($users);
+		$vendors = collect($vendors);
+		return new Response($users->merge($vendors));
+    }
+	
 }

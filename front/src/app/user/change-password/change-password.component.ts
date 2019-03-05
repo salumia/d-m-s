@@ -3,7 +3,7 @@ import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import {Location} from '@angular/common';
+import { Location} from '@angular/common';
 
 @Component({
   selector: 'app-change-password',

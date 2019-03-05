@@ -32,6 +32,7 @@ export class SignupComponent implements OnInit {
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl('', Validators.required),
 			'phone': new FormControl('', Validators.required),
+			'username': new FormControl('', Validators.compose([Validators.required]), this.isUsernameUnique.bind(this)),			
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]), this.isEmailUnique.bind(this)),					
 			'fax': new FormControl('', Validators.required),
 			'address': new FormControl(''),
@@ -40,7 +41,26 @@ export class SignupComponent implements OnInit {
 			'password': new FormControl('', Validators.required)
 		});
 	}
-
+	
+	isUsernameUnique(control: FormControl) {
+		const q = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                this.userService.isUsernameRegisterd(control.value,0).subscribe(res => {
+                    if(res == 0){
+                        resolve(null);
+                    } else {
+						this.msgs.push({severity: 'error', summary: 'Username', detail: 'Username not available'});
+                        setTimeout(() => {
+                          this.msgs = [];
+                        }, 2000);
+                        resolve({ 'isUsernameUnique': true });
+                    }
+                });
+            }, 1000);
+        });
+        return q;
+    } 
+	
     isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -49,6 +69,10 @@ export class SignupComponent implements OnInit {
                     if(res == 0){
                         resolve(null);
                     } else {
+						this.msgs.push({severity: 'error', summary: 'Email', detail: 'Email already exist!'});
+                        setTimeout(() => {
+                          this.msgs = [];
+                        }, 2000);
                         resolve({ 'isEmailUnique': true });
                     }
                 });

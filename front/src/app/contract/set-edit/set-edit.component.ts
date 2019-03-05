@@ -23,7 +23,7 @@ export class SetEditComponent implements OnInit {
 	setform: FormGroup;
 	loadComponents: boolean = false;
 	loggedInUser: any;
-	loadSpinner: boolean = true;
+	loadSpinner: boolean = false;
 	
 	sourceParts: Part[];
     
@@ -36,25 +36,28 @@ export class SetEditComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.loggedInUser = this.auth.getAuth();		
+		this.loggedInUser = this.auth.getAuth();	
+		this.loadAvailableIndustryParts();		
 		this.setform = this.fb.group({
 			'user_id': new FormControl('', Validators.required),
 			'title': new FormControl('', Validators.required)
 		});
 		this.set.user_id = this.loggedInUser.id;
-				
-		this.partService.getAvailableParts(this.loggedInUser.id, this.id).subscribe(
-			res => {
-				this.sourceParts = res;
-				this.loadSpinner = false;
-			}
-		);
+						
 		this.selectedParts = [];
 		if(this.id > 0 ){
 			this.loadTermSet();
 		}
 	}
-  
+	
+	loadAvailableIndustryParts() {
+		this.partService.getAvailableParts(this.loggedInUser.id, this.id ).subscribe(
+			res => {
+				this.sourceParts = res;
+			}
+		);
+	}
+	
 	loadTermSet() {
 		// Load Part
 		this.setService.getPartSet(this.id).subscribe(res => {
@@ -68,6 +71,7 @@ export class SetEditComponent implements OnInit {
 	getTerms(){
 		this.setService.getTerms(this.id).subscribe(res => {
 		  this.selectedParts = res;
+		  console.log(this.sourceParts);
 		  console.log(this.selectedParts);
 		});
 	}

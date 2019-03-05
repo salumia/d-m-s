@@ -22,7 +22,7 @@
 				<th colspan="4">				
 					<input type="text" class="global-search" pInputText placeholder="Search" (input)="partListing.filterGlobal($event.target.value, 'contains')" style="width:50%; margin-right:2%; ">
 					
-					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="industries" (onChange)="partListing.filter($event.value, get_industry_data.name, 'equals')"></p-dropdown>
+					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="industries" (onChange)="partListing.filter($event.value, 'get_industry_data.id', 'equals')"></p-dropdown>
 					
 					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="statuses" (onChange)="partListing.filter($event.value, 'status', 'equals')"></p-dropdown>
 					

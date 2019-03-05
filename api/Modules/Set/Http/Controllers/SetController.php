@@ -76,7 +76,10 @@ class SetController extends Controller
     {
         //return new Response($set);
 		$set = Set::find($set);
-		$set->getParts;
+		$getParts = $set->getParts;
+		foreach($getParts as $part) {
+			$part->getPartData;
+		}
 		return new Response($set);
     }
 
@@ -156,9 +159,9 @@ class SetController extends Controller
 		foreach($sets as $item) {
 			$data[] = $item->getPartData;
 		}
-		/* foreach($data as $item) {
+		foreach($data as $item) {
 			$item->getIndustryData;
-		} */
+		}
 		return new Response($data);
 	}
 	

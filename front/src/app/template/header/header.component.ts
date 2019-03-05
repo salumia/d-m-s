@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {MenuItem} from 'primeng/api';
+import { MenuItem} from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PagesService } from '../../pages/pages.service';
 import { AuthService } from '../../auth/auth.service';
+import { UserService } from '../../user/user.service';
 import { TemplateConfigService } from '../template-config.service';
 
 @Component({
@@ -12,13 +12,12 @@ import { TemplateConfigService } from '../template-config.service';
 })
 export class HeaderComponent implements OnInit {
   items: MenuItem[];
-  menuStaticPages: any;
+  notifications: any;
   loggedInMenus: boolean = false;
   userData: any = '';
-  activeAppraisal: boolean = false;
-  reviewAppraisalList: boolean = false;
+  badge: number = 0;
   
-  constructor(private pageService: PagesService, private auth: AuthService,private templateService: TemplateConfigService) {
+  constructor( private auth: AuthService,private templateService: TemplateConfigService, private userService:UserService) {
         this.templateService.listen().subscribe((m:any) => {
             this.refreshHeader();
         })
@@ -27,22 +26,19 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {   
 	this.items = [];
-	this.loadDynamicPages();
-	
 	this.userData = this.auth.getAuth();
 	
 	if(this.userData != null){
 		console.log(this.userData);
-		if(this.userData.department == 1 || this.userData.role == 'admin'){
-			this.reviewAppraisalList = true;
-		}
 		this.setSettingMenus();
+		
+		this.loadNotification();
+	
+		setInterval(()=> {
+			this.loadNotification();
+		},30000);
 	}
 	
-	
-	console.log('Loggedin DATA');
-	console.log(this.userData);
-	console.log(this.loggedInMenus);	
   }
   
   setSettingMenus(){
@@ -66,27 +62,34 @@ export class HeaderComponent implements OnInit {
 		this.loggedInMenus = true;
 	}
   
-  loadDynamicPages(){	
+  loadNotification(){	
 	console.log('calling');
-	this.pageService.getPages().subscribe(res => {
-            this.menuStaticPages = res;
-        });  
+	if(this.userData != null){
+		this.userService.userNotifications(this.userData.id,this.userData.role).subscribe(res => {
+			this.notifications = res;
+			this.badge = 0;
+			for (let notify of this.notifications) {
+			   console.log(notify);
+			   if(notify.is_viewed == 0){
+				   this.badge = this.badge + 1;
+			   }
+			}
+			
+			console.log('notifications');
+			console.log(this.notifications);
+		});  
+	}	
   }
   
   refreshHeader() {
-	console.log('header refresh');
-	this.loadDynamicPages(); 	
-	
-	this.userData = this.auth.getAuth();
+	console.log('header refresh');	
+	this.userData = this.auth.getAuth();	 
 	this.setSettingMenus();
 	if(this.userData != null){
+		this.loadNotification();
 	} else {
 		this.loggedInMenus = false;
-		this.activeAppraisal = false;
-		this.reviewAppraisalList = false;
 	}
-	
-	
 	
   }
 

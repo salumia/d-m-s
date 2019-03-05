@@ -7,6 +7,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
     Route::post('users/logout-user/{user}', 'UserController@logoutUser')->middleware('auth:api');
     Route::post('users/disable-user/{user}', 'UserController@disableUser');//->middleware('auth:api');
     Route::post('users/enable-user/{user}', 'UserController@enableUser');//->middleware('auth:api');
+	Route::post('users/checkUsername', 'UserController@checkIfUsernameExist');
 	Route::post('users/checkEmail', 'UserController@checkIfEmailExist');
 	Route::post('users/checkDepartmentHOD', 'UserController@checkIfDepartmentHODExist')->middleware('auth:api');
 

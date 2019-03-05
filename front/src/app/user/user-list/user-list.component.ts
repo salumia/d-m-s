@@ -101,7 +101,7 @@ export class UserListComponent implements OnInit {
 						this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: res.message});
 					} else {
 						this.messageService.add({key: 'top-corner', severity: 'success', summary: 'User Deleted', detail: res.message});
-						// Reload Categories
+						// Reload Users
 						this.loadUsers();
 					}
 				});

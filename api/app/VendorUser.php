@@ -18,7 +18,7 @@ class VendorUser extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'shop_name', 'email', 'phone', 'gender', 'fax', 'address','city', 'zip', 'api_token', 'api_token_expires','password'
+        'name', 'shop_name', 'email', 'phone', 'gender', 'fax', 'address','city', 'zip', 'api_token', 'api_token_expires','password','industry_id','username'
     ];
 
     /**

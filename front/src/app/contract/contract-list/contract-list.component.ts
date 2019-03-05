@@ -29,16 +29,20 @@ export class ContractListComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.authService.getAuth();
+		console.log(this.loggedInUser);
 		this.cols = [
-			{ field: 'get_category_data.name', header: 'Category' },
-			{ field: 'get_sender_data.email', header: 'First Party Email' },
-			{ field: 'email', header: 'Second Party Email' },
-			{ field: 'status', header: 'Status' }
+			//{ field: 'get_category_data.name', header: 'Category' },
+			{ field: 'id', header: 'Contract ID' },
+			{ field: 'name', header: 'Contract Name' },
+			{ field: 'get_sender_data.email', header: 'Owner' },
+			{ field: 'email', header: 'Recipient' },
+			{ field: 'status', header: 'Status' },
+			{ field: 'updated_at', header: 'Last Update' }
 		];
 		this.statuses = [
             { label: 'Select Status', value: null },
             { label: 'Draft', value: '0' },
-            { label: 'Processing', value: '1' },
+            { label: 'Under Review', value: '1' },
             { label: 'Finalized', value: '2' },
             { label: 'Rejected', value: '3' },
         ];

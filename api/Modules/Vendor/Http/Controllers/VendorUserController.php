@@ -87,13 +87,14 @@ class VendorUserController extends Controller{
      * @param  int  $id
      * @return Response
      */
-    public function update(VendorUser $user, Request $request)
+    public function update($user, Request $request)
     {
         // Load new data
         $data = $request->post();
         // Massage data
         unset($data['api_token_expires']);
         // Update data
+		$user = VendorUser::find($user);
         $user->update($data);
 
         return new Response([

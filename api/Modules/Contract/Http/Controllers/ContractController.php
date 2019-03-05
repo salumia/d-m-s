@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Modules\Contract\Entities\Contract;
 use Modules\Contract\Entities\ContractPart;
 use Modules\Contract\Entities\ContractLog;
+use Modules\Notification\Entities\Notification;
 use App\User;
 use App\VendorUser;
 
@@ -19,9 +20,22 @@ class ContractController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
-    {
-		return new Response(Contract::all());
+    public function index(){
+		//return new Response(Contract::all());
+		$contracts = Contract::all();
+		foreach($contracts as $item) {
+			$item->getCategoryData;
+			$item->getContractParts;
+			$item->getSenderData;
+			if($item->receiver_role == "user"){
+				$item->get_receiver_data = $item->getReceiverUserData;
+				unset($item->getReceiverUserData);
+			} else {
+				$item->get_receiver_data = $item->getReceiverVendorData;
+				unset($item->getReceiverVendorData);
+			}
+		}
+		return new Response($contracts);
     }
 
     /**
@@ -29,8 +43,7 @@ class ContractController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
 		$data = $request->post();
 		if(!empty($data['email'])){
 			$data['status'] = 1;
@@ -38,12 +51,21 @@ class ContractController extends Controller
 			$receiverVendor = VendorUser::where(["email"=>$data['email']])->first();
 			if(!empty($receiverUser)){
 				$data['receiver_id'] = $receiverUser->id;
+				$data['receiver_role'] = 'user';
 			} elseif(!empty($receiverVendor)){
 				$data['receiver_id'] = $receiverVendor->id;
-			}
+				$data['receiver_role'] = 'vendor';
+			}			
 		}
         $contract = Contract::create($data);
-		$this->sendAppraisalMail($contract);
+		if(!empty($contract->receiver_id)){
+			$notification = [];
+			$notification['user_id'] = $contract->receiver_id;
+			$notification['role'] = $contract->receiver_role;
+			$notification['ref_id'] = $contract->id;
+			Notification::create($notification);
+			$this->sendAppraisalMail($contract);
+		}		
         return new Response([
             'message' => 'Contract created successfully',
             'contracts' => $contract
@@ -54,8 +76,7 @@ class ContractController extends Controller
      * Show the specified resource.
      * @return Response
      */
-    public function show(Contract $contract)
-    {
+    public function show(Contract $contract){
 		$contract->getCategoryData;
 		$contract->getContractParts;
 		$contract->getSenderData;
@@ -74,12 +95,31 @@ class ContractController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function update(Contract $contract, Request $request)
-    {
+    public function update(Contract $contract, Request $request){
         // Load new data
         $data = $request->post();
-        // Update data
+		
+		if(!empty($data['email'])){
+			$data['status'] = 1;
+			$receiverUser = User::where(["email"=>$data['email']])->first();
+			$receiverVendor = VendorUser::where(["email"=>$data['email']])->first();
+			if(!empty($receiverUser)){
+				$data['receiver_id'] = $receiverUser->id;
+			} elseif(!empty($receiverVendor)){
+				$data['receiver_id'] = $receiverVendor->id;
+			}			
+		}
         $contract->update($data);
+		if(!empty($contract->receiver_id)){
+			$notification = [];
+			$notification['user_id'] = $contract->receiver_id;
+			$notification['role'] = $contract->receiver_role;
+			$notification['ref_id'] = $contract->id;
+			Notification::create($notification);
+			$this->sendAppraisalMail($contract);
+		}	
+		
+        // Update data        
 
         return new Response([
             'message' => 'Contract updated successfully',
@@ -91,8 +131,7 @@ class ContractController extends Controller
      * Remove the specified resource from storage.
      * @return Response
      */
-    public function destroy(Contract $contract)
-    {
+    public function destroy(Contract $contract){
         // Delete the Page
         try {
 			ContractPart::where(["contract_id"=>$contract->id])->delete();
@@ -134,22 +173,22 @@ class ContractController extends Controller
         ]);
     }
 	
-	public function getContractArray(Request $request)
-    {
+	public function getContractArray(Request $request){
        return new Response(Contract::select('id as value', 'name as label')->get());
     }
 		
 	public function contractPartData($contractPart){
 		$contractPartData = ContractPart::find($contractPart);
 		$contractPartData->getLogData;
+		$contractPartData->get_log_data = $contractPartData->getLogData[0];
+		unset($contractPartData->getLogData);
 		return new Response([
             'message' => 'Contract part data',
             'data' => $contractPartData,
         ]);
 	}
 	
-	public function userContracts($user,$role)
-    {
+	public function userContracts($user,$role){
 		$this->user = $user;
 		if($role == "user"){
 			$userContracts = Contract::where('receiver_id',$user)->get();
@@ -178,12 +217,81 @@ class ContractController extends Controller
 		
 	}
 	
+	public function openContract($contract, Request $request){
+		$contract = Contract::find($contract);
+		$contract->status = 1;
+        $contract->save();	
+		
+		$notification = [];
+		$notification['type'] = 'open';
+		$notification['user_id'] = $contract->sender_id;
+		$notification['role'] = 'vendor';
+		$notification['ref_id'] = $contract->id;
+		Notification::create($notification);
+		
+		$notification = [];
+		$notification['type'] = 'open';
+		$notification['user_id'] = $contract->receiver_id;
+		$notification['role'] = $contract->receiver_role;
+		$notification['ref_id'] = $contract->id;
+		Notification::create($notification);
+		
+		/******* Save Log *********/
+		$iteration = ContractLog::where(["contract_id"=>$contract->id])->max('iteration');
+		$logData = [];
+		$logData['contract_id'] = $contract->id;		
+		$logData['user'] = 'admin';		
+		$logData['type'] = 'open';			
+		$logData['iteration'] = $iteration + 1;			
+		ContractLog::create($logData);
+		
+		return new Response([
+            'message' => 'Contract status updated',
+            'contracts' => $contract
+        ]);
+	}
+	
 	public function updateContractStatus($contract, Request $request){
 		$data = $request->post();
 		
 		$contract = Contract::find($contract);
 		$contract->status = $data['status'];
-        $contract->save();		
+		if(isset($data['signature']) && !empty($data['signature'])){
+			$contract->signature = $data['signature'];
+		}		
+        $contract->save();	
+		$logData = [];
+		if(!empty($contract->id)){
+			$notification = [];
+			$logData['contract_id'] = $contract->id;
+			
+			if($contract->status == 2){
+				$notification['type'] = 'accept';
+				$logData['type'] = 'accept';
+			} else {				
+				$notification['type'] = 'reject';
+				$logData['type'] = 'reject';
+			}
+			
+			if($contract->sender_flag == 2){
+				$notification['user_id'] = $contract->receiver_id;
+				$notification['role'] = $contract->receiver_role;
+								
+				$logData['user'] = 'sender';
+			} else {
+				$notification['user_id'] = $contract->sender_id;
+				$notification['role'] = 'vendor';
+								
+				$logData['user'] = 'receiver';
+			}
+			$notification['ref_id'] = $contract->id;
+			Notification::create($notification);
+			
+			/******* Save Log *********/
+			$iteration = ContractLog::where(["contract_id"=>$contract->id])->max('iteration');			
+			$logData['iteration'] = $iteration + 1;			
+			ContractLog::create($logData);
+		}
 
         return new Response([
             'message' => 'Contract status updated',
@@ -193,20 +301,38 @@ class ContractController extends Controller
 	
 	public function updateContractParts($contract,$user, Request $request){
 		$data = $request->post();
+		$role = 'receiver';
 		
 		/******* Delete Contract Old Logs *********/
-		ContractLog::where(["contract_id"=>$contract])->delete();
+		//ContractLog::where(["contract_id"=>$contract])->delete();
 		
 		/******* Update Contract Table*********/
 		$contract = Contract::find($contract); 
 		if($data['sender']){
+			$role = 'sender';
 			$contract->sender_flag = 1; // 1 = sent, 2= review, 3= approve, 4 = reject
 			$contract->receiver_flag = 2;
 			$contract->save();
+			
+			$notification = [];
+			$notification['type'] = 'review';
+			$notification['user_id'] = $contract->receiver_id;
+			$notification['role'] = $contract->receiver_role;
+			$notification['ref_id'] = $contract->id;
+			Notification::create($notification);
+			
 		} else {
 			$contract->receiver_flag = 1;
 			$contract->sender_flag = 2;
 			$contract->save();
+			
+			$notification = [];
+			$notification['type'] = 'review';
+			$notification['user_id'] = $contract->sender_id;
+			$notification['role'] = 'vendor';
+			$notification['ref_id'] = $contract->id;
+			Notification::create($notification);
+			
 		}
 		
 		/******* Update Contract Parts Table*********/
@@ -242,14 +368,24 @@ class ContractController extends Controller
 			} else {
 				$part['user_id'] = $user;
 				$part['contract_id'] = $contract->id;
-				ContractPart::insert($part);
+				$contractPart = ContractPart::create($part);
+				$newlyPartArray = [];				
+				$newlyPartArray['title'] = $contractPart->title;
+				$newlyPartArray['body'] = $contractPart->body;
+				$newlyPartArray['contract_id'] = $contractPart->contract_id;
+				$newlyPartArray['part_id'] = $contractPart->id;
+				$newlyPartArray['type'] = 'added';
+				$data['edited_parts'][] = $newlyPartArray;
 			}
 		}
-		
 		/******* Save latest Log *********/
+		$iteration = ContractLog::where(["contract_id"=>$contract->id])->max('iteration');
 		if( sizeof($data['edited_parts']) > 0 ){			
 			// save log
 			foreach($data['edited_parts'] as $edited){
+				$edited['iteration'] = $iteration + 1;
+				$edited['user'] = $role;
+				//$edited['type'] = 'edited';
 				ContractLog::create($edited);
 			}
 		}
@@ -258,4 +394,32 @@ class ContractController extends Controller
             'message' => 'Contract Updated Successfully',
         ]);
     }
+
+	public function getContractLog($contract, Request $request){
+		$contract = Contract::find($contract);
+		$contract->getContractLog;
+		$newArray = [];
+		foreach($contract->getContractLog as $log){
+			$newArray[$log->iteration]["user"] = $log->user;
+			$newArray[$log->iteration]["changes"][] = $log->type;
+			$newArray[$log->iteration]["created_at"] = $log->created_at->format('H:i:s d M, Y');
+		}
+		$response = [];
+		foreach($newArray as $iteration){
+			if(count($iteration["changes"]) > 1){
+				$iteration["action"] = 'review';
+			} elseif(in_array($iteration["changes"][0],array("accept","reject","open"))){
+				$iteration["action"] = $iteration["changes"][0];
+			} else{
+				$iteration["action"] = 'review';
+			}
+			$response[] = $iteration;
+		}
+		unset($contract->getContractLog);
+		$contract->get_contract_log = $response;
+		return new Response([
+            'message' => 'Contract logs',
+            'contract' => $contract
+        ]);
+	}
 }

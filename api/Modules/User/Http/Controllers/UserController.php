@@ -39,8 +39,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->post();
-		$data['password'] = Hash::make($data['password']);
-		
+		if(isset($data['password'])){
+			$data['password'] = Hash::make($data['password']);
+		}
         $user = User::create($data);
 		
 		if(Contact::whereEmail($data['email'])->count() > 0 ){
@@ -220,6 +221,41 @@ class UserController extends Controller
 		$data = $request->post();
 		$condition = [['email','=',$data['email']]] ;
 		$conditionWithId = [['email','=',$data['email']],['id','!=',$data['id']]] ;
+		$count = 0;
+		if($data['id'] == 0){
+			$count = $count + User::where($condition)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			
+		} elseif($data['role'] == "vendor"){
+			$count = $count + User::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			$count = $count + VendorUser::where($conditionWithId)->count();
+			
+		} elseif($data['role'] == "user"){
+			$count = $count + User::where($conditionWithId)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($condition)->count();
+			
+		} elseif($data['role'] == "admin"){
+			$count = $count + User::where($condition)->count();
+			$count = $count + VendorUser::where($condition)->count();
+			$count = $count + AdminUser::where($conditionWithId)->count();
+		}		
+		
+		return new Response($count);
+    }	
+	
+	/**
+     * Check Username Already Exist in DB
+     * @param  Request $request
+     * @return Response
+     */
+    public function checkIfUsernameExist(Request $request)
+    {
+		$data = $request->post();
+		$condition = [['username','=',$data['username']]] ;
+		$conditionWithId = [['username','=',$data['username']],['id','!=',$data['id']]] ;
 		$count = 0;
 		if($data['id'] == 0){
 			$count = $count + User::where($condition)->count();

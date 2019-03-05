@@ -30,9 +30,14 @@ import {DragDropModule} from 'primeng/dragdrop';
 import {PickListModule} from 'primeng/picklist';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
+import { ContactEditComponent } from './contact-edit/contact-edit.component';
+
+import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 @NgModule({
-  imports: [
+  imports: [	
+    Ng4GeoautocompleteModule.forRoot(),
     CommonModule,
 	ContactRoutingModule,
     FormsModule,
@@ -56,10 +61,11 @@ import {ConfirmationService} from 'primeng/api';
 	TabViewModule,
 	DragDropModule,
 	PickListModule,
-	ConfirmDialogModule
+	ConfirmDialogModule,
+	AutoCompleteModule
   ],
   providers: [AuthService, UserService, ConfirmationService, ContactService],
-  declarations: [ContactListComponent]
+  declarations: [ContactListComponent, ContactEditComponent]
 })
 export class ContactModule {
   constructor(auth: AuthService, router: Router) {

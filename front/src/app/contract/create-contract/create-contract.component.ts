@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PartService } from '../part.service';
 import { IndustryService } from '../industry.service';
+import { ContractTypeService } from '../contract-type.service';
 import { CategoryService } from '../category.service';
 import { SetService } from '../set.service';
 import { ContractService } from '../contract.service';
@@ -25,7 +26,7 @@ import { Location} from '@angular/common';
 export class CreateContractComponent implements OnInit {
 @ViewChild('documentsChild') documentsChild;
 	id: number;
-	contract: Contract = {};
+	contract: Contract = {} as Contract;;
 	msgs: Message[] = [];
 	contractform: FormGroup;
 	listform: FormGroup;
@@ -34,21 +35,25 @@ export class CreateContractComponent implements OnInit {
 	loadSpinner: boolean = false;
 	editFormVisible: boolean = false;
 	
+	contract_types: SelectItem[];
 	industries: SelectItem[];
 	categories: SelectItem[];
 	contacts: SelectItem[];
 	industryParts: SelectItem[] = [];
 	userSets: SelectItem[] = [];
-	user_contract_parts: any[];
+	user_contract_parts: any[] = [];
 	
 	selectedPart: any = {};
 	listPart: any;
 	listSet: any;
 	
-	addContactVisible = false;	
-	newContactEmail:any = "";
+	captchaSolved = false;
+	selectedContact:string = "";
+	
+    suggestions: any[];
 
-	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService) {
+	
+	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService, private contractTypeService:ContractTypeService) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
 			this.loadSpinner = true;
@@ -60,13 +65,19 @@ export class CreateContractComponent implements OnInit {
 		if(this.id > 0 ){
 			this.loadContract();
 		}
-		this.loadIndustries();		
+		//this.loadIndustries();
+		this.getIndustryParts();			
+		this.loadContractType();		
 		this.getUserSets();
 		
 		this.contractform = this.fb.group({
-			'industry_id': new FormControl('', Validators.required),
+			'type': new FormControl('', Validators.required),
+			'name': new FormControl('', Validators.required),
+			'description': new FormControl('', Validators.required),
+			'industry_id': new FormControl(''),
 			'category_id': new FormControl('', Validators.required),			
-			'email': new FormControl('')				
+			'email': new FormControl(''),			
+			'contact': new FormControl('')			
 		});
 		
 	}
@@ -80,38 +91,46 @@ export class CreateContractComponent implements OnInit {
 		});
 	}
 	
-	loadIndustries() {
+	loadContractType() {
+		this.contractTypeService.getContractTypesList().subscribe(res => {
+		  this.contract_types = res;
+		  this.contract_types.unshift({label: 'Select', value: ''});
+		  this.loadCategories();
+		});
+	}
+	/* loadIndustries() {
 		this.industryService.getIndustryList().subscribe(res => {
 		  this.industries = res;
 		  this.industries.unshift({label: 'Select', value: ''});
 		  this.loadCategories();		
 		});
-	}
+	} */
 	
 	loadCategories() {
-		this.categoryService.getCategoryList().subscribe(res => {
+		//this.categoryService.getCategoryList().subscribe(res => {
+		this.categoryService.getIndustryCategoryList(this.loggedInUser.id).subscribe(res => {
 		  this.categories = res;
-		  this.categories.unshift({label: 'Select', value: ''});
+		  this.categories.unshift({label: 'Select', value: null});
 		  this.loadSpinner = false;
-		  this.loadContacts();
+		  //this.loadContacts();
 		});
 	}
 	
 	loadContacts() {
 		this.contactService.getContactList(this.loggedInUser.id).subscribe(res => {
 		  this.contacts = res;
-		  this.contacts.unshift({label: 'Select', value: ''});
+		  this.contacts.unshift({label: 'Select', value: null});
 		  console.log(this.contacts);		  
 		});
 	}
 	
-	getIndustryParts(industry) {	
-		if(industry.value > 0){	
-			this.partService.getIndustryParts(industry.value,this.loggedInUser.id).subscribe(res => {
-				this.industryParts = res;
-				console.log(this.industryParts);
-			});			
-		}
+	getIndustryParts() {	
+		//if(this.loggedInUser.industry_id > 0){	
+		this.partService.getIndustryParts(this.loggedInUser.industry_id,this.loggedInUser.id).subscribe(res => {
+			this.industryParts = res;
+			console.log(this.industryParts);
+		});			
+		//}
 	}	
 	
 	getUserSets() {	
@@ -122,26 +141,38 @@ export class CreateContractComponent implements OnInit {
 	}
     
 	saveContract() {
-		this.loadSpinner = true;
-		this.contract.sender_id = this.loggedInUser.id;
-		if(this.contract.email != ""){
-			this.contract.sender_flag = 1;
-			this.contract.receiver_flag = 2;
-			this.contract.status = 1 
+		console.log(this.contract);
+		if(this.captchaSolved){
+			this.loadSpinner = true;
+			this.contract.sender_id = this.loggedInUser.id;
+			if(typeof this.contract.email == "undefined" || this.contract.email == "" || this.contract.email == null){
+			}else{
+				this.contract.sender_flag = 1;
+				this.contract.receiver_flag = 2;
+				this.contract.status = 1 
+			}
+			console.log(this.contract);
+			this.contractService.saveContract(this.id, this.contract).subscribe(res => {
+				if(this.id > 0){
+					this.saveContractTerms(res.contracts.id);	
+				}else {
+					this.saveContractTerms(res.contracts.id);	
+				}			
+			});
+		} else {
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
 		}
-		this.contractService.saveContract(this.id, this.contract).subscribe(res => {
-			if(this.id > 0){
-				this.saveContractTerms(res.contracts.id);	
-			}else {
-				this.saveContractTerms(res.contracts.id);	
-			}			
-		});
 	}
 	
 	
 	saveContractTerms(id) {
 		this.contractService.saveContractTerms(id, this.user_contract_parts, this.loggedInUser.id).subscribe(res => {
-			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});	
+			var temMsg = "Contract saved successfully";
+			if(this.contract.status > 0){
+				temMsg = "Contract sent successfully";
+			}
+			this.contract.status == 0
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: temMsg});	
 			setTimeout(() => {
 				this.router.navigate(['contracts']);
 			}, 2000);
@@ -149,7 +180,13 @@ export class CreateContractComponent implements OnInit {
 	}
 	
 	showEditDialog(index){
-		this.selectedPart = this.user_contract_parts[index];
+		//this.selectedPart = this.user_contract_parts[index];
+		this.selectedPart = { 
+								index:index,
+								id:this.user_contract_parts[index].id,
+								title:this.user_contract_parts[index].title,
+								body:this.user_contract_parts[index].body
+							};
 		this.editFormVisible = true;
 		console.log(this.selectedPart);
 	}
@@ -180,30 +217,33 @@ export class CreateContractComponent implements OnInit {
         this._location.back();
     }
 	
-	showAddContactDialog() {
-		this.addContactVisible = true;
+	saveTermChanges(){
+		let i = this.selectedPart.index;
+		this.user_contract_parts[i].title = this.selectedPart.title;
+		this.user_contract_parts[i].body = this.selectedPart.body;
+		this.editFormVisible = false;
+		console.log(this.selectedPart);
 	}
 	
-	saveContact(){
-		this.msgs = [];        
-		for (const contact of this.contacts) {
-		  if (contact.value === this.newContactEmail) {
-			this.msgs.push({severity:'error', summary:'Error ', detail:'This Email is already in your contacts'});
-		  }
-		}
-		
-		if(this.msgs.length == 0){
-			this.contactService.saveContact(this.loggedInUser.id, this.newContactEmail).subscribe(res => {
-				this.contract.email = this.newContactEmail;
-				this.msgs.push({severity:'success', summary:'Success ', detail:'Contact Added'});
-				this.newContactEmail = "";
-				// Reload Contacts
-				this.loadContacts();
-				setTimeout(() => {
-					this.msgs = [];     					
-					this.addContactVisible = false;
-				}, 2000);
-			});
-		}
+	onExpire(data){
+		this.captchaSolved = false;
 	}
+	showResponse(data){
+		this.captchaSolved = true;
+	}
+	
+	onSelectContact(event) {
+		console.log(event.value);
+		this.selectedContact = event.label;
+		this.contract.email = event.value;
+	}
+	
+	searchContact(event) {
+		this.contract.email = "";
+		this.contactService.searchContactList(this.loggedInUser.id,event.query.toLowerCase()).subscribe(res => {	
+			this.suggestions = [];
+			this.suggestions = res;
+			console.log(this.suggestions);
+		});
+    }
 }

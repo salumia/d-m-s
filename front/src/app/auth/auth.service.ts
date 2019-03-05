@@ -19,6 +19,7 @@ export class AuthService {
     this.apiUrl = config.getApiUrl();
     this.adminApiUrl = 'http://localhost:8000/admin/';
   }
+  
   loginAdmin(user: Auth): Observable<AuthData> {
     return new Observable((observer) => {
       this.doLoginAdmin(user).subscribe((response: AuthResponse) => {
@@ -59,6 +60,7 @@ export class AuthService {
       });
     });
   }
+  
   login(user: Auth): Observable<AuthData> {
     return new Observable((observer) => {
       this.doLogin(user).subscribe((response: AuthResponse) => {
@@ -129,15 +131,19 @@ export class AuthService {
   private doReset(user: Auth): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/reset-password', {'email': user});
   }
+  
   private doLogin(user: Auth): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/login', user);
   }
+  
   private doLoginAdmin(user: Auth): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/login-admin', user);
   }
+  
   private doLoginVendor(user: Auth): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/login-vendor', user);
   }
+  
   private doLogout(): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/logout', null);
   }

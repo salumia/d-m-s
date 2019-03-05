@@ -41,12 +41,21 @@
 						<label>{{ user?.name }}</label>
 					  </div>
 					</div>
+					
 					<div class="row">
 					  <div class="col-md-4">
 						<h5>Contact Email</h5>
 					  </div>
 					  <div class="col-md-8">
 						<label>{{ user?.email }}</label>
+					  </div>
+					</div>
+					<div class="row">
+					  <div class="col-md-4">
+						<h5>Username</h5>
+					  </div>
+					  <div class="col-md-8">
+						<label>{{ user?.username }}</label>
 					  </div>
 					</div>
 					<div class="row">
@@ -87,6 +96,11 @@
 					  </div>
 					  <div class="col-md-8">
 						<label>{{ user?.fax }}</label>
+					  </div>
+					</div>
+					<div class="row" *ngIf="user.id == loggedInUser.id||loggedInUser.role=='admin'">
+					  <div class="col-md-12">
+						<a title="Edit" class='btn bg-primary listing-actions' [routerLink]="'/vendor/edit/' + user.id" ><i class="fa fa-pencil-square-o"></i> Edit Profile</a>
 					  </div>
 					</div>
 				</p-tabPanel>

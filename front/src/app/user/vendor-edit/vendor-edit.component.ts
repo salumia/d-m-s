@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { IndustryService } from '../../contract/industry.service';
 import { Vendor } from '../vendor';
 import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 import { MessageService } from 'primeng/components/common/messageservice';
-import {Location} from '@angular/common';
+import { Location} from '@angular/common';
 
 @Component({
   selector: 'app-vendor-edit',
@@ -17,46 +18,39 @@ export class VendorEditComponent implements OnInit {
 	@ViewChild('documentsChild') documentsChild;
 	id: number;
 	user: Vendor = {} as Vendor;
-	roles: SelectItem[];
-	departments: SelectItem[];
-	designations: SelectItem[];
 	msgs: Message[] = [];
 	Userform: FormGroup;
-	loadComponents: boolean = false;
 	loggedInUser: any;
-	enableDepartment:boolean = false;
-	enableDesignation:boolean = false;
-	disableFieldsFlag:boolean = true;
 	loadSpinner: boolean = false;
+	editMode: boolean = false;
 	userSettings: any = {};
-
+	industries: SelectItem[] = [];
+		
 	showPassword: boolean;
 	
-  constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
+  constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location, private industryService:IndustryService) {
 	  this.showPassword = false;
     aroute.params.subscribe(params => {
       this.id = params['id'];
       if(this.id > 0){
+		  this.editMode = true;
 		  this.loadSpinner = true;
 	  }
     });
   }
 
   ngOnInit() {
+	this.loadIndustries();
 	this.userSettings['inputPlaceholderText'] = 'Enter Area Name';
 	this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
 	
 	this.loggedInUser = this.auth.getAuth();
 	
-	if((this.loggedInUser.id != this.id && this.loggedInUser.department == 1) || this.loggedInUser.role == 'admin'){
-		this.disableFieldsFlag = false;  
-	}
-
-	
 	this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl('', Validators.required),
-			/* 'gender': new FormControl('', Validators.required), */
+			'industry_id': new FormControl('', Validators.required),		
+			'username': new FormControl('', Validators.compose([Validators.required]),this.isUsernameUnique.bind(this)),			
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
 			'phone': new FormControl('', Validators.required),
 			'fax': new FormControl('', Validators.required),
@@ -65,48 +59,41 @@ export class VendorEditComponent implements OnInit {
 			'zip': new FormControl('', Validators.required),
 			'password': new FormControl('')
 		});
-	 
-	// Load Roles
-    this.roles = [
-      { label: '(select)', value: null },
-      { label: 'Subscriber', value: 'superadmin' },
-      { label: 'Disabled', value: 'disabled' }
-    ];
-	
-	// Load Departments
-    this.departments = [
-      { label: '(select)', value: null },
-      { label: 'Male', value: 'male' },
-      { label: 'Felmale', value: 'famale' }
-    ];	
-	
-	// Load Designations
-    this.designations = [
-      { label: '(select)', value: null },
-      { label: 'H.O.D', value: 'hod' }  
-    ];
+		
 	  if(this.id > 0 ){
 		this.loadUser();
-		if(!this.disableFieldsFlag){
-			this.enableDepartment = true;
-			this.enableDesignation = true;
-		}
 	  }else{
-      this.Userform.controls['password'].setValidators(Validators.required);
-      this.disableFieldsFlag = false;
-      this.enableDepartment = true;
+		this.Userform.controls['password'].setValidators(Validators.required);
 	  }
   }
   
-  loadUser() {
-      this.userService.getVendor(this.id).subscribe(res => {
+  loadUser() {	
+    this.userService.getVendor(this.id).subscribe(res => {
       this.user = res;
-      this.loadComponents = true;
       this.loadSpinner = false;
     });
 
   }
-  isEmailUnique(control: FormControl) {
+	isUsernameUnique(control: FormControl) {
+	  const q = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                this.userService.isUsernameRegisterd(control.value, this.id, 'vendor').subscribe(res => {
+                    if(res == 0){
+                        resolve(null);
+                    } else {
+                      this.msgs.push({severity: 'error', summary: 'Username', detail: 'Username not available'});
+                        setTimeout(() => {
+                          this.msgs = [];
+                        }, 2000);
+                        resolve({ 'isUsernameUnique': true });
+                    }
+                });
+            }, 1000);
+        });
+        return q;
+    }  
+	
+	isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
                 this.userService.isEmailRegisterd(control.value, this.id, 'vendor').subscribe(res => {
@@ -125,31 +112,47 @@ export class VendorEditComponent implements OnInit {
         });
         return q;
     }     
+
+	loadIndustries() {
+		this.industryService.getIndustryList().subscribe(res => {
+			for(let i=0;i< res.length; i++){
+				if(res[i].value != 1){
+					this.industries.push(res[i]);
+				}
+			}
+			this.industries.unshift({label: 'Select', value: ''});		
+		});
+	}
 	
-	
-  saveUser() {
-    this.userService.saveVendor(this.id, this.user).subscribe(res => {
-		this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
-		setTimeout(() => {
-			this.router.navigate(['vendors']);
-		}, 2000);
-    });
-  }
+	saveUser() {
+		this.loadSpinner = true;
+		this.userService.saveVendor(this.id, this.user).subscribe(res => {
+			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
+			setTimeout(() => {
+				if(this.loggedInUser.role == 'vendor'){
+					this.router.navigate(['dashboard']);
+				} else if(this.loggedInUser.role == 'user'){
+					this.router.navigate(['dashboard']);
+				} else {
+					this.router.navigate(['vendors']);
+				}			
+			}, 2000);
+		});
+	}
 
-  logoutUser() {
-    this.userService.logoutUser(this.id).subscribe(res => {
+	logoutUser() {
+		this.userService.logoutUser(this.id).subscribe(res => {
+		  // Display message for 2 seconds
+		  this.msgs.push({severity: 'success', summary: 'Vendor Updated', detail: res.message});
+		  setTimeout(() => {
+			this.msgs = [];
+		  }, 2000);
 
-      // Display message for 2 seconds
-      this.msgs.push({severity: 'success', summary: 'Vendor Updated', detail: res.message});
-      setTimeout(() => {
-        this.msgs = [];
-      }, 2000);
+		  // Reload User
+		  this.loadUser();
 
-      // Reload User
-      this.loadUser();
-
-    });
-  }
+		});
+	}
   
 	goBack() {
         this._location.back();

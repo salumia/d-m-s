@@ -6906,3 +6906,34 @@ li .ui-helper-clearfix{ border:5px solid #f5f5f5; }
 .terms-constructor-box{
 	border: 2px solid #f5f5f5;
 }
+
+.navbar--nav .dropdown.notification ul{
+	margin-top: -20px !important;
+	max-height: 500px !important;
+	overflow-y: scroll;
+}
+.navbar--nav .dropdown.notification > a{
+	font-size:18px !important;
+}
+.notification .chat--info{
+	padding-left:20px;
+}
+li.viewed{
+	background:#f5f5f5 !important;
+}
+textarea.form-control{
+	min-height:50px;
+}
+
+.ui-tabview .ui-tabview-nav > li.ui-state-active a{
+	color:#FFFFFF !important;
+}
+.ui-tabview .ui-tabview-nav > li.ui-state-active{
+	background:#000000;
+}
+.todoApp_contentBody > ul > li{
+	padding:10px;
+}
+.ui-autocomplete .ui-autocomplete-input{
+	width:100% !important;
+}

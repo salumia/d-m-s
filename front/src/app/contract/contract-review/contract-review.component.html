@@ -33,18 +33,72 @@
 					</div>
 					
 					<div class="form-group row">
-						<span class="label-text col-md-3 col-form-label">First Party: </span>
+						<span class="label-text col-md-3 col-form-label">Contract Name: </span>
 
 						<div class="col-md-9">
-						{{contract.get_sender_data.name}} , {{contract.get_sender_data.email}} ,  {{contract.get_sender_data.shop_name}} ,{{contract.get_sender_data.address}}
+						{{contract.name}}
 						</div>
 					</div>
 					
 					<div class="form-group row">
-						<span class="label-text col-md-3 col-form-label">Second Party: </span>
+						<span class="label-text col-md-3 col-form-label">Contract Description: </span>
 
 						<div class="col-md-9">
-						{{contract.get_receiver_data.name}} , {{contract.get_receiver_data.email}} , {{contract.get_receiver_data.address}}
+						{{contract.description}}
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Owner: </span>
+
+						<div class="col-md-9">
+						<a [routerLink]="'/vendor/view/' + contract.get_sender_data.id" >{{contract.get_sender_data.username}}</a> ( {{contract.get_sender_data.email}} )
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Owner Address: </span>
+
+						<div class="col-md-9">{{contract.get_sender_data.shop_name}} ,{{contract.get_sender_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row" *ngIf="contract.status>0">
+						<span class="label-text col-md-3 col-form-label">Recipient: </span>
+
+						<div class="col-md-9">
+						<a *ngIf="contract.get_receiver_data.role=='vendor'" [routerLink]="'/vendor/view/' + contract.get_sender_data.id" >{{contract.get_receiver_data.username}}</a>
+						<a *ngIf="contract.get_receiver_data.role=='user'" [routerLink]="'/users/view/' + contract.get_sender_data.id" >{{contract.get_receiver_data.username}}</a> ( {{contract.get_receiver_data.email}} )
+						</div>
+					</div>
+					
+					<div class="form-group row" *ngIf="contract.status>0">
+						<span class="label-text col-md-3 col-form-label">Recipient: </span>
+
+						<div class="col-md-9">
+						{{contract.get_receiver_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row" >
+						<span class="label-text col-md-3 col-form-label">Status: </span>
+
+						<div class="col-md-9">
+							<span *ngIf="contract.status == 0">
+							  Draft
+							</span> 
+							<span *ngIf="contract.status == 1">
+							  Under Review by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong>
+							 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data != null">{{contract.get_receiver_data.username}}</strong> 
+							 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
+							</span>
+							<span *ngIf="contract.status == 2">
+							  Finalized
+							</span>
+							
+							<span *ngIf="contract.status == 3">
+							  Rejected ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> )
+							</span>
 						</div>
 					</div>
 					
@@ -58,22 +112,30 @@
 
 						<p-fieldset *ngFor="let part of user_contract_parts; let i = index">
 							<p-header>
-								<div class="row" [ngClass]="{delete: part.is_deleted||part.tmp_deleted}">
+								<!-- <div class="row" [ngClass]="{delete: part.is_deleted||part.tmp_deleted}"> -->
+								<div class="row" [ngClass]="{delete: part.is_deleted == 1||part.tmp_deleted == 1}">
 									<div class="col-md-5">
 										<strong>{{i + 1}}. </strong> {{part.title}} 
 									</div>
 									<div class="col-md-7 text-right">										
-										<p-button label="Edit" *ngIf="!part.tmp_deleted&&!part.is_deleted" icon="fa fa-pencil" (onClick)="showEditDialog(i)"></p-button>
+										<p-button label="Edit" *ngIf="(part.tmp_deleted == undefined || part.tmp_deleted == 0)&&part.is_deleted == 0" icon="fa fa-pencil" (onClick)="showEditDialog(i)"></p-button>
+										
+										<p-button label="Delete" *ngIf="(part.tmp_deleted == undefined || part.tmp_deleted == 0)&&part.is_deleted == 0" icon="fa fa-trash" (onClick)="deleteTerm(i)"></p-button>
+										
+										<p-button label="Reload" *ngIf="part.tmp_deleted == 1&&part.is_deleted == 0" icon="fa fa-refresh" (onClick)="reloadTerm(i)"></p-button>
+										
+										<p-button label="Reload" *ngIf="part.is_deleted == 1" icon="fa fa-refresh" (onClick)="reloadDeletedTerm(i)"></p-button>
+										
+										<!-- <p-button label="Edit" *ngIf="!part.tmp_deleted&&!part.is_deleted" icon="fa fa-pencil" (onClick)="showEditDialog(i)"></p-button>
 										
 										<p-button label="Delete" *ngIf="!part.tmp_deleted&&!part.is_deleted" icon="fa fa-trash" (onClick)="deleteTerm(i)"></p-button>
 										
 										<p-button label="Reload" *ngIf="part.tmp_deleted&&!part.is_deleted" icon="fa fa-refresh" (onClick)="reloadTerm(i)"></p-button>
 										
-										<p-button label="Reload" *ngIf="part.is_deleted" icon="fa fa-refresh" (onClick)="reloadDeletedTerm(i)"></p-button>
+										<p-button label="Reload" *ngIf="part.is_deleted" icon="fa fa-refresh" (onClick)="reloadDeletedTerm(i)"></p-button> -->
 										
 										
-										
-										<button pButton type="button" title="See Changes" label="Modified E 2 D" *ngIf="part.is_edited&&part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>										
+										<!-- <button pButton type="button" title="See Changes" label="Modified E 2 D" *ngIf="part.is_edited&&part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>										
 										
 										<button pButton type="button" title="See Changes" label="Modified D" *ngIf="part.is_deleted&&!part.is_edited&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
 										
@@ -83,12 +145,37 @@
 										
 										<button pButton type="button" title="See Changes" label="Modified D 2 RD + E" *ngIf="part.modified&&part.is_edited&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
 										
+										<button pButton type="button" title="Newly Added" label="New" *ngIf="part.newly_added" class="ui-button-danger"></button>	 -->
+										<!-- 
+										<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_edited&&part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>										
+										
+										<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_deleted&&!part.is_edited&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
+										<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_edited&&!part.is_deleted&&!part.modified&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
+										<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.modified&&!part.is_edited&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>	
+										
+										<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.modified&&part.is_edited&&!part.newly_added" (click)="showComparison(i)" class="ui-button-danger"></button>
+										
 										<button pButton type="button" title="Newly Added" label="New" *ngIf="part.newly_added" class="ui-button-danger"></button>	
+										 -->	
+										
+<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_edited == 1&&part.is_deleted == 1&&part.modified == 0&&part.newly_added == 0" (click)="showComparison(i)" class="ui-button-danger"></button>									
+										
+<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_deleted == 1 &&part.is_edited == 0&&part.modified == 0&&part.newly_added == 0" (click)="showComparison(i)" class="ui-button-danger"></button>
+
+<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.is_edited == 1&&part.is_deleted == 0&&part.modified == 0&&part.newly_added == 0" (click)="showComparison(i)" class="ui-button-danger"></button>
+
+<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.modified == 1&&part.is_edited == 0&&part.newly_added == 0" (click)="showComparison(i)" class="ui-button-danger"></button>	
+
+<button pButton type="button" title="See Changes" label="Modified" *ngIf="part.modified == 1&&part.is_edited ==1 &&part.newly_added == 0" (click)="showComparison(i)" class="ui-button-danger"></button>
+
+<button pButton type="button" title="Newly Added" label="New" *ngIf="part.newly_added == 1" class="ui-button-danger"></button>
 										
 									</div>
 								</div>
 							</p-header>
-							<div class="row" [ngClass]="{delete: part.is_deleted||part.tmp_deleted}">
+							<div class="row" [ngClass]="{delete: part.is_deleted==1||part.tmp_deleted==1}">
 								<div class="col-md-12">	
 									{{part.body}} 	
 								</div>							
@@ -97,12 +184,12 @@
 						
 						</div>
 						<div class="col-md-4">
-							<div class="col-md-12" *ngIf="industries.length > 0">
+							<div class="col-md-12" *ngIf="industryParts.length > 0">
 								<h3>Add More Terms</h3>
 							</div>
-							<div class="col-md-12" *ngIf="industries.length > 0">
+							<!-- <div class="col-md-12" *ngIf="industries.length > 0&&loggedInUser.role=='vendor'">
 								<p-dropdown [options]="industries" [style]="{width: '100%'}" (onChange)="getIndustryParts($event)"></p-dropdown>
-							</div>
+							</div> -->
 							<div class="col-md-12" *ngIf="industryParts.length > 0">								
 								<p-listbox [(ngModel)]="listPart" [ngModelOptions]="{standalone: true}" [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
 								  <p-header>
@@ -111,6 +198,12 @@
 								  </p-header>
 								</p-listbox>
 							</div>
+						</div>
+					</div>
+					
+					<div class="row mt-3">
+						<div class="col-md-10 offset-md-2">		
+						<p-captcha siteKey="6Lff_5IUAAAAACQbrHCVfQHieWHXcXGIxF1ZFAH3" (onResponse)="showResponse($event)" (onExpire)="onExpire($event)"></p-captcha>
 						</div>
 					</div>
 					
@@ -126,26 +219,34 @@
 	</div>
 </div>
 
-<p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000" (onHide)="onHideEditBox(selectedPart.id)">
+<p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000">
  	<div style="width:500px;">	
 		<div class="form-group row">
-			<span class="label-text col-md-3 col-form-label">Title: *</span>
-			<div class="col-md-9">			
-				<input type="text" pInputText class="form-control" name="title" [(ngModel)]="selectedPart.title" />
+			<span class="label-text col-md-2 col-form-label">Title: *</span>
+			<div class="col-md-10">			
+				<input type="text" rows="5" pInputText class="form-control" name="title" [(ngModel)]="selectedPart.title" />
 			</div>
 		</div>
 		<div class="form-group row">
-			<span class="label-text col-md-3 col-form-label">Text: *</span>
-			<div class="col-md-9">			
-				<textarea name="body" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
+			<span class="label-text col-md-2 col-form-label">Text: *</span>
+			<div class="col-md-10">			
+				<textarea name="body" rows="5" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
 			</div>
 		</div>
+		<p-footer>
+			<div class="form-group row">
+				<div class="col-md-10 offset-md-2">
+					<button type="button" pButton icon="pi pi-check" (click)="saveTermChanges();" label="Save Changes"></button>
+					<button type="button" pButton icon="pi pi-close" (click)="editFormVisible=false" label="Close" class="ui-button-secondary"></button>
+				</div>
+			</div>
+        </p-footer>
 	</div>
 </p-dialog>
 
 <p-dialog header="Compare" [(visible)]="showCompareBox" [modal]="true" [responsive]="true" [style]="{width: '700px'}" [minY]="30" [baseZIndex]="10000" (onHide)="onHideCompareBox()">
  	<div style="width:700px;">
-		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited&&compareData.is_deleted&&!compareData.modified&&!compareData.newly_added">
+		<!-- <div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited&&compareData.is_deleted&&!compareData.modified&&!compareData.newly_added">
 			<div class="col-md-12 alert alert-danger">
 			  <strong>Delete!</strong> Modified term has been deleted.
 			</div>		
@@ -243,6 +344,106 @@
 					<div>{{compareData.body}}</div>
 				</p-card>
 			</div>
+		</div> -->
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited == 1&&compareData.is_deleted == 1&&compareData.modified == 0&&compareData.newly_added == 0">
+			<div class="col-md-12 alert alert-danger">
+			  <strong>Delete!</strong> Modified term has been deleted.
+			</div>		
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_deleted == 1&&compareData.is_edited == 0&&compareData.modified == 0&&compareData.newly_added == 0">
+			<div class="col-md-12 alert alert-danger">
+			  <strong>Delete!</strong> This term has been deleted.
+			</div>	
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.is_edited == 1&&compareData.is_deleted == 0&&compareData.modified == 0&&compareData.newly_added == 0">
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Modified!</strong> This term has been modified.
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.get_log_data.title}}</h3>
+					<div>{{compareData.get_log_data.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.modified == 1&&compareData.is_edited == 0&&compareData.newly_added == 0">	
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Revoked!</strong> Deleted term has been reloaded.
+			</div>		
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
+		</div>
+		
+		<div class="form-group row" *ngIf="compareData !=''&&compareData.modified == 1&&compareData.is_edited == 1&&compareData.newly_added == 0">
+			<div class="col-md-12 alert alert-warning">
+			  <strong>Revoked & Updated!</strong> Deleted term has been reloaded and modified.
+			</div>	
+			<div class="col-md-6">			
+				<h4 class="text-center">Old</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3 class="delete">{{compareData.title}}</h3>
+					<div class="delete">{{compareData.body}}</div>
+				</p-card>
+			</div>
+			<div class="col-md-6">			
+				<h4 class="text-center">New</h4>
+				<p-card [style]="{width: '100%'}">
+					<h3>{{compareData.title}}</h3>
+					<div>{{compareData.body}}</div>
+				</p-card>
+			</div>
 		</div>
 		
 		<div class="form-group row" *ngIf="compareData == '' ">
@@ -254,3 +455,39 @@
 </p-dialog>
 
 <p-confirmDialog closeOnEscape="true" closable></p-confirmDialog>
+
+<p-dialog header="Terms of service" [(visible)]="showDigitalSignBox" [modal]="true" [responsive]="true" [style]="{width: '700px'}" [minY]="10" [baseZIndex]="10000">
+	<div style="width:700px;">
+		<div class="form-group row">
+			<div class="col-md-12">
+			  <ol class="list-group" style="padding-left:15px;">
+				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
+				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
+				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
+				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
+			  </ol>
+			</div>	
+			<div class="col-md-12">
+				<div class="checkbox">
+					<label><input  [(ngModel)]="acceptToS" [ngModelOptions]="{standalone: true}"  type="checkbox" name="acceptToS" value="1"> I agree to the Terms of Service</label>
+					<label class="text-danger">{{tosError}}</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-md-12">
+				<h3>Electronic Signature</h3>
+				<small>Please type in your name below, which will act as your digital signature</small>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-md-8">
+				<input type="text" [(ngModel)]="digitalSign" [ngModelOptions]="{standalone: true}"  class="form-control" name="digitalSign">
+				<label class="text-danger">{{digitalSignError}}</label>
+			</div>
+			<div class="col-md-4">
+				<button type="button" class="btn btn-primary" (click)="checkToS()">Submit</button>
+			</div>
+		</div>
+	</div>
+</p-dialog>

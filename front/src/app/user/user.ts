@@ -1,4 +1,3 @@
-/* import { Leave } from './leave'; */
 export class User {
   id: number;
   name: string;
@@ -11,11 +10,12 @@ export class User {
   city: string;
   zip: string;
   password: string;
-  /* leaves: Leave[]; */
 
   api_token_expires: Date;
   created_at: Date;
   updated_at: Date;
+  contact_added_by: any;
+  username: string;
 
   isLoggedIn: boolean;
 
@@ -30,9 +30,10 @@ export class User {
     this.fax = data.fax;
     this.address = data.address;
     this.city = data.city;
-    this.zip = data.zip;
-/* 	this.leaves  = data.get_leaves; */
-
+    this.zip = data.zip;    
+	this.contact_added_by = data.contact_added_by;
+	this.username = data.username;
+	
     // Parse date fields
     this.api_token_expires = new Date(Date.parse(data.api_token_expires));
     this.created_at = new Date(Date.parse(data.created_at));

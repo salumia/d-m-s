@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from '../../category.service';
 import { Category } from '../../category';
+import { IndustryService } from '../../industry.service';
+import { Industry } from '../../industry';
 import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../../auth/auth.service';
@@ -22,8 +24,9 @@ export class EditComponent implements OnInit {
 	loadComponents: boolean = false;
 	loggedInUser: any;
 	loadSpinner: boolean = false;
+	industries: SelectItem[];
 
-	constructor(aroute: ActivatedRoute, private router: Router, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
+	constructor(aroute: ActivatedRoute, private router: Router, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location, private industryService: IndustryService) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
 			if(this.id > 0){
@@ -33,18 +36,25 @@ export class EditComponent implements OnInit {
 	}
 
 	ngOnInit() {
-
 		this.loggedInUser = this.auth.getAuth();
-
+		this.loadIndustries();
 		this.Categoryform = this.fb.group({
+			'industry_id': new FormControl('', Validators.required),
 			'name': new FormControl('', Validators.required)
 			});
 
 		if(this.id > 0 ){
-			this.loadcategory();
+			this.loadcategory();			
 		}
 	}
   
+	loadIndustries() {
+		this.industryService.getIndustryList().subscribe(res => {
+		  this.industries = res;
+		  this.industries.unshift({label: 'Select', value: ''});
+		});
+	}
+	
 	loadcategory() {
 		// Load category
 		this.categoryService.getCategory(this.id).subscribe(res => {

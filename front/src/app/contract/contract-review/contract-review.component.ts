@@ -26,7 +26,7 @@ export class ContractReviewComponent implements OnInit {
 @ViewChild('documentsChild') documentsChild;
 	id: number;
 	modificationCounter: number = 0;
-	contract: Contract = {};
+	contract: Contract = {} as Contract;
 	msgs: Message[] = [];
 	contractform: FormGroup;
 	listform: FormGroup;
@@ -35,6 +35,7 @@ export class ContractReviewComponent implements OnInit {
 	loadSpinner: boolean = false;
 	editFormVisible: boolean = false;
 	showCompareBox: boolean = false;
+	showDigitalSignBox: boolean = false;
 	
 	senderActive: boolean = false;
 	
@@ -43,7 +44,7 @@ export class ContractReviewComponent implements OnInit {
 	contacts: SelectItem[];
 	industryParts: SelectItem[] = [];
 	userSets: SelectItem[] = [];
-	user_contract_parts: any[];
+	user_contract_parts: any[] = [];
 	
 	deleted_contract_parts: any[] = [];
 	edited_contract_parts: any[] = [];
@@ -56,6 +57,13 @@ export class ContractReviewComponent implements OnInit {
 	compareData: any = '';
 	
 	acceptButtonVisible: boolean = true;
+	
+	captchaSolved = false;
+	
+	acceptToS: boolean = true;
+	digitalSign:string = '';
+	tosError:string = "";
+	digitalSignError:string = "";
 
 	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService) {
 		aroute.params.subscribe(params => {
@@ -66,12 +74,11 @@ export class ContractReviewComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.auth.getAuth();
+		//this.loadIndustries();
+		this.getIndustryParts();
 		if(this.id > 0 ){
 			this.loadContract();
-		}
-		this.loadIndustries();		
-		this.getUserSets();
-		
+		}		
 	}
 	
 	loadContract() {
@@ -79,13 +86,27 @@ export class ContractReviewComponent implements OnInit {
 			this.contract = res;		
 			this.setUserType();			
 			this.user_contract_parts = res.get_contract_parts;
-			this.loadSpinner = false;
+			this.updateNotifications();
+			if(this.contract.status == 1 && this.senderActive && this.contract.sender_flag == 2 ){
+				this.loadSpinner = false;
+			} else if( this.contract.status == 1 && !this.senderActive && this.contract.receiver_flag == 2 ){
+				this.loadSpinner = false;				
+			} else {
+				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "You don't have access."});
+				setTimeout(() => {
+								this.router.navigate(['contracts']);
+							}, 2000);				
+			}
+		});
+	}
+	
+	updateNotifications(){
+		this.contractService.updateNotifications(this.loggedInUser.id, this.loggedInUser.role, this.id, 'review').subscribe(res => {	
+			
 		});
 	}
 	
 	setUserType(){
-		console.log(typeof this.loggedInUser.role);
-		console.log(typeof this.contract.receiver_role);
 		if(this.contract.receiver_id == this.loggedInUser.id && this.loggedInUser.role == this.contract.receiver_role ){
 			this.senderActive = false;
 		} else {
@@ -102,34 +123,23 @@ export class ContractReviewComponent implements OnInit {
 		});
 	}
 	
-	getIndustryParts(industry) {	
+	/* getIndustryParts(industry) {	
 		if(industry.value > 0){	
-			this.partService.getIndustryParts(industry.value,this.loggedInUser.id).subscribe(res => {
+			this.partService.getIndustryParts(industry.value,this.loggedInUser.id, this.loggedInUser.role).subscribe(res => {
+				this.industryParts = res;
+				console.log(this.industryParts);
+			});			
+		}
+	} */
+	
+	getIndustryParts() {	
+		if(this.loggedInUser.role == 'vendor'){	
+			this.partService.getIndustryParts(this.loggedInUser.industry_id,this.loggedInUser.id, this.loggedInUser.role).subscribe(res => {
 				this.industryParts = res;
 				console.log(this.industryParts);
 			});			
 		}
 	}	
-	
-	getUserSets() {	
-		/* this.setService.getUserSets(this.loggedInUser.id).subscribe(res => {
-			this.userSets = res;
-			console.log(this.userSets);
-		}); */
-	}
-    
-	/* saveContract() {
-		this.loadSpinner = true;
-		this.contract.sender_id = this.loggedInUser.id;
-		this.contractService.saveContract(this.id, this.contract).subscribe(res => {
-			if(this.id > 0){
-				this.saveContractTerms(res.contracts.id);	
-			}else {
-				this.saveContractTerms(res.contracts.id);	
-			}			
-		});
-	} */
-	
 	
 	saveContractTerms(id) {
 		this.contractService.saveContractTerms(id, this.user_contract_parts, this.loggedInUser.id).subscribe(res => {
@@ -142,7 +152,7 @@ export class ContractReviewComponent implements OnInit {
 	}
 	
 	showEditDialog(index){	
-		if(this.user_contract_parts[index].newly_added == 0){
+		/* if(this.user_contract_parts[index].newly_added == 0){
 			let findIndex = this.edited_contract_parts.findIndex(part => part.part_id === this.user_contract_parts[index].id);
 			if( findIndex >= 0){
 				this.edited_contract_parts[findIndex] = {
@@ -162,13 +172,19 @@ export class ContractReviewComponent implements OnInit {
 			//this.user_contract_parts[index].is_edited = 1;
 			this.user_contract_parts[index].tmp_edited = 1;
 			console.log(this.edited_contract_parts);
-		}		
+		} */		
 		
-		this.selectedPart = this.user_contract_parts[index];
+		//this.selectedPart = this.user_contract_parts[index];
+		this.selectedPart = { 
+								index:index,
+								id:this.user_contract_parts[index].id,
+								title:this.user_contract_parts[index].title,
+								body:this.user_contract_parts[index].body
+							};
 		this.editFormVisible = true;
 		
-		this.modificationCounter = this.modificationCounter + 1;
-		this.showProperButton();
+		/* this.modificationCounter = this.modificationCounter + 1;
+		this.showProperButton(); */
 	}
 	
 	reloadTerm(index){
@@ -176,6 +192,13 @@ export class ContractReviewComponent implements OnInit {
 		//this.user_contract_parts[index].is_deleted = 0;
 		this.modificationCounter = this.modificationCounter - 1;
 		this.showProperButton();
+		
+		let findIndex = this.edited_contract_parts.findIndex(part => part.part_id === this.user_contract_parts[index].id);
+		if( findIndex >= 0){
+			if(this.edited_contract_parts[findIndex].type == 'deleted'){
+				this.edited_contract_parts.splice(findIndex,1);
+			}
+		}
 	}
 	
 	reloadDeletedTerm(index){
@@ -183,6 +206,19 @@ export class ContractReviewComponent implements OnInit {
 		this.user_contract_parts[index].tmp_modified = 1;
 		this.modificationCounter = this.modificationCounter + 1;
 		this.showProperButton();
+		
+		let findIndex = this.edited_contract_parts.findIndex(part => part.part_id === this.user_contract_parts[index].id);
+		if( findIndex >= 0){
+			this.edited_contract_parts[findIndex].type = 'reload';
+		} else {
+			this.edited_contract_parts.push({
+				part_id:this.user_contract_parts[index].id,
+				body:this.user_contract_parts[index].body,
+				title:this.user_contract_parts[index].title,
+				contract_id:this.id,
+				type:'reload'
+			});
+		}		
 	}
 	
 	deleteTerm(index){	
@@ -191,7 +227,16 @@ export class ContractReviewComponent implements OnInit {
 			if( findIndex >= 0){		
 				this.user_contract_parts[index].title = this.edited_contract_parts[findIndex].title;
 				this.user_contract_parts[index].body = this.edited_contract_parts[findIndex].body;
-				this.edited_contract_parts.splice(findIndex,1);
+				//this.edited_contract_parts.splice(findIndex,1);
+				this.edited_contract_parts[findIndex].type = 'deleted';
+			} else {
+				this.edited_contract_parts.push({
+					part_id:this.user_contract_parts[index].id,
+					body:this.user_contract_parts[index].body,
+					title:this.user_contract_parts[index].title,
+					contract_id:this.id,
+					type:'deleted'
+				});
 			}
 			
 			this.user_contract_parts[index].tmp_edited = 0;
@@ -231,39 +276,81 @@ export class ContractReviewComponent implements OnInit {
 	
 	onSelectTerm(event){
 		this.listPart = {};
-		this.user_contract_parts.push({title:event.label, body:event.value.body, is_edited: 0, is_deleted: 0, modified: 0, newly_added: 1});		
+		this.user_contract_parts.push({title:event.label, body:event.value.body, is_edited: 0, is_deleted: 0, modified: 0, newly_added: 1});	
 	}
 	
 	sendBackContract(){
 		console.log(this.user_contract_parts);
 		console.log(this.edited_contract_parts);
-		this.loadSpinner = true;
-		this.contractService.updateContractTerms(this.id, this.loggedInUser.id, this.user_contract_parts, this.edited_contract_parts, this.senderActive).subscribe(res => {
-			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract sent back successfully'});		
-			setTimeout(() => {
-				this.router.navigate(['contracts']);
-			}, 2000);
-		}); 
+		
+		if(this.captchaSolved){
+			console.log(this.user_contract_parts);
+			console.log(this.edited_contract_parts);
+			this.loadSpinner = true;
+			this.contractService.updateContractTerms(this.id, this.loggedInUser.id, this.user_contract_parts, this.edited_contract_parts, this.senderActive).subscribe(res => {
+				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract sent back successfully'});		
+				setTimeout(() => {
+					this.router.navigate(['contracts']);
+				}, 2000);
+			}); 
+		} else {
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
+		}
+	}
+	
+	checkToS(){
+		console.log(this.acceptToS);
+		console.log(this.digitalSign);
+		this.tosError = "";
+		this.digitalSignError = "";
+		if(this.acceptToS){
+			if(this.digitalSign != ""){
+				this.showDigitalSignBox = false;
+				this.loadSpinner = true;
+				this.contractService.updateContractStatus(this.id, 2, this.digitalSign).subscribe(res => {
+					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Accepted'});		
+					setTimeout(() => {
+						this.router.navigate(['contracts']);
+					}, 2000);
+				});
+			} else {
+				console.log("Show DS error");
+				this.digitalSignError = "Please type your signature";
+			}
+		} else {
+			console.log("Show TOS error");
+			this.tosError = "Please accept the terms of service";
+		}
+		
 	}
 	
 	acceptContract(){
-		this.loadSpinner = true;
-		this.contractService.updateContractStatus(this.id, 2).subscribe(res => {
-			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Accepted'});		
-			setTimeout(() => {
-				this.router.navigate(['contracts']);
-			}, 2000);
-		});		
+		if(this.captchaSolved){
+			this.showDigitalSignBox = true;
+			/* this.loadSpinner = true;
+			this.contractService.updateContractStatus(this.id, 2).subscribe(res => {
+				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Accepted'});		
+				setTimeout(() => {
+					this.router.navigate(['contracts']);
+				}, 2000);
+			}); */	
+		} else {
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
+		}		
 	}
 	
 	rejectContract(){
-		this.loadSpinner = true;
-		this.contractService.updateContractStatus(this.id, 3).subscribe(res => {
-			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Rejected'});		
-			setTimeout(() => {
-				this.router.navigate(['contracts']);
-			}, 2000);
-		});
+		if(this.captchaSolved){
+			this.loadSpinner = true;
+			this.contractService.updateContractStatus(this.id, 3).subscribe(res => {
+				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Rejected'});		
+				setTimeout(() => {
+					this.router.navigate(['contracts']);
+				}, 2000);
+			});
+		} else {
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
+		}
 	}
 	
 	showComparison(index){
@@ -282,8 +369,55 @@ export class ContractReviewComponent implements OnInit {
 		this.compareData = "";
 	}
 	
-	onHideEditBox(id){
-		console.log("onHideEditBox");
-		console.log(id);
+	saveTermChanges(){
+		let i = this.selectedPart.index;
+		if(this.user_contract_parts[i].title != this.selectedPart.title || this.user_contract_parts[i].body != this.selectedPart.body){
+						
+					
+			if(this.user_contract_parts[i].newly_added == 0){
+				let findIndex = this.edited_contract_parts.findIndex(part => part.part_id === this.user_contract_parts[i].id);
+				if( findIndex >= 0){
+					this.edited_contract_parts[findIndex] = {
+						part_id:this.user_contract_parts[i].id,
+						body:this.user_contract_parts[i].body,
+						title:this.user_contract_parts[i].title,
+						new_body:this.selectedPart.body,
+						new_title:this.selectedPart.title,
+						contract_id:this.id,
+						type:'edited'
+					};
+				} else {
+					this.edited_contract_parts.push({
+						part_id:this.user_contract_parts[i].id,
+						body:this.user_contract_parts[i].body,
+						title:this.user_contract_parts[i].title,
+						new_body:this.selectedPart.body,
+						new_title:this.selectedPart.title,
+						contract_id:this.id,
+						type:'edited'
+					});
+				}
+				
+				//this.user_contract_parts[index].is_edited = 1;
+				this.user_contract_parts[i].tmp_edited = 1;
+				console.log(this.edited_contract_parts);
+			}
+			
+			this.user_contract_parts[i].title = this.selectedPart.title;
+			this.user_contract_parts[i].body = this.selectedPart.body;
+			
+			this.modificationCounter = this.modificationCounter + 1;
+			this.showProperButton();
+		
+		}
+		this.editFormVisible = false;		
+		console.log(this.selectedPart);
+	}
+	
+	onExpire(data){
+		this.captchaSolved = false;
+	}
+	showResponse(data){
+		this.captchaSolved = true;
 	}
 }

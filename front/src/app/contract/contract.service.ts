@@ -49,6 +49,15 @@ export class ContractService {
 		}
 	}
 	
+	loadAllContracts() {
+		const token = this.auth.getToken();
+		return this.http.get<any>(this.apiUrl + '/contract', {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	}
+	
 	loadContracts(id:number, role:string) {
 		const token = this.auth.getToken();
 		return this.http.get<any>(this.apiUrl + '/contract/user/'+id+'/'+role, {
@@ -76,6 +85,15 @@ export class ContractService {
 		}).map(res => {
 		  return new Contract(res);
 		});
+	}
+
+	getContractLog(id: number) {
+		const token = this.auth.getToken();
+		return this.http.get<any>(this.apiUrl + '/contract/log/' + id, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
 	} 
 	
 	
@@ -90,13 +108,31 @@ export class ContractService {
 		});
 	} 
 		
-	updateContractStatus(id: number, status:number) {
+	updateContractStatus(id: number, status:number, signature="") {
 		const token = this.auth.getToken();
-		return this.http.post<ContractChangeResponse>(this.apiUrl + '/contract/update-status/' + id, { status:status }, {
+		return this.http.post<ContractChangeResponse>(this.apiUrl + '/contract/update-status/' + id, { status:status,signature:signature }, {
 			headers: {
 				Authorization: 'Bearer ' + token
 			}
 		});
 	} 
+	
+	openContract(id:number){
+		const token = this.auth.getToken();
+		return this.http.post<ContractChangeResponse>(this.apiUrl + '/contract/open/' + id, null, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	} 
+	
+	updateNotifications(id:number, role = 'user', ref_id:number, page='review') {
+		const token = this.auth.getToken();
+		return this.http.post<any>(this.apiUrl + '/notification/view/user/'+id,{ role:role, ref_id:ref_id, page: page}, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	}
   
 }

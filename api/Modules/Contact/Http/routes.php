@@ -4,6 +4,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 {
 	Route::resource('contact', 'ContactController');//->middleware('auth:api');
 	Route::get('contact-list/{id}', 'ContactController@contactList');
+	//Route::get('contact/suggestion/{id}/{query}', 'ContactController@suggestionList');
+	Route::get('contact/suggestion/{id}/{query}', 'ContactController@suggestionList');
+	Route::get('contact/search/{id}/{query}', 'ContactController@searchContactList');
 	Route::get('contact/user/{id}', 'ContactController@userContacts');
 	Route::post('contact/disable-contact/{contact}', 'ContactController@disableContact');
     Route::post('contact/enable-contact/{contact}', 'ContactController@enableContact');

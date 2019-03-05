@@ -110,4 +110,9 @@ class ContractTypesController extends Controller
             'Contract Type' => $contractType
         ]);
     }
+	
+	public function getTypesArray(Request $request)
+    {
+       return new Response(ContractType::select('name as value', 'name as label')->get());
+    }
 }

@@ -13,9 +13,9 @@ export class PartService {
   constructor(private http: HttpClient, private auth: AuthService, config: ConfigServiceService) {
     this.apiUrl = config.getApiUrl();
   }
-  getIndustryParts(id:number,userId:number) {
+  getIndustryParts(id:number,userId:number, role:string = 'vendor') {
 	const token = this.auth.getToken();
-    return this.http.get<any[]>(this.apiUrl + '/part/industry/'+id+'/'+userId, {
+    return this.http.get<any[]>(this.apiUrl + '/part/industry/'+id+'/'+userId+'/'+role, {
       headers: {
         Authorization: 'Bearer ' + token
       }

@@ -20,7 +20,9 @@ class ContractPart extends Model
 	];
 	
 	public function getLogData() {
-        return $this->hasOne(ContractLog::class,'part_id');
+        $instance = $this->hasMany(ContractLog::class,'part_id');
+		$instance->orderBy('id','desc')->take(1);
+		return $instance;
     }
 	
 }

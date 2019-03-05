@@ -1,5 +1,8 @@
 export class Contract {
 	id: number;
+	type: string;
+	name: string;
+	description: string;
 	industry_id: number;
 	category_id: number;
 	sender_id: number;
@@ -21,6 +24,9 @@ export class Contract {
 	constructor(data: any) {
 		// Set normal fields
 		this.id = data.id;
+		this.type = data.type;
+		this.name = data.name;
+		this.description = data.description;
 		this.industry_id = data.industry_id;
 		this.category_id = data.category_id;
 		this.sender_id = data.sender_id;

@@ -25,14 +25,39 @@
 		
 			<div class="tab-pane fade show active" id="tab01">
 				<form id="contractform" [formGroup]="contractform" (ngSubmit)="saveContract()" >
+					<input type="hidden" name="industry_id" [(ngModel)]="contract.industry_id" formControlName="industry_id">
+					<input type="hidden" name="email" [(ngModel)]="contract.email" formControlName="email">
+					
 					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contract Type: *</span>
+
+						<div class="col-md-9">
+						
+							<p-dropdown [options]="contract_types" [(ngModel)]="contract.type" formControlName="type" ></p-dropdown>
+						</div>
+					</div>
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contract Name: *</span>
+
+						<div class="col-md-9">
+							<input type="text" pInputText class="form-control" name="name" id="name"  [(ngModel)]="contract.name" formControlName="name" />
+						</div>
+					</div>
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Description: *</span>
+
+						<div class="col-md-9">
+							<textarea rows="3" cols="30" class="form-control" pInputTextarea [(ngModel)]="contract.description" formControlName="description"></textarea>
+						</div>
+					</div>
+					<!-- <div class="form-group row">
 						<span class="label-text col-md-3 col-form-label">Select Industry: *</span>
 
 						<div class="col-md-9">
 						
-							<p-dropdown [options]="industries" (onChange)="getIndustryParts($event)" [(ngModel)]="contract.industry_id" formControlName="industry_id"></p-dropdown>
+							<p-dropdown [options]="industries" (onChange)="getIndustryParts($event)" [(ngModel)]="contract.industry_id" formControlName="industry_id" ></p-dropdown>
 						</div>
-					</div>	
+					</div>	 -->
 					
 					<div class="form-group row">
 						<span class="label-text col-md-3 col-form-label">Select Category: *</span>
@@ -46,8 +71,15 @@
 						<span class="label-text col-md-3 col-form-label">Select Contact: </span>
 						
 						<div class="col-md-9">
-							<p-dropdown [options]="contacts" [(ngModel)]="contract.email" formControlName="email"></p-dropdown>
-							<a href="javascript:void(0);" (click)="showAddContactDialog()"><i class="fa fa-user"></i> Add Contact</a>
+							<!-- <p-dropdown [options]="contacts" [(ngModel)]="contract.email" formControlName="email" filter="true"></p-dropdown> -->
+							
+							<p-autoComplete [(ngModel)]="selectedContact" formControlName="contact" [suggestions]="suggestions" [style]="{width: '100%'}" (completeMethod)="searchContact($event)" (onSelect)="onSelectContact($event)" placeholder="Type Company or Contact Name" [minLength]="1">
+								<ng-template let-brand pTemplate="item">
+									{{brand.label}}
+								</ng-template>
+							</p-autoComplete>
+							
+							<a [routerLink]="'/contact/create'" target="_blank"><i class="fa fa-user"></i> Add Contact</a>
 						</div>
 					</div>	
 					
@@ -100,6 +132,11 @@
 					</div>
 					
 					<div class="row mt-3">
+						<div class="col-md-9 offset-md-3">		
+						<p-captcha siteKey="6Lff_5IUAAAAACQbrHCVfQHieWHXcXGIxF1ZFAH3" (onResponse)="showResponse($event)" (onExpire)="onExpire($event)"></p-captcha>
+						</div>
+					</div>
+					<div class="row mt-3">
 						<div class="col-md-9 offset-md-3">
 							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!contractform.valid">Save</button>
 							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
@@ -127,32 +164,17 @@
 				<textarea name="body" class="form-control" [(ngModel)]="selectedPart.body"></textarea>
 			</div>
 		</div>
+		<p-footer>
+			<div class="form-group row">
+				<div class="col-md-10 offset-md-2">
+					<button type="button" pButton icon="pi pi-check" (click)="saveTermChanges();" label="Save Changes"></button>
+					<button type="button" pButton icon="pi pi-close" (click)="editFormVisible=false" label="Close" class="ui-button-secondary"></button>
+				</div>
+			</div>
+        </p-footer>
 	</div>
 	</form>
 </p-dialog>
 
 <p-confirmDialog closeOnEscape="true" closable>
 </p-confirmDialog>
-
-<p-dialog header="New Contact" [(visible)]="addContactVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
-	<form (submit)="saveContact()">
- 	<div class="panel" style="width:400px;">	
-	    <p-messages [(value)]="msgs"></p-messages>
-		<div class="row">
-		  <div class="col-md-4">
-			<h5>Email</h5>
-		  </div>
-		  <div class="col-md-8">
-			<input id="newContactEmail" name="newContactEmail" type="email" [(ngModel)]="newContactEmail" />
-		  </div>
-		</div>	
-		<div class="row">
-		  <div class="col-md-4 text-right">
-		  </div>
-		  <div class="col-md-8">
-			<p-button type="submit" label="Save"></p-button>
-		  </div>
-		</div>
-	</div>
-	</form>
-</p-dialog>

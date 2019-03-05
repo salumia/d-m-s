@@ -76,4 +76,13 @@ export class ContractTypeService {
     });
   } 
   
+  getContractTypesList() {
+	const token = this.auth.getToken();
+	return this.http.get<any>(this.apiUrl + '/contract-type-list',{
+	  headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  } 
+  
 }

@@ -14,6 +14,14 @@ export class CategoryService {
     this.apiUrl = config.getApiUrl();
   }
   
+  getIndustryCategoryList(user:number) {
+	  const token = this.auth.getToken();
+	return this.http.get<any>(this.apiUrl + '/category-list/'+user,{
+	  headers: {
+        Authorization: 'Bearer ' + token
+      }
+    });
+  }
   getCategoryList() {
 	const token = this.auth.getToken();
 	return this.http.get<any>(this.apiUrl + '/category-list',{

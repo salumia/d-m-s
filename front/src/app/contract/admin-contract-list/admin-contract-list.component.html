@@ -1,0 +1,91 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="container">
+  <div class="row">	
+	<div class="col-lg-6"> 
+		<!-- Page Title Start -->
+		<h2 class="page--title h5"><i class="fa fa-user"></i> Contracts</h2>
+		<!-- Page Title End -->
+	</div>   
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner"> 
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+	<div class="table-responsive">	
+    <p-table #contractListing [columns]="cols" [value]="contracts" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" paginatorPosition="both" *ngIf="contracts?.length > 0">
+		<ng-template pTemplate="header" let-columns>						
+			<tr class="custom-white">
+				<th colspan="5">				
+					<input type="text" class="global-search" pInputText placeholder="Search" (input)="contractListing.filterGlobal($event.target.value, 'contains')" style="width:50%; margin-right:2%; ">
+					
+					<p-dropdown [style]="{'width':'20%','margin-right':'2%'}" [options]="statuses" (onChange)="contractListing.filter($event.value, 'status', 'equals')"></p-dropdown>
+				</th>
+				
+				<th colspan="2" class="recordsPerPageTitle">
+					Records to Display:	
+				</th>
+			</tr>
+			
+			<tr>       
+				<ng-container *ngFor="let col of columns">
+					<th width="200" [pSortableColumn]="col.field" *ngIf="col.header != ''" >
+						{{col.header}}
+						<p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+					</th>
+				</ng-container>
+				<th width="200">Actions</th>
+			</tr>
+        </ng-template>
+		
+		
+      <ng-template pTemplate="body" let-contract let-rowIndex="rowIndex">
+        <tr>
+          <td><a [routerLink]="'/contract/preview/' + + contract.id">{{ contract.id }}</a></td>
+          <td>{{ contract.name }}</td>
+          <td><a [routerLink]="'/vendor/view/' + + contract.get_sender_data.id">{{ contract.get_sender_data.username }}</a></td>
+          <td *ngIf="contract.receiver_id == null">{{ contract.email }}</td>
+          <td *ngIf="contract.receiver_id != null">
+		  
+			  <a *ngIf="contract.get_receiver_data.role == 'vendor'" [routerLink]="'/vendor/view/' + + contract.get_receiver_data.id">{{ contract.get_receiver_data.username }}</a>
+			  <a *ngIf="contract.get_receiver_data.role == 'user'" [routerLink]="'/users/view/' + + contract.get_receiver_data.id">{{ contract.get_receiver_data.username }}</a>
+		  
+		  </td>
+          <td> 
+		    <span *ngIf="contract.status == 0">
+              Draft
+            </span> 
+			<span *ngIf="contract.status == 1">
+              Under Review by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong>
+			 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data != null">{{contract.get_receiver_data.username}}</strong> 
+			 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
+            </span>
+			<span *ngIf="contract.status == 2">
+              Finalized
+            </span>
+			
+			<span *ngIf="contract.status == 3">
+              Rejected ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> )
+            </span>
+		  </td>
+		  <td>{{ contract.updated_at | date:longDate }} by 
+			<strong *ngIf="contract.status == 0">{{contract.get_sender_data.username}}</strong>
+			<strong *ngIf="contract.sender_flag == 1&&contract.status > 0">{{contract.get_sender_data.username}}</strong>			
+			<strong *ngIf="contract.receiver_flag == 1&&contract.status > 0">{{contract.get_receiver_data.username}}</strong>
+		  </td>
+          <td>		
+			
+			<!-- Preview can be seen in all scenario -->
+            <a title="Preview" class='btn bg-primary listing-actions' [routerLink]="'/contract/preview/' + contract.id" ><i class="fa fa-search"></i></a>	
+			
+			<a title="Open Contract" *ngIf="contract.status == 2||contract.status == 3"  class='btn bg-danger listing-actions' (click)="openContract(contract.id)" ><i class="fa fa-pencil-square-o"></i></a>
+			
+			<!-- IF Contract is in Draft state, then it can be edited/deleted-->
+			<!--<a title="Edit" *ngIf="contract.status == 0"  class='btn bg-primary listing-actions' [routerLink]="'/contract/edit/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>
+            <a title="Delete"  *ngIf="contract.status == 0" class='btn bg-danger listing-actions' (click)="deleteContract(rowIndex)" ><i class="fa fa-trash"></i></a> -->
+			
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+	</div>
+  </div>
+</div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

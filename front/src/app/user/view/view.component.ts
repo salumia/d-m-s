@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { User } from '../user';
 import { AuthService } from '../../auth/auth.service';
-import {Location} from '@angular/common';
+import { Location} from '@angular/common';
 
 @Component({
   selector: 'app-view',

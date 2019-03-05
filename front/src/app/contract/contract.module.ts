@@ -59,6 +59,13 @@ import { ContractListComponent } from './contract-list/contract-list.component';
 import { ContractReviewComponent } from './contract-review/contract-review.component';
 
 import {CardModule} from 'primeng/card';
+import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
+
+import {CaptchaModule} from 'primeng/captcha';
+import { AdminContractListComponent } from './admin-contract-list/admin-contract-list.component';
+
+import {AccordionModule} from 'primeng/accordion';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 @NgModule({
   imports: [
@@ -89,10 +96,13 @@ import {CardModule} from 'primeng/card';
 	BrowserAnimationsModule,
 	FieldsetModule,
 	ListboxModule,
-	CardModule
+	CardModule,
+	CaptchaModule,
+	AccordionModule,
+	AutoCompleteModule
   ],
   providers: [AuthService, UserService, CategoryService, IndustryService, ContractTypeService, PartService, SetService, ConfirmationService, ContractService],
-  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent]
+  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent]
 })
 export class ContractModule {
   constructor(auth: AuthService, router: Router) {

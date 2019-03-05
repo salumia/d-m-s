@@ -8,12 +8,14 @@ use Illuminate\Routing\Controller;
 
 use Modules\Contract\Entities\Part;
 use Modules\Set\Entities\SetPart;
+use App\VendorUser as VendorUser;
 
 class PartsController extends Controller
 {
 	
 	private $industry;
 	private $user;
+	private $role;
 	private $set;
     /**
      * Display a listing of the resource.
@@ -34,14 +36,19 @@ class PartsController extends Controller
 		return new Response($userParts);
     }
 	
-	public function industryParts($industry, $user)
+	public function industryParts($industry, $user, $role = 'vendor')
     {
 		$this->user = $user;
-		$this->industry = $industry;
+		$userData = VendorUser::find($this->user);
+		$this->industry = $userData->industry_id;
+		$this->role = $role;
+		
 		$industryParts = Part::where(function($q) {
 										$q->where('industry_id', 1)
 										  ->where('user_id', $this->user)
-										  ->orWhere('industry_id', $this->industry);
+										  ->where('role', $this->role);
+									})->orWhere(function($q) {
+										$q->where(['industry_id'=>$this->industry,'user_id'=>$this->user,'role'=>$this->role]);
 									})->get();	
 		$data = [];
 		foreach($industryParts as $item) {
@@ -65,31 +72,43 @@ class PartsController extends Controller
 	
 	public function availableParts($user,$set=0)
     {
-		$this->user = $user;
-		$this->set = $set;
 		$availableParts = [];
-		if($set > 0 ){
-			$availableParts  = Part::whereNotIn('id' ,function($query){
-													$query->select('part_id')
-													->from(with(new SetPart)->getTable())
-													->where('set_id', $this->set);
-												})
-											->where(function($q) {
-												$q->where(['type'=>1, 'status'=>1])
-												   ->orWhere('user_id', $this->user);
-											 })
-											->get();
+		$userData = VendorUser::select('industry_id')->where('id',$user)->first();
+		if($userData->industry_id > 0){
+			$this->user = $user;
+			$this->set = $set;			
+			$this->industry = $userData->industry_id;			
+			if($set > 0 ){
+				$availableParts  = Part::where(function($q1) {
+											$q1->where('industry_id',1) //All Industry
+												->orWhere('industry_id',$this->industry); //industry Specific
+										})
+										->whereNotIn('id' ,function($query){
+												$query->select('part_id')
+												->from(with(new SetPart)->getTable())
+												->where('set_id', $this->set);
+											})												
+										->where(function($q) {
+											$q->where(['type'=>1, 'status'=>1])
+											   ->orWhere('user_id', $this->user);
+										 })
+										->get();
+				
+			} else {
+				$availableParts  = Part::where(function($q1) {
+										$q1->where('industry_id',1) //All Industry
+											->orWhere('industry_id',$this->industry); //industry Specific
+									})
+									->where(function($q) {
+										$q->where(['type'=>1, 'status'=>1]) //Global
+										->orWhere('user_id',$this->user); //User Specific
+									})
+									->get();
+			}
 			
-		} else {
-			$availableParts  = Part::where(function($q) {
-								 $q->where(['type'=>1, 'status'=>1]) //Global
-								   ->orWhere('user_id',$this->user); //User Specific
-							 })
-							->get();
-		}
-		
-		foreach($availableParts as $item) {
-			$item->getIndustryData;
+			foreach($availableParts as $item) {
+				$item->getIndustryData;
+			}
 		}
 		return new Response($availableParts);
     }

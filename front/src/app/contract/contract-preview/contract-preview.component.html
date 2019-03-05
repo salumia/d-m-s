@@ -1,0 +1,175 @@
+<p-growl [(value)]="msgs" key="top-corner"></p-growl>
+<div class="row">	
+	
+	<div class="col-lg-12"> 
+		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
+	</div>
+	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
+		<p-progressSpinner ></p-progressSpinner>		
+	</div>
+</div>
+<div class="panel" *ngIf="!loadSpinner">
+	<div class="records--body">
+		<div class="title">
+			<div class="col-lg-6"> 
+				<!-- Page Title Start -->
+				<h2 class="page--title h5"><i class="fa fa-industry"></i> Contract</h2>
+				<!-- Page Title End -->
+			</div>
+			<div class="col-lg-6 text-right">
+				<!-- <a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-envelope"></i> Email</a> -->
+				<a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-print"></i> Print</a>
+			</div>  
+		</div>
+		<p-tabView>
+			<p-tabPanel header="Contract" [selected]="true">	
+			<div class="tab-pane fade show active" id="tab01">
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Category: </span>
+
+						<div class="col-md-9">
+						{{contract.get_category_data.name}}
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contract Name: </span>
+
+						<div class="col-md-9">
+						{{contract.name}}
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Contract Description: </span>
+
+						<div class="col-md-9">
+						{{contract.description}}
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Owner: </span>
+
+						<div class="col-md-9">
+						<a [routerLink]="'/vendor/view/' + contract.get_sender_data.id" >{{contract.get_sender_data.username}}</a> ( {{contract.get_sender_data.email}} )
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-3 col-form-label">Owner Address: </span>
+
+						<div class="col-md-9">{{contract.get_sender_data.shop_name}} ,{{contract.get_sender_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row" *ngIf="contract.status>0">
+						<span class="label-text col-md-3 col-form-label">Recipient: </span>
+
+						<div class="col-md-9">
+						<a *ngIf="contract.get_receiver_data.role=='vendor'" [routerLink]="'/vendor/view/' + contract.get_sender_data.id" >{{contract.get_receiver_data.username}}</a>
+						<a *ngIf="contract.get_receiver_data.role=='user'" [routerLink]="'/users/view/' + contract.get_sender_data.id" >{{contract.get_receiver_data.username}}</a> ( {{contract.get_receiver_data.email}} )
+						</div>
+					</div>
+					
+					<div class="form-group row" *ngIf="contract.status>0">
+						<span class="label-text col-md-3 col-form-label">Recipient: </span>
+
+						<div class="col-md-9">
+						{{contract.get_receiver_data.address}}
+						</div>
+					</div>
+					
+					<div class="form-group row" >
+						<span class="label-text col-md-3 col-form-label">Status: </span>
+
+						<div class="col-md-9">
+							<span *ngIf="contract.status == 0">
+							  Draft
+							</span> 
+							<span *ngIf="contract.status == 1">
+							  Under Review by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong>
+							 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data != null">{{contract.get_receiver_data.username}}</strong> 
+							 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
+							</span>
+							<span *ngIf="contract.status == 2">
+							  Finalized
+							</span>
+							
+							<span *ngIf="contract.status == 3">
+							  Rejected ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> )
+							</span>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-12 col-form-label">Terms and Conditions *</span>
+					</div>
+					
+					
+					<div class="form-group row">
+						<div class="col-md-12 terms-constructor-box">		
+
+						<p-fieldset *ngFor="let part of user_contract_parts; let i = index">
+							<p-header>
+								<div class="row">
+									<div class="col-md-12">
+										<strong>{{i + 1}}. </strong> {{part.title}} 
+									</div>
+								</div>
+							</p-header>
+							<div class="row">
+								<div class="col-md-12">	
+									{{part.body}} 	
+								</div>							
+							</div>							
+						</p-fieldset>
+						
+						</div>
+					</div>
+			</div>	
+			</p-tabPanel>
+			<p-tabPanel header="Log" *ngIf="contract.status > 0">
+				<div class="app_wrapper row">
+					<!-- App Content Start -->
+					<div class="app_content col-lg-12">
+						<div class="todoApp_contentBody">
+							<ul class="list-unstyled" data-todoapp="items">  
+								<li data-todoapp="item">
+									<label class="todo--label px-0">
+										<strong>Sender</strong> has <strong>sent</strong> contract
+									</label>
+									
+									<div class="todo--extras d-inline-flex">
+										<span class="todo--date">{{contractLog.created_at | date:'hh:mm:ss dd MMM, y'}}</span>
+									</div>
+								</li>
+								<ng-container *ngFor="let log of contractLog.get_contract_log">	
+								<li data-todoapp="item">
+									<label class="todo--label px-0" *ngIf="log.action == 'review'">
+										<strong>{{log.user | titlecase }}</strong> made {{log.changes.length}} change{{(log.changes.length>1)?'s':''}} and sent back for <strong>review</strong>
+									</label>
+									
+									<label class="todo--label px-0" *ngIf="log.action == 'open'">
+										<strong>{{log.user | titlecase }}</strong> has changed contract back to open state
+									</label>
+									
+									
+									<label class="todo--label px-0" *ngIf="log.action == 'accept'||log.action == 'reject'">
+										<strong>{{log.user | titlecase }}</strong> has <strong>{{log.action}}ed</strong> contract
+									</label>
+									
+									<div class="todo--extras d-inline-flex">
+										<span class="todo--date">{{log.created_at}}</span>
+									</div>
+								</li>
+								</ng-container>
+							</ul>
+						</div>
+					</div>
+					<!-- App Content End -->
+				</div>
+			</p-tabPanel>
+		</p-tabView>
+	</div>
+</div>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MenubarComponent } from './menubar.component';
+import { ContactEditComponent } from './contact-edit.component';
 
-describe('MenubarComponent', () => {
-  let component: MenubarComponent;
-  let fixture: ComponentFixture<MenubarComponent>;
+describe('ContactEditComponent', () => {
+  let component: ContactEditComponent;
+  let fixture: ComponentFixture<ContactEditComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MenubarComponent ]
+      declarations: [ ContactEditComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MenubarComponent);
+    fixture = TestBed.createComponent(ContactEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

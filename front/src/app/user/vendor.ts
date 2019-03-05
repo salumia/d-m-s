@@ -1,4 +1,3 @@
-/* import { Leave } from './leave'; */
 export class Vendor {
   id: number;
   name: string;
@@ -11,7 +10,8 @@ export class Vendor {
   city: string;
   zip: string;
   password: string;
-  /* leaves: Leave[]; */
+  industry_id: number;
+  username: string;
 
   api_token_expires: Date;
   created_at: Date;
@@ -31,7 +31,8 @@ export class Vendor {
     this.address = data.address;
     this.city = data.city;
     this.zip = data.zip;
-/* 	this.leaves  = data.get_leaves; */
+    this.industry_id = data.industry_id;
+    this.username = data.username;
 
     // Parse date fields
     this.api_token_expires = new Date(Date.parse(data.api_token_expires));

@@ -22,17 +22,17 @@ import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-	  ReactiveFormsModule,
-    AuthRoutingModule,
-    PanelModule,
-    ButtonModule,
-    InputTextModule,
-    MessagesModule,
-    MessageModule,
-	 InputMaskModule,
-	 Ng4GeoautocompleteModule
+	CommonModule,
+	FormsModule,
+	ReactiveFormsModule,
+	AuthRoutingModule,
+	PanelModule,
+	ButtonModule,
+	InputTextModule,
+	MessagesModule,
+	MessageModule,
+	InputMaskModule,
+	Ng4GeoautocompleteModule
   ],
   declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent]
 })

@@ -11,7 +11,6 @@ import { VendorListComponent } from './vendor-list/vendor-list.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { VendorEditComponent } from './vendor-edit/vendor-edit.component';
 import { TemplateModule } from "../template/template.module";
-import { MenubarComponent } from './menubar/menubar.component';
 import { MenubarModule } from 'primeng/menubar';
 import { TableModule } from "primeng/table";
 import { ButtonModule } from "primeng/button";
@@ -19,22 +18,22 @@ import { DialogModule } from "primeng/dialog";
 import { DropdownModule, InputTextModule, PasswordModule } from 'primeng/primeng';
 import { MessagesModule } from 'primeng/messages';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import {SplitButtonModule} from 'primeng/splitbutton';
+import { SplitButtonModule} from 'primeng/splitbutton';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
-import {InputMaskModule} from 'primeng/inputmask';
-import {CalendarModule} from 'primeng/calendar';
-import {InputTextareaModule} from 'primeng/inputtextarea';
-import {FileUploadModule} from 'primeng/fileupload';
+import { InputMaskModule} from 'primeng/inputmask';
+import { CalendarModule} from 'primeng/calendar';
+import { InputTextareaModule} from 'primeng/inputtextarea';
+import { FileUploadModule} from 'primeng/fileupload';
 import { GrowlModule } from 'primeng/growl';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ViewComponent } from './view/view.component';
 import { VendorViewComponent } from './vendor-view/vendor-view.component';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
-import {TabViewModule} from 'primeng/tabview';
+import { ProgressSpinnerModule} from 'primeng/progressspinner';
+import { TabViewModule} from 'primeng/tabview';
 import { AdminViewComponent } from './admin-view/admin-view.component';
 import { AdminEditComponent } from './admin-edit/admin-edit.component';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import { ConfirmDialogModule} from 'primeng/confirmdialog';
 
 import {ConfirmationService} from 'primeng/api';
 
@@ -65,9 +64,7 @@ import {ConfirmationService} from 'primeng/api';
 	ConfirmDialogModule
   ],
   providers: [AuthService, UserService, ConfirmationService],
-  declarations: [UserListComponent, VendorListComponent 
-      , UserEditComponent, VendorEditComponent,VendorViewComponent,
-      MenubarComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent, AdminViewComponent, AdminEditComponent]
+  declarations: [UserListComponent, VendorListComponent, UserEditComponent, VendorEditComponent,VendorViewComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent, AdminViewComponent, AdminEditComponent]
 })
 export class UserModule {
   constructor(auth: AuthService, router: Router) {

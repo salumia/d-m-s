@@ -21,7 +21,9 @@ import { SetEditComponent } from './set-edit/set-edit.component';
 
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { ContractReviewComponent } from './contract-review/contract-review.component';
+import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 import { ContractListComponent } from './contract-list/contract-list.component';
+import { AdminContractListComponent } from './admin-contract-list/admin-contract-list.component';
 
 const routes: Routes = [
 
@@ -52,7 +54,9 @@ const routes: Routes = [
   {path: 'contract/create', component: CreateContractComponent},
   {path: 'contract/edit/:id', component: CreateContractComponent},
   {path: 'contract/review/:id', component: ContractReviewComponent},
+  {path: 'contract/preview/:id', component: ContractPreviewComponent},
   {path: 'contracts', component: ContractListComponent},
+  {path: 'contract-list', component: AdminContractListComponent},
 ];
 
 @NgModule({

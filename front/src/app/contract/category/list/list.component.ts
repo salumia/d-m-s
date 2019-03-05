@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../auth/auth.service';
 import { CategoryService } from '../../category.service';
+import { IndustryService } from '../../industry.service';
 import { User } from '../../../user/user';
 import { Category } from '../../category';
 import { Message, SelectItem, ConfirmationService } from 'primeng/api';
@@ -19,12 +20,13 @@ export class ListComponent implements OnInit {
 	cols: any[];
 	loadSpinner = true;
 	statuses: SelectItem[];
+	industries: SelectItem[];
 
-	constructor(private authService: AuthService, private categoryService: CategoryService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+	constructor(private authService: AuthService, private categoryService: CategoryService, private messageService: MessageService, private confirmationService: ConfirmationService, private industryService: IndustryService) {}
 
 	ngOnInit() {
 		this.cols = [
-			/* { field: 'id', header: 'Id' }, */
+			{ field: 'get_industry_data.name', header: 'Industry' },
 			{ field: 'name', header: 'Name' },
 			{ field: 'status', header: 'Status' }
 		];
@@ -34,6 +36,11 @@ export class ListComponent implements OnInit {
             { label: 'Enabled', value: '1' },
             { label: 'Disabled', value: 'disabled' }
         ];
+		
+		this.industryService.getIndustryList().subscribe(res => {
+		  this.industries = res;
+		  this.industries.unshift({ label: 'Select Industry', value: null });
+		});
 		
 		this.loadCategories();
 		this.loggedInUser = this.authService.getAuth();

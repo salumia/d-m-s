@@ -6,7 +6,7 @@ import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../auth/auth.service';
 import { MessageService } from 'primeng/components/common/messageservice';
-import {Location} from '@angular/common';
+import { Location} from '@angular/common';
 
 @Component({
   selector: 'app-admin-edit',
@@ -17,16 +17,9 @@ export class AdminEditComponent implements OnInit {
 	@ViewChild('documentsChild') documentsChild;
 	id: number;
 	user: Admin = {} as Admin;
-	roles: SelectItem[];
-	departments: SelectItem[];
-	designations: SelectItem[];
 	msgs: Message[] = [];
-	Userform: FormGroup;
-	loadComponents: boolean = false;
+	Userform: FormGroup;	
 	loggedInUser: any;
-	enableDepartment:boolean = false;
-	enableDesignation:boolean = false;
-	disableFieldsFlag:boolean = true;
 	loadSpinner: boolean = false;
 
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
@@ -42,11 +35,6 @@ export class AdminEditComponent implements OnInit {
 	
 	this.loggedInUser = this.auth.getAuth();
 	
-	if((this.loggedInUser.id != this.id && this.loggedInUser.department == 1) || this.loggedInUser.role == 'admin'){
-		this.disableFieldsFlag = false;  
-	}
-
-	
 	this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
@@ -56,25 +44,19 @@ export class AdminEditComponent implements OnInit {
 		
 	  if(this.id > 0 ){
 		this.loadUser();
-		if(!this.disableFieldsFlag){
-			this.enableDepartment = true;
-			this.enableDesignation = true;
-		}
 	  }else{
-      this.Userform.controls['password'].setValidators(Validators.required);
-      this.disableFieldsFlag = false;
-      this.enableDepartment = true;
+		  this.Userform.controls['password'].setValidators(Validators.required);
 	  }
   }
   
   loadUser() {
       this.userService.getAdmin(this.id).subscribe(res => {
       this.user = res;
-      this.loadComponents = true;
       this.loadSpinner = false;
     });
 
   }
+  
   isEmailUnique(control: FormControl) {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -97,6 +79,7 @@ export class AdminEditComponent implements OnInit {
 	
 	
   saveUser() {
+	this.loadSpinner = true;
     this.userService.saveAdmin(this.id, this.user).subscribe(res => {
 		this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
 		setTimeout(() => {

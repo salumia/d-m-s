@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Carbon\Carbon;
 
 use Modules\Contract\Entities\Category;
+use App\VendorUser as VendorUser;
 
 class CategoriesController extends Controller
 {
@@ -16,7 +17,11 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-		return new Response(Category::all());
+		$categories = Category::all();
+		foreach($categories as $item) {
+			$item->getIndustryData;
+		}
+		return new Response($categories);
     }
 
     /**
@@ -112,5 +117,12 @@ class CategoriesController extends Controller
 	public function getCategoryArray(Request $request)
     {
        return new Response(Category::select('id as value', 'name as label')->get());
+    }
+	
+	public function getIndustryCategoryArray($user, Request $request)
+    {
+		$userData = VendorUser::find($user);
+		$industry = $userData->industry_id;
+       return new Response(Category::select('id as value', 'name as label')->where('industry_id', $industry)->get());
     }
 }

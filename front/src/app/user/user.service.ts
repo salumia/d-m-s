@@ -26,6 +26,7 @@ export class UserService {
       }
     });
   }
+  
   getUsers() {
     const token = this.auth.getToken();
     return this.http.get<User[]>(this.apiUrl + '/users', {
@@ -34,6 +35,7 @@ export class UserService {
       }
     });
   }
+  
   getAdmin(id: number) {
     const token = this.auth.getToken();
     return this.http.get<Admin>(this.apiUrl + '/admin/' + id, {
@@ -43,7 +45,8 @@ export class UserService {
     }).map(res => {
       return new Admin(res);
     });
-  }  
+  } 
+  
   getVendor(id: number) {
     const token = this.auth.getToken();
     return this.http.get<Vendor>(this.apiUrl + '/vendors/' + id, {
@@ -54,6 +57,7 @@ export class UserService {
       return new Vendor(res);
     });
   }  
+  
   getUser(id: number) {
     const token = this.auth.getToken();
     return this.http.get<User>(this.apiUrl + '/users/' + id, {
@@ -98,6 +102,7 @@ export class UserService {
 		});
 	  }
   }
+  
   saveUser(id: number, data: User) {
     const token = this.auth.getToken();
 	if(id > 0 ){
@@ -154,12 +159,15 @@ export class UserService {
     });
   } 
   
-  isEmailRegisterd(email: string, id: number = 0, role:string = 'user') {
+	isUsernameRegisterd(username: string, id: number = 0, role:string = 'user') {
+        const token = this.auth.getToken();
+        return this.http.post<any>(this.apiUrl + '/users/checkUsername', { username: username, id: id, role: role}, {
+            });
+    } 
+	
+	isEmailRegisterd(email: string, id: number = 0, role:string = 'user') {
         const token = this.auth.getToken();
         return this.http.post<any>(this.apiUrl + '/users/checkEmail', { email: email, id: id, role: role}, {
-              /*   headers: {
-                    Authorization: 'Bearer ' + token
-                } */
             });
     }  
 	
@@ -198,5 +206,14 @@ export class UserService {
 		  }
 		});
 	}
+	
+	userNotifications(id:number, role = 'user') {
+		const token = this.auth.getToken();
+		return this.http.get<any>(this.apiUrl + '/notification/user/'+id+'/'+role, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	  }
 
 }
