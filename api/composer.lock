@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "408d2fde3b2657756a81c27941bc4090",
+    "content-hash": "f4170525278135601e33a12467fc4c40",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -118,6 +118,45 @@
                 "laravel"
             ],
             "time": "2018-01-04T06:59:27+00:00"
+        },
+        {
+            "name": "beanstream/beanstream",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Beanstream/beanstream-php.git",
+                "reference": "88350c06dbf39485fb7f666e23f0ee37ff73846c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Beanstream/beanstream-php/zipball/88350c06dbf39485fb7f666e23f0ee37ff73846c",
+                "reference": "88350c06dbf39485fb7f666e23f0ee37ff73846c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Beanstream": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pavel Kulbakin",
+                    "email": "p.kulbakin@gmail.com"
+                },
+                {
+                    "name": "Kevin Saliba"
+                }
+            ],
+            "description": "Beanstream PHP API",
+            "time": "2016-03-23T17:32:12+00:00"
         },
         {
             "name": "bnbwebexpertise/laravel-google-cloud-print",
@@ -931,12 +970,12 @@
             "version": "v2.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "shasum": ""
             },
@@ -990,12 +1029,12 @@
             "version": "v0.57",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client-services.git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
                 "reference": "fc1821419f0e9d060d83a2864e2a40874b91430d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client-services/zipball/fc1821419f0e9d060d83a2864e2a40874b91430d",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/fc1821419f0e9d060d83a2864e2a40874b91430d",
                 "reference": "fc1821419f0e9d060d83a2864e2a40874b91430d",
                 "shasum": ""
             },
@@ -1027,12 +1066,12 @@
             "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "shasum": ""
             },

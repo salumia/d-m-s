@@ -394,7 +394,7 @@ class ContractController extends Controller
             'message' => 'Contract Updated Successfully',
         ]);
     }
-
+	
 	public function getContractLog($contract, Request $request){
 		$contract = Contract::find($contract);
 		$contract->getContractLog;
@@ -421,5 +421,96 @@ class ContractController extends Controller
             'message' => 'Contract logs',
             'contract' => $contract
         ]);
+	}
+	
+	public function contractPayment($contract, Request $request){
+		
+		
+		$merchant_id = '300206404'; //INSERT MERCHANT ID (must be a 9 digit string)
+        $api_key = '04446E9287964AE2981Bd2997e380BA6'; //INSERT API ACCESS PASSCODE
+        $api_version = 'v1'; //default
+        $platform = 'api'; //default
+
+		//Create Beanstream Gateway
+		$beanstream = new \Beanstream\Gateway($merchant_id, $api_key, $platform, $api_version);
+		
+		
+		$result = $beanstream->reporting()->getTransaction(10000032);
+		echo "<pre>";
+		//display result
+		is_null($result)?:print_r($result);
+		die;
+		
+		//Example Card Payment Data
+		$payment_data = array(
+				'order_number' => 'a1b2c3',
+				'amount' => 1.00,
+				'payment_method' => 'card',
+				'card' => array(
+					'name' => 'Mr. Card Testerson',
+					'number' => '4030000010001234',
+					'expiry_month' => '07',
+					'expiry_year' => '22',
+					'cvd' => '123'
+				)
+		);
+		$complete = TRUE; //set to FALSE for PA
+		//Try to submit a Card Payment
+		try {
+			$result = $beanstream->payments()->makeCardPayment($payment_data, $complete);
+			die(print_r($result));
+		} catch (\Beanstream\Exception $e) {
+		   die(print_r($e->getMessage()));
+		}
+	}
+	
+	public function sendNotification(Request $request) {
+		
+            $from = 'accounting@shredex.ca'; //'shreddingtoronto@gmail.com';
+            $to = 'nitinsaluja98@gmail.com'; //$client_email; //"testiwm007@gmail.com"; 
+
+            $subject = 'Invoice : Thank You for choosing shredEX!';
+
+            $message = "";
+            $message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+            $message .= "Hello John<br><br>";
+            $message .= "Thank You for choosing shredEX!<br><br>";
+            $message .= "Please find attached, a copy of your Invoice for your most recent Service Order.<br><br>";
+            $message .= "If you have any questions, please contact me directly at your convenience.<br><br>";
+            $message .= "Best Regards,<br><br>";
+            $message .= "shredEX Accounting Department<br>";
+            $message .= "<hr>";
+            $message .= "<span style='color:#990000;'>SHREDEX INC.</span><br>";
+            $message .= "377 Evans Ave., Toronto, ON M8Z 1K8<br><br>";
+            $message .= "<span style='color:#990000;'>W:</span> <a href='http://www.shredex.ca' style='color: #15c;'>www.shredex.ca</a><br>";
+            $message .= "DIRECT: 416.255.1500<br>";
+            $message .= "TOLL FREE: 1.866.868.9585<br>";
+            $message .= "<p style='font-size:10px;'>This message and any attachments are the property of the SHREDEX INC. or its affiliates. It may be legally privileged and/or confidential and is intended only for the use of the addressee(s). No addressee should store, forward, print, copy, or otherwise reproduce this message in any manner that would allow it to be viewed by any individual not originally listed as a recipient. If the reader of this message is not the intended recipient, you are hereby notified that any unauthorized storage, disclosure, dissemination, distribution, copying or the taking of any action in reliance on the information herein is strictly prohibited. If you have received this communication in error, please immediately notify the sender and delete this message.</p>";
+            $message .= "</div>";
+
+            $attachment = "";
+            $filename = 'InvoiceNo.pdf';
+
+            $boundary = md5(date('r', time()));
+
+            $headers = "From: shredEX Accounting <" . $from . ">";
+
+            $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
+
+            $message = "This is a multi-part message in MIME format.
+
+--_1_$boundary
+Content-Type: multipart/alternative; boundary=\"_2_$boundary\"
+
+--_2_$boundary
+Content-Type: text/html; charset=\"utf-8\"
+Content-Transfer-Encoding: 7bit
+
+$message
+
+--_2_$boundary--";
+
+            mail($to, $subject, $message, $headers);
+
 	}
 }

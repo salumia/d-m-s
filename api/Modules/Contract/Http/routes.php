@@ -2,6 +2,7 @@
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\Contract\Http\Controllers'], function()
 {
+	Route::get('contract/notify', 'ContractController@sendNotification'); 
 	Route::post('contract/saveparts/{contract}/{user}', 'ContractController@saveContractParts');
 	Route::post('contract/updateparts/{contract}/{user}', 'ContractController@updateContractParts');
 	Route::resource('contract', 'ContractController');//->middleware('auth:api');
@@ -10,6 +11,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::post('contract/update-status/{id}', 'ContractController@updateContractStatus');
 	Route::post('contract/open/{id}', 'ContractController@openContract'); 
 	Route::get('contract/log/{id}', 'ContractController@getContractLog'); 
+	Route::get('contract/payment/{id}', 'ContractController@contractPayment'); 	
 		
 	Route::resource('category', 'CategoriesController');
 	Route::post('category/disable-category/{category}', 'CategoriesController@disableCategory');
