@@ -3,7 +3,7 @@
   <div class="row">	
 	<div class="col-lg-6"> 
 		<!-- Page Title Start -->
-		<h2 class="page--title h5"><i class="fa fa-user"></i> Contracts</h2>
+		<h2 class="page--title h5"><i class="fa fa-file"></i> Contracts</h2>
 		<!-- Page Title End -->
 	</div>
 	
@@ -62,6 +62,9 @@
 			 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
             </span>
 			<span *ngIf="contract.status == 2">
+              Accepted ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> ) 
+            </span>
+			<span *ngIf="contract.status == 4">
               Finalized
             </span>
 			
@@ -77,7 +80,10 @@
           <td>
             <a title="Review" *ngIf="contract.status<2&&contract.sender_flag == 2&&contract.sender_id == loggedInUser.id&&loggedInUser.role=='vendor'" class='btn bg-primary listing-actions' [routerLink]="'/contract/review/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>
 			
-            <a title="Review" *ngIf="contract.status<2&&contract.receiver_flag == 2&&contract.receiver_id == loggedInUser.id&&loggedInUser.role==contract.receiver_role" class='btn bg-primary listing-actions' [routerLink]="'/contract/review/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>			
+            <a title="Review" *ngIf="contract.status<2&&contract.receiver_flag == 2&&contract.receiver_id == loggedInUser.id&&loggedInUser.role==contract.receiver_role" class='btn bg-primary listing-actions' [routerLink]="'/contract/review/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>		
+
+			<a title="Review" *ngIf="contract.status == 2&&contract.sender_flag == 1&&contract.sender_id == loggedInUser.id&&loggedInUser.role=='vendor'" class='btn bg-primary listing-actions' [routerLink]="'/contract/review/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>
+			<a title="Review" *ngIf="contract.status == 2&&contract.receiver_flag == 1&&contract.receiver_id == loggedInUser.id&&loggedInUser.role==contract.receiver_role" class='btn bg-primary listing-actions' [routerLink]="'/contract/review/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>			
 			
 			<!-- Preview can be seen in all scenario -->
             <a title="Preview" class='btn bg-primary listing-actions' [routerLink]="'/contract/preview/' + contract.id" ><i class="fa fa-search"></i></a>	
@@ -152,16 +158,6 @@
 		</p-fieldset>
 	</div>
 	
-   <!--  <p-fieldset>
-		<p-header>
-			<div class="row">
-				<div class="col-md-7">
-					<strong>{{i + 1}}. </strong> {{part.title}} 
-				</div>
-			</div>
-		</p-header>
-		{{part.body}} 							
-	</p-fieldset> -->
 	</div>
 	</ng-container>
 </p-dialog>

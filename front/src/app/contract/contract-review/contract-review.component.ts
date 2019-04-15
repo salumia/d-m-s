@@ -58,12 +58,16 @@ export class ContractReviewComponent implements OnInit {
 	
 	acceptButtonVisible: boolean = true;
 	
-	captchaSolved = false;
+	captchaSolved = true;
+	
 	
 	acceptToS: boolean = true;
 	digitalSign:string = '';
 	tosError:string = "";
 	digitalSignError:string = "";
+	
+	contractPin: any = "";
+	contractPinError: any = "";
 
 	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService) {
 		aroute.params.subscribe(params => {
@@ -90,6 +94,10 @@ export class ContractReviewComponent implements OnInit {
 			if(this.contract.status == 1 && this.senderActive && this.contract.sender_flag == 2 ){
 				this.loadSpinner = false;
 			} else if( this.contract.status == 1 && !this.senderActive && this.contract.receiver_flag == 2 ){
+				this.loadSpinner = false;				
+			} else if( this.contract.status == 2 && this.senderActive && this.contract.sender_flag == 1 ){
+				this.loadSpinner = false;				
+			} else if( this.contract.status == 2 && !this.senderActive && this.contract.receiver_flag == 1 ){
 				this.loadSpinner = false;				
 			} else {
 				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "You don't have access."});
@@ -280,19 +288,16 @@ export class ContractReviewComponent implements OnInit {
 	}
 	
 	sendBackContract(){
-		console.log(this.user_contract_parts);
-		console.log(this.edited_contract_parts);
-		
 		if(this.captchaSolved){
-			console.log(this.user_contract_parts);
-			console.log(this.edited_contract_parts);
-			this.loadSpinner = true;
-			this.contractService.updateContractTerms(this.id, this.loggedInUser.id, this.user_contract_parts, this.edited_contract_parts, this.senderActive).subscribe(res => {
-				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract sent back successfully'});		
-				setTimeout(() => {
-					this.router.navigate(['contracts']);
-				}, 2000);
-			}); 
+			if(this.validatePIN()){
+				this.loadSpinner = true;
+				this.contractService.updateContractTerms(this.id, this.loggedInUser.id, this.user_contract_parts, this.edited_contract_parts, this.senderActive).subscribe(res => {
+					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract sent back successfully'});		
+					setTimeout(() => {
+						this.router.navigate(['contracts']);
+					}, 2000);
+				}); 
+			}						
 		} else {
 			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
 		}
@@ -307,7 +312,11 @@ export class ContractReviewComponent implements OnInit {
 			if(this.digitalSign != ""){
 				this.showDigitalSignBox = false;
 				this.loadSpinner = true;
-				this.contractService.updateContractStatus(this.id, 2, this.digitalSign).subscribe(res => {
+				let status = 2;
+				if(this.contract.status == 2){
+					status = 4;
+				}
+				this.contractService.updateContractStatus(this.id, status, this.digitalSign, this.senderActive).subscribe(res => {
 					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Accepted'});		
 					setTimeout(() => {
 						this.router.navigate(['contracts']);
@@ -326,14 +335,9 @@ export class ContractReviewComponent implements OnInit {
 	
 	acceptContract(){
 		if(this.captchaSolved){
-			this.showDigitalSignBox = true;
-			/* this.loadSpinner = true;
-			this.contractService.updateContractStatus(this.id, 2).subscribe(res => {
-				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Accepted'});		
-				setTimeout(() => {
-					this.router.navigate(['contracts']);
-				}, 2000);
-			}); */	
+			if(this.validatePIN()){
+				this.showDigitalSignBox = true;
+			}		
 		} else {
 			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
 		}		
@@ -341,13 +345,15 @@ export class ContractReviewComponent implements OnInit {
 	
 	rejectContract(){
 		if(this.captchaSolved){
-			this.loadSpinner = true;
-			this.contractService.updateContractStatus(this.id, 3).subscribe(res => {
-				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Rejected'});		
-				setTimeout(() => {
-					this.router.navigate(['contracts']);
-				}, 2000);
-			});
+			if(this.validatePIN()){
+				this.loadSpinner = true;
+				this.contractService.updateContractStatus(this.id, 3).subscribe(res => {
+					this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: 'Contract Rejected'});		
+					setTimeout(() => {
+						this.router.navigate(['contracts']);
+					}, 2000);
+				});
+			}				
 		} else {
 			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
 		}
@@ -419,5 +425,22 @@ export class ContractReviewComponent implements OnInit {
 	}
 	showResponse(data){
 		this.captchaSolved = true;
+	}
+	
+	validatePIN(){
+		this.contractPinError = "";
+		console.log(this.contractPin);
+		console.log(this.contractPinError);
+		if(this.contractPin != ""){
+			if(this.contractPin == this.contract.pin){				
+				return true;
+			} else {
+				this.contractPinError = "Wrong contract PIN";
+				return false;
+			}		
+		} else {
+			this.contractPinError = "Please enter contract PIN";
+			return false;
+		}
 	}
 }

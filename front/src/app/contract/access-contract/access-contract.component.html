@@ -1,14 +1,13 @@
 <p-growl [(value)]="msgs" key="top-corner"></p-growl>
 <div class="row">	
-	
-	<div class="col-lg-12"> 
-		<a href="javascript:void(0);" (click)="goBack()"><i class="fa fa-arrow-left"></i> Go Back</a>
-	</div>
 	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner">
 		<p-progressSpinner ></p-progressSpinner>		
 	</div>
 </div>
-<div class="panel" *ngIf="!loadSpinner">
+<div class="panel" *ngIf="!loadSpinner&&linkExpired">
+	<h2 class="text-center"> Access Denied : Contract Link Expired</h2>
+</div>
+<div class="panel" *ngIf="!loadSpinner&&!linkExpired">
 	<div class="records--body">
 		<div class="title">
 			<div class="col-lg-6"> 
@@ -17,8 +16,6 @@
 				<!-- Page Title End -->
 			</div>
 			<div class="col-lg-6 text-right">
-				<!-- <a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-envelope"></i> Email</a> -->
-				<a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-print"></i> Print</a>
 			</div>  
 		</div>
 		<p-tabView>
@@ -93,22 +90,12 @@
 							 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
 							</span>
 							<span *ngIf="contract.status == 2">
-							  Accepted ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> )
-							</span>
-							<span *ngIf="contract.status == 4">
 							  Finalized
 							</span>
 							
 							<span *ngIf="contract.status == 3">
 							  Rejected ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> )
 							</span>
-						</div>
-					</div>
-					
-					<div class="form-group row" *ngIf="loggedInUser.role == 'admin'||loggedInUser.id == contract.get_sender_data.id">
-						<span class="label-text col-md-3 col-form-label">Security PIN: </span>
-						<div class="col-md-9">
-						{{contract.pin}}
 						</div>
 					</div>
 					
@@ -137,49 +124,26 @@
 						
 						</div>
 					</div>
-			</div>	
-			</p-tabPanel>
-			<p-tabPanel header="Log" *ngIf="contract.status > 0">
-				<div class="app_wrapper row">
-					<!-- App Content Start -->
-					<div class="app_content col-lg-12">
-						<div class="todoApp_contentBody">
-							<ul class="list-unstyled" data-todoapp="items">  
-								<li data-todoapp="item">
-									<label class="todo--label px-0">
-										<strong>Sender</strong> has <strong>sent</strong> contract
-									</label>
-									
-									<div class="todo--extras d-inline-flex">
-										<span class="todo--date">{{contractLog.created_at | date:'hh:mm:ss dd MMM, y'}}</span>
-									</div>
-								</li>
-								<ng-container *ngFor="let log of contractLog.get_contract_log">	
-								<li data-todoapp="item">
-									<label class="todo--label px-0" *ngIf="log.action == 'review'">
-										<strong>{{log.user | titlecase }}</strong> made {{log.changes.length}} change{{(log.changes.length>1)?'s':''}} and sent back for <strong>review</strong>
-									</label>
-									
-									<label class="todo--label px-0" *ngIf="log.action == 'open'">
-										<strong>{{log.user | titlecase }}</strong> has changed contract back to open state
-									</label>
-									
-									
-									<label class="todo--label px-0" *ngIf="log.action == 'accept'||log.action == 'reject'">
-										<strong>{{log.user | titlecase }}</strong> has <strong>{{log.action}}ed</strong> contract
-									</label>
-									
-									<div class="todo--extras d-inline-flex">
-										<span class="todo--date">{{log.created_at}}</span>
-									</div>
-								</li>
-								</ng-container>
-							</ul>
+					<div class="form-group row">
+						<div class="col-md-9 offset-md-3">
+							<a [routerLink]="'/login'" *ngIf="contract.receiver_role == 'user'" class="btn btn-rounded btn-warning">Login</a>
+							<a [routerLink]="'/vendor-login'" *ngIf="contract.receiver_role == 'vendor'" class="btn btn-rounded btn-warning">Login</a>
 						</div>
 					</div>
-					<!-- App Content End -->
-				</div>
+			</div>	
 			</p-tabPanel>
 		</p-tabView>
 	</div>
 </div>
+
+<p-dialog header="Contract PIN" [(visible)]="contractPinModel" [modal]="false" [closable]="false" [responsive]="true" [style]="{width: '400px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000">	
+	<div class="form-group row">
+		<div class="col-md-8">
+			<input type="text" [(ngModel)]="contractPin" [ngModelOptions]="{standalone: true}"  class="form-control" name="contractPin">
+			<label class="text-danger">{{contractPinError}}</label>
+		</div>
+		<div class="col-md-4">
+			<button type="button" class="btn btn-primary" (click)="validatePIN()">Submit</button>
+		</div>
+	</div>
+</p-dialog>

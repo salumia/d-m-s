@@ -103,7 +103,7 @@
 						</a>
 					</li> 
 					
-					<li>
+					<li class="active">
 						<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'">
 							<i class="fa fa-user"></i>
 							<span>Manage Users</span>
@@ -119,56 +119,56 @@
 					
 					<li class="active">
 						<a routerLink="/sets" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-list"></i>
 							<span>Manage Sets</span>
 						</a>
 					</li>
 					<li class="active">
 						<a routerLink="/parts" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-list-alt"></i>
 							<span>Manage Parts</span>
 						</a>
 					</li>
 					<li class="active">
 						<a routerLink="/contacts" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-address-book"></i>
 							<span>Manage Contacts</span>
 						</a>
 					</li>
 					
 					<li class="active">
 						<a routerLink="/contracts" *ngIf="userData.role != 'admin'">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-file"></i>
 							<span>Manage Contracts</span>
 						</a>
 					</li>
 					<li class="active">
 						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-file-alt"></i>
 							<span>Create Contract</span>
 						</a>
 					</li>
 					
-					<li *ngIf="userData.role == 'admin'">
+					<li class="active" *ngIf="userData.role == 'admin'">
                         <a href="#"><i class="fa fa-newspaper"></i> Contract Components</a>
 
                         <ul>
-							<li>
+							<li class="active">
 								<a routerLink="/global-parts" routerLinkActive="active">
 									<span>Manage Global Parts</span>
 								</a>						
 							</li>
-                            <li>
+                            <li class="active">
 								<a routerLink="/categories" routerLinkActive="active">
 									<span>Manage Categories</span>
 								</a>								
 							</li>
-							<li>
+							<li class="active">
 								<a routerLink="/industries" routerLinkActive="active">
 									<span>Manage Industries</span>
 								</a>						
 							</li>	
-							<li>
+							<li class="active">
 								<a routerLink="/contract/types" routerLinkActive="active">
 									<span>Manage Types</span>
 								</a>						
@@ -176,9 +176,9 @@
                         </ul>
                     
 					</li>
-					<li *ngIf="userData.role == 'admin'">
+					<li class="active" *ngIf="userData.role == 'admin'">
 						<a routerLink="/contract-list">
-							<i class="fa fa-group"></i>
+							<i class="fa fa-file"></i>
 							<span>Manage Contracts</span>
 						</a>
 					</li>					

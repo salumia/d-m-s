@@ -2,9 +2,9 @@
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\Contract\Http\Controllers'], function()
 {
-	Route::get('contract/notify', 'ContractController@sendNotification'); 
 	Route::post('contract/saveparts/{contract}/{user}', 'ContractController@saveContractParts');
 	Route::post('contract/updateparts/{contract}/{user}', 'ContractController@updateContractParts');
+	Route::get('contract/token/{token}', 'ContractController@contractByToken');
 	Route::resource('contract', 'ContractController');//->middleware('auth:api');
 	Route::get('contract/user/{id}/{role}', 'ContractController@userContracts');
 	Route::get('contract/part/{id}', 'ContractController@contractPartData');

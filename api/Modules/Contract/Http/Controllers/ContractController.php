@@ -55,16 +55,20 @@ class ContractController extends Controller
 			} elseif(!empty($receiverVendor)){
 				$data['receiver_id'] = $receiverVendor->id;
 				$data['receiver_role'] = 'vendor';
-			}			
+			}	
+			$data['access_token'] = $this->generateRandomString(16);
+			$data['token_expiration'] = date('Y-m-d H:i:s', time() + 86400);
+			$contract = Contract::create($data);
+			$this->sendAppraisalMail($contract);
+		} else {
+			$contract = Contract::create($data);
 		}
-        $contract = Contract::create($data);
 		if(!empty($contract->receiver_id)){
 			$notification = [];
 			$notification['user_id'] = $contract->receiver_id;
 			$notification['role'] = $contract->receiver_role;
 			$notification['ref_id'] = $contract->id;
-			Notification::create($notification);
-			$this->sendAppraisalMail($contract);
+			Notification::create($notification);	
 		}		
         return new Response([
             'message' => 'Contract created successfully',
@@ -77,6 +81,25 @@ class ContractController extends Controller
      * @return Response
      */
     public function show(Contract $contract){
+		$contract->getCategoryData;
+		$contract->getContractParts;
+		$contract->getSenderData;
+		if($contract->receiver_role == "user"){
+			$contract->get_receiver_data = $contract->getReceiverUserData;
+			unset($contract->getReceiverUserData);
+		} else {
+			$contract->get_receiver_data = $contract->getReceiverVendorData;
+			unset($contract->getReceiverVendorData);
+		}
+        return new Response($contract);
+    }    
+	
+	/**
+     * Show the specified resource.
+     * @return Response
+     */
+    public function contractByToken($token){
+		$contract = Contract::where("access_token","=",$token)->first();
 		$contract->getCategoryData;
 		$contract->getContractParts;
 		$contract->getSenderData;
@@ -107,16 +130,19 @@ class ContractController extends Controller
 				$data['receiver_id'] = $receiverUser->id;
 			} elseif(!empty($receiverVendor)){
 				$data['receiver_id'] = $receiverVendor->id;
-			}			
-		}
-        $contract->update($data);
+			}		
+			$data['access_token'] = $this->generateRandomString(16);			
+			$data['token_expiration'] = date('Y-m-d H:i:s', time() + 86400);
+			$contract->update($data);
+			$this->sendAppraisalMail($contract);			
+		} else {
+			$contract->update($data);
+		}        
 		if(!empty($contract->receiver_id)){
 			$notification = [];
 			$notification['user_id'] = $contract->receiver_id;
 			$notification['role'] = $contract->receiver_role;
-			$notification['ref_id'] = $contract->id;
-			Notification::create($notification);
-			$this->sendAppraisalMail($contract);
+			$notification['ref_id'] = $contract->id;			
 		}	
 		
         // Update data        
@@ -214,12 +240,27 @@ class ContractController extends Controller
     }
 	
 	public function sendAppraisalMail($contract){
-		
+		$sender = VendorUser::find($contract->sender_id);
+		if($contract->receiver_role == 'user'){
+			$receiver = User::find($contract->receiver_id);
+		} else {
+			$receiver = VendorUser::find($contract->receiver_id);
+		}
+		$message = "";
+		$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+		$message .= "Hi ".$receiver->name."<br><br>";
+		$message .= $sender->shop_name." has just created contract with you. Please click <a href='".config('constants.url').'#/access-contract/'.$contract->access_token."'>here</a> to access the contract<br><br>";
+		$message .= "This link will be expired in 24 hours. Here is your pin <b>".$contract->pin."</b> to authorize your contract access.<br><br>";
+		$message .= "Best Regards,<br>";
+		$message .= "Clerk Team<br>";
+		$message .= "</div>";
+		$this->sendNotification($sender->shop_name." <".$sender->email."", $contract->email, "New Contract  Clerk", $message);
 	}
 	
 	public function openContract($contract, Request $request){
 		$contract = Contract::find($contract);
 		$contract->status = 1;
+		$contract->receiver_flag = 1;
         $contract->save();	
 		
 		$notification = [];
@@ -245,6 +286,30 @@ class ContractController extends Controller
 		$logData['iteration'] = $iteration + 1;			
 		ContractLog::create($logData);
 		
+		$template = $this->createTemplate('finalized');
+			
+		$sender = VendorUser::find($contract->sender_id);
+		if($contract->receiver_role == "user"){
+			$receiver = User::find($contract->receiver_id);
+		} else {
+			$receiver = VendorUser::find($contract->receiver_id);
+		}
+		
+		/*** Notify Sender ***/
+		$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+		$values   = [$sender->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+		$message = str_replace($constants, $values, $template);
+		
+		$this->sendNotification("Admin <admin@clerk.io>", $sender->email, "Contract Finalized", $message);
+		
+		/*** Notify Receiver ***/
+		
+		$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+		$values   = [$receiver->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+		$message = str_replace($constants, $values, $template);
+		
+		$this->sendNotification("Admin <admin@clerk.io>", $receiver->email, "Contract Opened Again", $message);
+		
 		return new Response([
             'message' => 'Contract status updated',
             'contracts' => $contract
@@ -256,16 +321,31 @@ class ContractController extends Controller
 		
 		$contract = Contract::find($contract);
 		$contract->status = $data['status'];
+		if($contract->sender_flag == 2){
+			$notification_receiver =  'sender';
+		} else {
+			$notification_receiver =  'receiver';
+		}	
+		
+		if($data['status'] == 4){
+			$contract->sender_flag = 2;
+			$contract->receiver_flag = 2;
+		}
 		if(isset($data['signature']) && !empty($data['signature'])){
-			$contract->signature = $data['signature'];
+			if(isset($data['isSender']) && $data['isSender']){
+				$contract->sender_signature = $data['signature'];
+			} else {
+				$contract->receiver_signature = $data['signature'];
+			}			
 		}		
         $contract->save();	
+		
 		$logData = [];
 		if(!empty($contract->id)){
 			$notification = [];
 			$logData['contract_id'] = $contract->id;
 			
-			if($contract->status == 2){
+			if($contract->status == 2 || $contract->status == 4){
 				$notification['type'] = 'accept';
 				$logData['type'] = 'accept';
 			} else {				
@@ -273,7 +353,7 @@ class ContractController extends Controller
 				$logData['type'] = 'reject';
 			}
 			
-			if($contract->sender_flag == 2){
+			if($notification_receiver == 'receiver'){
 				$notification['user_id'] = $contract->receiver_id;
 				$notification['role'] = $contract->receiver_role;
 								
@@ -286,6 +366,8 @@ class ContractController extends Controller
 			}
 			$notification['ref_id'] = $contract->id;
 			Notification::create($notification);
+			
+			$this->sendContractUpdateEmail($contract, $notification_receiver);
 			
 			/******* Save Log *********/
 			$iteration = ContractLog::where(["contract_id"=>$contract->id])->max('iteration');			
@@ -302,6 +384,7 @@ class ContractController extends Controller
 	public function updateContractParts($contract,$user, Request $request){
 		$data = $request->post();
 		$role = 'receiver';
+		$notification_receiver = 'receiver';
 		
 		/******* Delete Contract Old Logs *********/
 		//ContractLog::where(["contract_id"=>$contract])->delete();
@@ -310,7 +393,8 @@ class ContractController extends Controller
 		$contract = Contract::find($contract); 
 		if($data['sender']){
 			$role = 'sender';
-			$contract->sender_flag = 1; // 1 = sent, 2= review, 3= approve, 4 = reject
+			$notification_receiver = 'sender';
+			$contract->sender_flag = 1; 
 			$contract->receiver_flag = 2;
 			$contract->save();
 			
@@ -390,6 +474,8 @@ class ContractController extends Controller
 			}
 		}
 		
+		$this->sendContractUpdateEmail($contract, $notification_receiver);
+		
         return new Response([
             'message' => 'Contract Updated Successfully',
         ]);
@@ -464,38 +550,10 @@ class ContractController extends Controller
 		}
 	}
 	
-	public function sendNotification(Request $request) {
-		
-            $from = 'accounting@shredex.ca'; //'shreddingtoronto@gmail.com';
-            $to = 'nitinsaluja98@gmail.com'; //$client_email; //"testiwm007@gmail.com"; 
-
-            $subject = 'Invoice : Thank You for choosing shredEX!';
-
-            $message = "";
-            $message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-            $message .= "Hello John<br><br>";
-            $message .= "Thank You for choosing shredEX!<br><br>";
-            $message .= "Please find attached, a copy of your Invoice for your most recent Service Order.<br><br>";
-            $message .= "If you have any questions, please contact me directly at your convenience.<br><br>";
-            $message .= "Best Regards,<br><br>";
-            $message .= "shredEX Accounting Department<br>";
-            $message .= "<hr>";
-            $message .= "<span style='color:#990000;'>SHREDEX INC.</span><br>";
-            $message .= "377 Evans Ave., Toronto, ON M8Z 1K8<br><br>";
-            $message .= "<span style='color:#990000;'>W:</span> <a href='http://www.shredex.ca' style='color: #15c;'>www.shredex.ca</a><br>";
-            $message .= "DIRECT: 416.255.1500<br>";
-            $message .= "TOLL FREE: 1.866.868.9585<br>";
-            $message .= "<p style='font-size:10px;'>This message and any attachments are the property of the SHREDEX INC. or its affiliates. It may be legally privileged and/or confidential and is intended only for the use of the addressee(s). No addressee should store, forward, print, copy, or otherwise reproduce this message in any manner that would allow it to be viewed by any individual not originally listed as a recipient. If the reader of this message is not the intended recipient, you are hereby notified that any unauthorized storage, disclosure, dissemination, distribution, copying or the taking of any action in reliance on the information herein is strictly prohibited. If you have received this communication in error, please immediately notify the sender and delete this message.</p>";
-            $message .= "</div>";
-
-            $attachment = "";
-            $filename = 'InvoiceNo.pdf';
-
-            $boundary = md5(date('r', time()));
-
-            $headers = "From: shredEX Accounting <" . $from . ">";
-
-            $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
+	public function sendNotification($from, $to, $subject, $message) {
+			$boundary = md5(date('r', time()));
+    $headers = "From: $from";
+    $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
 
             $message = "This is a multi-part message in MIME format.
 
@@ -510,7 +568,126 @@ $message
 
 --_2_$boundary--";
 
-            mail($to, $subject, $message, $headers);
+    mail($to, $subject, $message, $headers);
+	}
+	
+	private function generateRandomString($length = 10) {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
+	
+	public function sendContractUpdateEmail($contract, $notification_receiver){
+		
+		$sender = VendorUser::find($contract->sender_id);
+		if($contract->receiver_role == 'user'){
+			$receiver = User::find($contract->receiver_id);
+			$receiver->email = $contract->email;
+		} else {
+			$receiver = VendorUser::find($contract->receiver_id);
+			$receiver->email = $contract->email;
+		}
+		
+		if($notification_receiver == "sender"){
+			$notify_user = $sender;
+			$other = $receiver;
+		} else {			
+			$notify_user = $receiver;
+			$other = $sender;
+		}	
+		
+		if($contract->status == 3){			
+			$template = $this->createTemplate('reject');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%ACTION%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name,'rejected', config('constants.url').'#/contract/preview'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Contract Rejected", $message);
+		} else if($contract->status == 2){
+			$template = $this->createTemplate('accept');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%ACTION%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name,'accepted', config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Contract Accepted", $message);
+		} else if($contract->status == 4){
+			$template = $this->createTemplate('finalized');
+			
+			/*** Notify Sender ***/
+			$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+			$values   = [$sender->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			
+			$this->sendNotification("Admin <admin@clerk.io>", $sender->email, "Contract Finalized", $message);
+			
+			/*** Notify Receiver ***/
+			
+			$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+			$values   = [$receiver->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			
+			$this->sendNotification("Admin <admin@clerk.io>", $receiver->email, "Contract Finalized", $message);
+			
+		} else {
+			$template = $this->createTemplate('reviewed');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name, config('constants.url').'#/contract/review/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Review Contract", $message);
+		}
+		
+	}
+	
+	private function createTemplate($type){
+		
+		switch($type){			
+			case 'reviewed':
+				$message = "";
+				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+				$message .= "Hi %RECEIVER_NAME%<br><br>";
+				$message .= "%OTHER_NAME% has made changes in the contract and send back for review. ";
+				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to access the contract<br><br>";
+				$message .= "Best Regards,<br>";
+				$message .= "Clerk Team<br>";
+				$message .= "</div>";
+			break;
+			
+			case 'finalized':
+				$message = "";
+				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+				$message .= "Hi %NOTIFY%<br><br>";
+				$message .= "Contract between %CREATOR% and %RECEIVER% has been finalized. ";
+				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
+				$message .= "Best Regards,<br>";
+				$message .= "Clerk Team<br>";
+				$message .= "</div>";
+			break;
+			
+			case 'opened':
+				$message = "";
+				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+				$message .= "Hi %NOTIFY%<br><br>";
+				$message .= "Contract between %CREATOR% and %RECEIVER% has back to open state now. ";
+				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
+				$message .= "Best Regards,<br>";
+				$message .= "Clerk Team<br>";
+				$message .= "</div>";
+			break;
 
+			default:
+				$message = "";
+				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+				$message .= "Hi %RECEIVER_NAME%<br><br>";
+				$message .= "%OTHER_NAME% has %ACTION% the contract.";
+				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
+				$message .= "Best Regards,<br>";
+				$message .= "Clerk Team<br>";
+				$message .= "</div>";
+			break;
+		}
+		
+		return $message;
 	}
 }

@@ -24,6 +24,7 @@ import { ContractReviewComponent } from './contract-review/contract-review.compo
 import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 import { ContractListComponent } from './contract-list/contract-list.component';
 import { AdminContractListComponent } from './admin-contract-list/admin-contract-list.component';
+import { AccessContractComponent } from './access-contract/access-contract.component';
 
 const routes: Routes = [
 
@@ -45,7 +46,7 @@ const routes: Routes = [
   
   {path: 'contract/types', component: ContractTypeListComponent},
   {path: 'contract-type/create', component: ContractTypeEditComponent},
-  {path: 'contract-type/edit/:id', component: ContractTypeEditComponent},
+  {path: 'contract-type/edit/:id', component: ContractTypeEditComponent},  
   
   {path: 'sets', component: SetListComponent},
   {path: 'set/create', component: SetEditComponent},
@@ -57,6 +58,7 @@ const routes: Routes = [
   {path: 'contract/preview/:id', component: ContractPreviewComponent},
   {path: 'contracts', component: ContractListComponent},
   {path: 'contract-list', component: AdminContractListComponent},
+  {path: 'access-contract/:token', component: AccessContractComponent}
 ];
 
 @NgModule({

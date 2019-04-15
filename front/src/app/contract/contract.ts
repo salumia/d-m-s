@@ -12,6 +12,8 @@ export class Contract {
 	sender_flag: number;
 	receiver_flag: number;
 	status: number;
+	token_expiration: Date;
+	pin: string;
 	
 	get_category_data:any;
 	get_contract_parts:any;
@@ -36,6 +38,8 @@ export class Contract {
 		this.sender_flag = data.sender_flag;
 		this.receiver_flag = data.receiver_flag;
 		this.status = data.status;
+		this.token_expiration = new Date(Date.parse(data.token_expiration));
+		this.pin = data.pin;
 		
 		this.get_category_data = data.get_category_data;
 		this.get_contract_parts = data.get_contract_parts;
@@ -43,6 +47,7 @@ export class Contract {
 		this.get_receiver_data = data.get_receiver_data;
 		
 		this.created_at = new Date(Date.parse(data.created_at));
-		this.updated_at = new Date(Date.parse(data.updated_at));
+		this.updated_at = new Date(Date.parse(data.updated_at));		
+		
 	}
 }

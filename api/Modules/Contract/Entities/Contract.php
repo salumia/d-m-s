@@ -25,6 +25,9 @@ class Contract extends Model
 		'sender_flag',
 		'receiver_flag',
 		'signature',
+		'access_token',
+		'token_expiration',
+		'pin',
 		'status'
 	];
 	

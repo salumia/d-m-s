@@ -66,6 +66,7 @@ import { AdminContractListComponent } from './admin-contract-list/admin-contract
 
 import {AccordionModule} from 'primeng/accordion';
 import {AutoCompleteModule} from 'primeng/autocomplete';
+import { AccessContractComponent } from './access-contract/access-contract.component';
 
 @NgModule({
   imports: [
@@ -102,7 +103,7 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 	AutoCompleteModule
   ],
   providers: [AuthService, UserService, CategoryService, IndustryService, ContractTypeService, PartService, SetService, ConfirmationService, ContractService],
-  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent]
+  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent, AccessContractComponent]
 })
 export class ContractModule {
   constructor(auth: AuthService, router: Router) {

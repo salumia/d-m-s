@@ -85,6 +85,17 @@ export class ContractService {
 		}).map(res => {
 		  return new Contract(res);
 		});
+	}	
+	
+	getContractByToken(contract_token: string) {
+		const token = this.auth.getToken();
+		return this.http.get<Contract>(this.apiUrl + '/contract/token/' + contract_token, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		}).map(res => {
+		  return new Contract(res);
+		});
 	}
 
 	getContractLog(id: number) {
@@ -108,9 +119,9 @@ export class ContractService {
 		});
 	} 
 		
-	updateContractStatus(id: number, status:number, signature="") {
+	updateContractStatus(id: number, status:number, signature="", isSender = false) {
 		const token = this.auth.getToken();
-		return this.http.post<ContractChangeResponse>(this.apiUrl + '/contract/update-status/' + id, { status:status,signature:signature }, {
+		return this.http.post<ContractChangeResponse>(this.apiUrl + '/contract/update-status/' + id, { status:status,signature:signature, isSender: isSender}, {
 			headers: {
 				Authorization: 'Bearer ' + token
 			}

@@ -47,11 +47,14 @@ export class CreateContractComponent implements OnInit {
 	listPart: any;
 	listSet: any;
 	
-	captchaSolved = false;
+	captchaSolved = true;
 	selectedContact:string = "";
 	
     suggestions: any[];
-
+	
+	contractPinModel: boolean = false;
+	contractPin: any = "";
+	contractPinError: any = "";
 	
 	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService, private contractTypeService:ContractTypeService) {
 		aroute.params.subscribe(params => {
@@ -146,19 +149,34 @@ export class CreateContractComponent implements OnInit {
 			this.loadSpinner = true;
 			this.contract.sender_id = this.loggedInUser.id;
 			if(typeof this.contract.email == "undefined" || this.contract.email == "" || this.contract.email == null){
+				
+				this.contractService.saveContract(this.id, this.contract).subscribe(res => {
+					if(this.id > 0){
+						this.saveContractTerms(res.contracts.id);	
+					}else {
+						this.saveContractTerms(res.contracts.id);	
+					}			
+				});
+				
 			}else{
-				this.contract.sender_flag = 1;
-				this.contract.receiver_flag = 2;
-				this.contract.status = 1 
-			}
-			console.log(this.contract);
-			this.contractService.saveContract(this.id, this.contract).subscribe(res => {
-				if(this.id > 0){
-					this.saveContractTerms(res.contracts.id);	
-				}else {
-					this.saveContractTerms(res.contracts.id);	
-				}			
-			});
+				console.log(this.contract);
+				if(typeof this.contract.pin == "undefined" || this.contract.pin == "" || this.contract.pin == null){
+					this.contractPinModel = true;
+				} else {
+				
+					this.contract.sender_flag = 1;
+					this.contract.receiver_flag = 2;
+					this.contract.status = 1 ;	
+
+					this.contractService.saveContract(this.id, this.contract).subscribe(res => {
+						if(this.id > 0){
+							this.saveContractTerms(res.contracts.id);	
+						}else {
+							this.saveContractTerms(res.contracts.id);	
+						}			
+					});
+				}
+			}			
 		} else {
 			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
 		}
@@ -246,4 +264,16 @@ export class CreateContractComponent implements OnInit {
 			console.log(this.suggestions);
 		});
     }
+	
+	validatePIN(){
+		this.contractPinError = "";
+		if(this.contractPin != ""){
+			this.contract.pin = this.contractPin;			
+			this.contractPinModel = false;	
+			this.saveContract();			
+		} else {
+			this.contractPinError = "Please enter contract PIN";
+		}
+	
+	}
 }
