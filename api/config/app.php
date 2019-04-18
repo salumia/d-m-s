@@ -160,6 +160,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Bnb\GoogleCloudPrint\LaravelServiceProvider::class,
+		Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -210,7 +211,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'GoogleCloudPrint' => Bnb\GoogleCloudPrint\Facades\GoogleCloudPrint::class,
-
+		'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

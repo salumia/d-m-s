@@ -12,6 +12,7 @@ use Modules\Contract\Entities\ContractLog;
 use Modules\Notification\Entities\Notification;
 use App\User;
 use App\VendorUser;
+use PDF;
 
 class ContractController extends Controller
 {
@@ -690,4 +691,26 @@ $message
 		
 		return $message;
 	}
+	
+	
+	public function showPdf(Request $request,$id){
+			$contract = Contract::find($id);
+			$contract->getCategoryData;
+			$contract->getContractParts;
+			$contract->getSenderData;
+			if($contract->receiver_role == "user"){
+				$contract->get_receiver_data = $contract->getReceiverUserData;
+				unset($contract->getReceiverUserData);
+			} else {
+				$contract->get_receiver_data = $contract->getReceiverVendorData;
+				unset($contract->getReceiverVendorData);
+			}
+			//echo "<pre>";print_r($contract->get_receiver_data);die;
+			view()->share('contract', $contract);
+            $pdf = PDF::loadView('contract.contract_pdf');
+			//return view('contract.contract_pdf')->with('contract',$contract);			
+			// Finally, you can download the file using download function
+			return $pdf->download('customers.pdf');
+			
+    }
 }

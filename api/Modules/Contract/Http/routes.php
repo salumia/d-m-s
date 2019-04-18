@@ -12,6 +12,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::post('contract/open/{id}', 'ContractController@openContract'); 
 	Route::get('contract/log/{id}', 'ContractController@getContractLog'); 
 	Route::get('contract/payment/{id}', 'ContractController@contractPayment'); 	
+	Route::get('contract/{id}/save_pdf', 'ContractController@showPdf');
 		
 	Route::resource('category', 'CategoriesController');
 	Route::post('category/disable-category/{category}', 'CategoriesController@disableCategory');
