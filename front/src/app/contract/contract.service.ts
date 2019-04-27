@@ -145,5 +145,14 @@ export class ContractService {
 		  }
 		});
 	}
+	
+	sendContractAttachment(id:number,sender:boolean = false) {
+		const token = this.auth.getToken();
+		return this.http.get<any>(this.apiUrl + '/contract/'+id+'/email/'+sender, {
+		  headers: {
+			Authorization: 'Bearer ' + token
+		  }
+		});
+	}
   
 }

@@ -12,8 +12,6 @@ use Modules\Contract\Entities\ContractLog;
 use Modules\Notification\Entities\Notification;
 use App\User;
 use App\VendorUser;
-use PDF;
-use Illuminate\Support\Facades\Mail;
 
 class ContractController extends Controller
 {
@@ -83,25 +81,6 @@ class ContractController extends Controller
      * @return Response
      */
     public function show(Contract $contract){
-		$contract->getCategoryData;
-		$contract->getContractParts;
-		$contract->getSenderData;
-		if($contract->receiver_role == "user"){
-			$contract->get_receiver_data = $contract->getReceiverUserData;
-			unset($contract->getReceiverUserData);
-		} else {
-			$contract->get_receiver_data = $contract->getReceiverVendorData;
-			unset($contract->getReceiverVendorData);
-		}
-        return new Response($contract);
-    }    
-	
-	/**
-     * Show the specified resource.
-     * @return Response
-     */
-    public function contractByToken($token){
-		$contract = Contract::where("access_token","=",$token)->first();
 		$contract->getCategoryData;
 		$contract->getContractParts;
 		$contract->getSenderData;
@@ -242,25 +221,24 @@ class ContractController extends Controller
     }
 	
 	public function sendAppraisalMail($contract){
-		$sender = VendorUser::find($contract->sender_id);
-		if($contract->receiver_role == 'user'){
-			$receiver = User::find($contract->receiver_id);
-		} else {
-			$receiver = VendorUser::find($contract->receiver_id);
-		}
-		$data = array(
-			"receiver_name" => $receiver->name,
-			"sender_name" => $sender->shop_name,
-			"contract_url" => config('constants.url').'#/access-contract/'.$contract->access_token,
-			"contract_pin" => $contract->pin
-		);
-		$this->sendNotification($sender->shop_name, $sender->email, $contract->email, $receiver->name, "New Contract  Clerk", $data, 'mail.contract_created');
+		//$contract = Contract::find($contract);
+		
+		$message = "";
+		$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+		$message .= "Hi Richa<br><br>";
+		$message .= "Nitin has just created contract with you. Please click <a href='".$contract."'>here</a> to access the contract<br><br>";
+		$message .= "This link will be expired in 24 hours.<br><br>";
+		$message .= "Here is your pin 1234 to authorize your contract access.<br><br>";
+		$message .= "Best Regards,<br><br>";
+		$message .= "Clerk Team<br>";
+		$message .= "</div>";
+		
+		$this->sendNotification("Komal <komalsaluja90@gmail.com>", 'nitinsaluja98@gmail.com', "New Contract created with you | Clerk", $message);
 	}
 	
 	public function openContract($contract, Request $request){
 		$contract = Contract::find($contract);
 		$contract->status = 1;
-		$contract->receiver_flag = 1;
         $contract->save();	
 		
 		$notification = [];
@@ -285,35 +263,6 @@ class ContractController extends Controller
 		$logData['type'] = 'open';			
 		$logData['iteration'] = $iteration + 1;			
 		ContractLog::create($logData);
-			
-		$sender = VendorUser::find($contract->sender_id);
-		if($contract->receiver_role == "user"){
-			$receiver = User::find($contract->receiver_id);
-		} else {
-			$receiver = VendorUser::find($contract->receiver_id);
-		}
-		
-		/*** Notify Sender ***/
-		
-		$data = array(
-			"notify" => $sender->name,
-			"creator" => $sender->shop_name,
-			"receiver" => $receiver->name,
-			"contract_url" => config('constants.url').'#/contract/preview/'.$contract->id,
-		);
-		
-		$this->sendNotification("Admin", "admin@clerk.io", $sender->email, $sender->name, "Contract Opened Again", $data, 'mail.contract_reopen');
-		
-		/*** Notify Receiver ***/
-		$data1 = array(
-			"notify" => $receiver->name,
-			"creator" => $sender->shop_name,
-			"receiver" => $receiver->name,
-			"contract_url" => config('constants.url').'#/contract/preview/'.$contract->id,
-		);
-		
-		$this->sendNotification("Admin", "admin@clerk.io", $receiver->email, $receiver->name, "Contract Opened Again", $data1, 'mail.contract_reopen');
-
 		
 		return new Response([
             'message' => 'Contract status updated',
@@ -326,33 +275,16 @@ class ContractController extends Controller
 		
 		$contract = Contract::find($contract);
 		$contract->status = $data['status'];
-		
-		if($data['isSender']){
-			$notification_receiver =  'receiver';
-		} else {
-			$notification_receiver =  'sender';
-		}	
-		
-		if($data['status'] == 4){
-			$contract->sender_flag = 2;
-			$contract->receiver_flag = 2;
-		}
-		
 		if(isset($data['signature']) && !empty($data['signature'])){
-			if(isset($data['isSender']) && $data['isSender']){
-				$contract->sender_signature = $data['signature'];
-			} else {
-				$contract->receiver_signature = $data['signature'];
-			}			
+			$contract->signature = $data['signature'];
 		}		
         $contract->save();	
-		
 		$logData = [];
 		if(!empty($contract->id)){
 			$notification = [];
 			$logData['contract_id'] = $contract->id;
 			
-			if($contract->status == 2 || $contract->status == 4){
+			if($contract->status == 2){
 				$notification['type'] = 'accept';
 				$logData['type'] = 'accept';
 			} else {				
@@ -360,7 +292,7 @@ class ContractController extends Controller
 				$logData['type'] = 'reject';
 			}
 			
-			if($notification_receiver == 'receiver'){
+			if($contract->sender_flag == 2){
 				$notification['user_id'] = $contract->receiver_id;
 				$notification['role'] = $contract->receiver_role;
 								
@@ -371,11 +303,8 @@ class ContractController extends Controller
 								
 				$logData['user'] = 'receiver';
 			}
-			
 			$notification['ref_id'] = $contract->id;
 			Notification::create($notification);
-			
-			$this->sendContractUpdateEmail($contract, $notification_receiver);
 			
 			/******* Save Log *********/
 			$iteration = ContractLog::where(["contract_id"=>$contract->id])->max('iteration');			
@@ -392,7 +321,6 @@ class ContractController extends Controller
 	public function updateContractParts($contract,$user, Request $request){
 		$data = $request->post();
 		$role = 'receiver';
-		$notification_receiver = 'receiver';
 		
 		/******* Delete Contract Old Logs *********/
 		//ContractLog::where(["contract_id"=>$contract])->delete();
@@ -400,8 +328,8 @@ class ContractController extends Controller
 		/******* Update Contract Table*********/
 		$contract = Contract::find($contract); 
 		if($data['sender']){
-			$role = 'sender';			
-			$contract->sender_flag = 1; 
+			$role = 'sender';
+			$contract->sender_flag = 1; // 1 = sent, 2= review, 3= approve, 4 = reject
 			$contract->receiver_flag = 2;
 			$contract->save();
 			
@@ -416,8 +344,6 @@ class ContractController extends Controller
 			$contract->receiver_flag = 1;
 			$contract->sender_flag = 2;
 			$contract->save();
-			
-			$notification_receiver = 'sender';
 			
 			$notification = [];
 			$notification['type'] = 'review';
@@ -482,8 +408,6 @@ class ContractController extends Controller
 				ContractLog::create($edited);
 			}
 		}
-		
-		$this->sendContractUpdateEmail($contract, $notification_receiver);
 		
         return new Response([
             'message' => 'Contract Updated Successfully',
@@ -559,12 +483,26 @@ class ContractController extends Controller
 		}
 	}
 	
-	public function sendNotification($from_name, $from_email, $to_email, $to_name, $subject= 'Default Subject',$data = [],$template = 'mail.contract_created') {
-		Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
-			$message->to($to_email, $to_name)
-					->subject($subject);
-			$message->from($from_email,$from_name);
-		});
+	public function sendNotification($from, $to, $subject, $message) {
+		
+            $boundary = md5(date('r', time()));
+            $headers = "From: $from";
+            $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
+            $message = "This is a multi-part message in MIME format.
+
+					--_1_$boundary
+					Content-Type: multipart/alternative; boundary=\"_2_$boundary\"
+
+					--_2_$boundary
+					Content-Type: text/html; charset=\"utf-8\"
+					Content-Transfer-Encoding: 7bit
+
+					$message
+
+					--_2_$boundary--";
+
+            mail($to, $subject, $message, $headers);
+
 	}
 	
 	private function generateRandomString($length = 10) {
@@ -576,245 +514,4 @@ class ContractController extends Controller
 		}
 		return $randomString;
 	}
-	
-	public function sendContractUpdateEmail($contract, $notification_receiver){
-		
-		$sender = VendorUser::find($contract->sender_id);
-		if($contract->receiver_role == 'user'){
-			$receiver = User::find($contract->receiver_id);
-			$receiver->email = $contract->email;
-		} else {
-			$receiver = VendorUser::find($contract->receiver_id);
-			$receiver->email = $contract->email;
-		}
-		
-		if($notification_receiver == "sender"){
-			$notify_user = $sender;
-			$other = $receiver;
-		} else {			
-			$notify_user = $receiver;
-			$other = $sender;
-		}	
-		
-		if($contract->status == 3){
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'status'=>'rejected',
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Contract Rejected", $data, 'mail.contract_status_update');
-		} else if($contract->status == 2){
-			
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'status'=>'accepted',
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Contract Accepted", $data, 'mail.contract_status_update');
-		} else if($contract->status == 4){
-			
-			$data = array(
-				'notify'=>$sender->shop_name,
-				'creator'=>$sender->shop_name,
-				'receiver'=>$receiver->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification("Admin", "admin@clerk.io", $sender->email, $sender->name, "Contract Finalized", $data, 'mail.contract_finalized');
-			
-			/*** Notify Receiver ***/			
-			
-			$data = array(
-				'notify'=>$receiver->name,
-				'creator'=>$sender->shop_name,
-				'receiver'=>$receiver->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			
-			$this->sendNotification("Admin", "admin@clerk.io", $receiver->email, $receiver->name, "Contract Finalized", $data, 'mail.contract_finalized');			
-			
-		} else {			
-			
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Review Contract", $data, 'mail.contract_reviewed');
-		}
-		
-	}
-	
-	private function createTemplate($type){
-		
-		switch($type){	
-			case 'attachment':
-				$message = "";
-				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-				$message .= "Hi %RECEIVER_NAME%<br><br>";
-				$message .= "Please find the enclosed contract attachment <br><br>";
-				$message .= "Best Regards,<br>";
-				$message .= "Clerk Team<br>";
-				$message .= "</div>";
-			break;
-			
-			case 'reviewed':
-				$message = "";
-				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-				$message .= "Hi %RECEIVER_NAME%<br><br>";
-				$message .= "%OTHER_NAME% has made changes in the contract and send back for review. ";
-				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to access the contract<br><br>";
-				$message .= "Best Regards,<br>";
-				$message .= "Clerk Team<br>";
-				$message .= "</div>";
-			break;
-			
-			case 'finalized':
-				$message = "";
-				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-				$message .= "Hi %NOTIFY%<br><br>";
-				$message .= "Contract between %CREATOR% and %RECEIVER% has been finalized. ";
-				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
-				$message .= "Best Regards,<br>";
-				$message .= "Clerk Team<br>";
-				$message .= "</div>";
-			break;
-			
-			case 'opened':
-				$message = "";
-				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-				$message .= "Hi %NOTIFY%<br><br>";
-				$message .= "Contract between %CREATOR% and %RECEIVER% has back to open state now. ";
-				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
-				$message .= "Best Regards,<br>";
-				$message .= "Clerk Team<br>";
-				$message .= "</div>";
-			break;
-
-			default:
-				$message = "";
-				$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
-				$message .= "Hi %RECEIVER_NAME%<br><br>";
-				$message .= "%OTHER_NAME% has %ACTION% the contract.";
-				$message .= "Please click <a href='%CONTRACT_URL%'>here</a> to view the contract<br><br>";
-				$message .= "Best Regards,<br>";
-				$message .= "Clerk Team<br>";
-				$message .= "</div>";
-			break;
-		}
-		
-		return $message;
-	}
-		
-	public function showPdf(Request $request,$id){
-			$contract = Contract::find($id);
-			$contract->getCategoryData;
-			$contract->getContractParts;
-			$contract->getSenderData;
-			if($contract->receiver_role == "user"){
-				$contract->get_receiver_data = $contract->getReceiverUserData;
-				unset($contract->getReceiverUserData);
-			} else {
-				$contract->get_receiver_data = $contract->getReceiverVendorData;
-				unset($contract->getReceiverVendorData);
-			}
-			view()->share('contract', $contract);
-            $pdf = PDF::loadView('contract.contract_pdf');
-			//return view('contract.contract_pdf')->with('contract',$contract);			
-			// Finally, you can download the file using download function
-			return $pdf->download('contract-'.$id.'.pdf');
-			
-    }	
-	
-	public function printContract(Request $request,$id){
-		$contract = Contract::find($id);
-		$contract->getCategoryData;
-		$contract->getContractParts;
-		$contract->getSenderData;
-		if($contract->receiver_role == "user"){
-			$contract->get_receiver_data = $contract->getReceiverUserData;
-			unset($contract->getReceiverUserData);
-		} else {
-			$contract->get_receiver_data = $contract->getReceiverVendorData;
-			unset($contract->getReceiverVendorData);
-		}
-		view()->share('contract', $contract);
-		return view('contract.contract_pdf')->with('contract',$contract);			
-    }
-	
-	public function sendContractAttachmentEmail(Request $request,$id,$sender){		
-		$contract = Contract::find($id);
-		$contract->getCategoryData;
-		$contract->getContractParts;
-		$contract->getSenderData;
-		if($contract->receiver_role == "user"){
-			$contract->get_receiver_data = $contract->getReceiverUserData;
-			unset($contract->getReceiverUserData);
-		} else {
-			$contract->get_receiver_data = $contract->getReceiverVendorData;
-			unset($contract->getReceiverVendorData);
-		}
-		view()->share('contract', $contract);
-        $pdf = PDF::loadView('contract.contract_pdf');
-		$content = chunk_split(base64_encode($pdf->output()));
-
-		/********************* Send Email with attachment *******************/
-		if( $sender == "true"){
-			$name = $contract->getSenderData->shop_name;
-			$to = $contract->getSenderData->email;
-		} else {
-			$name = $contract->get_receiver_data->name;
-			$to = $contract->email;
-		}
-		$template = $this->createTemplate('attachment');
-		
-		$constants = ['%RECEIVER_NAME%'];
-		$values   = [$name];
-		$message = str_replace($constants, $values, $template);
-		$from = "Admin <admin@clerk.io>";
-		
-		$attachment = $content;
-		$filename = 'contract-' . $contract->id .'.pdf';
-
-		$boundary = md5(date('r', time()));
-
-		$headers = "From: $from";
-
-		$headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
-
-		$message = "This is a multi-part message in MIME format.
-
---_1_$boundary
-Content-Type: multipart/alternative; boundary=\"_2_$boundary\"
-
---_2_$boundary
-Content-Type: text/html; charset=\"utf-8\"
-Content-Transfer-Encoding: 7bit
-
-$message
-
---_2_$boundary--
---_1_$boundary
-Content-Type: application/octet-stream; name=\"$filename\" 
-Content-Transfer-Encoding: base64 
-Content-Disposition: attachment 
-
-$attachment
---_1_$boundary--";
-
-		if(mail($to, "Contract Attachment", $message, $headers)){
-			return new Response([
-				'message' => 'Contract attachment sent successfully',
-				'statusCode' => 200
-			]);
-		} else {
-			return new Response([
-				'message' => 'Contract attachment not sent',
-				'statusCode' => 404
-			]);
-		}
-		
-    }
 }

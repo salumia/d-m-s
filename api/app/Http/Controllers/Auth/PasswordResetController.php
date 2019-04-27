@@ -19,8 +19,8 @@ class PasswordResetController extends Controller
             'email' => $email,
             'token' => str_random(10),
         ]);
-        $token = $reset->token;
-        Mail::send('emails.reset_link', compact('email', 'token'), function ($mail) use ($email) {
+		$reset_password_url = config('constants.url').'#/reset-password/'.$reset->token;
+        Mail::send('emails.reset_link', compact('email', 'reset_password_url'), function ($mail) use ($email) {
             $mail->to($email)
             ->from('noreply@example.com')
             ->subject('Password reset link');

@@ -147,5 +147,13 @@ export class AuthService {
   private doLogout(): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(this.apiUrl + '/logout', null);
   }
+  
+  public getTokenData(token: any) {
+    return this.http.get<any>(this.apiUrl + '/find/' + token);
+  }
+  
+  public resetPassword(data) {
+    return this.http.post<any>(this.apiUrl + '/reset',data);
+  }
 
 }

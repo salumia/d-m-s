@@ -6,6 +6,8 @@ import { Contract } from '../contract';
 import { Message, SelectItem } from 'primeng/api';
 import { AuthService } from '../../auth/auth.service';
 import { Location} from '@angular/common';
+import { MessageService } from 'primeng/components/common/messageservice';
+import { ConfigServiceService } from '../../config-service.service';
 
 @Component({
   selector: 'app-contract-preview',
@@ -19,13 +21,15 @@ export class ContractPreviewComponent implements OnInit {
 	msgs: Message[] = [];
 	loggedInUser: any;
 	loadSpinner: boolean = false;
+	apiUrl: any;
 	
 	senderActive: boolean = false;
 	contract: Contract;
 	user_contract_parts: any[];
 	contractLog: any;
 
-	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private auth: AuthService, private _location: Location) {
+	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private auth: AuthService, private _location: Location,  config: ConfigServiceService, private messageService: MessageService) {
+		this.apiUrl = config.getApiUrl();
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
 			this.loadSpinner = true;
@@ -79,14 +83,22 @@ export class ContractPreviewComponent implements OnInit {
     }
 	
 	printPreview(){
+		let contractUrl = this.apiUrl + '/contract/' + this.id + '/print';
 		let printContent = document.getElementById("tab01").innerHTML;
 		let originalContents = document.body.innerHTML;
-		let WindowPrt = window.open('', '', 'left=0,top=0,width=900,height=auto');
-		WindowPrt.document.write(originalContents);
-		WindowPrt.document.body.innerHTML = printContent;
-		WindowPrt.document.close();
+		let WindowPrt = window.open(contractUrl, '', 'left=0,top=0,width=700,height=auto');
 		WindowPrt.focus();
 		WindowPrt.print();
 		WindowPrt.close();
+	}
+	
+	sendEmail(){
+		this.contractService.sendContractAttachment(this.id, this.senderActive).subscribe(res => {	
+			if(res.statusCode == 200){
+				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
+			} else {
+				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: res.message});
+			}
+		});
 	}
 }

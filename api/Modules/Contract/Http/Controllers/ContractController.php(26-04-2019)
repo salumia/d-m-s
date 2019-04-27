@@ -13,7 +13,6 @@ use Modules\Notification\Entities\Notification;
 use App\User;
 use App\VendorUser;
 use PDF;
-use Illuminate\Support\Facades\Mail;
 
 class ContractController extends Controller
 {
@@ -248,13 +247,15 @@ class ContractController extends Controller
 		} else {
 			$receiver = VendorUser::find($contract->receiver_id);
 		}
-		$data = array(
-			"receiver_name" => $receiver->name,
-			"sender_name" => $sender->shop_name,
-			"contract_url" => config('constants.url').'#/access-contract/'.$contract->access_token,
-			"contract_pin" => $contract->pin
-		);
-		$this->sendNotification($sender->shop_name, $sender->email, $contract->email, $receiver->name, "New Contract  Clerk", $data, 'mail.contract_created');
+		$message = "";
+		$message .= "<div style='font-family:Verdana,Tahoma,Helvetica,Arial,sans-serif'>";
+		$message .= "Hi ".$receiver->name."<br><br>";
+		$message .= $sender->shop_name." has just created contract with you. Please click <a href='".config('constants.url').'#/access-contract/'.$contract->access_token."'>here</a> to access the contract<br><br>";
+		$message .= "This link will be expired in 24 hours. Here is your pin <b>".$contract->pin."</b> to authorize your contract access.<br><br>";
+		$message .= "Best Regards,<br>";
+		$message .= "Clerk Team<br>";
+		$message .= "</div>";
+		$this->sendNotification($sender->shop_name." <".$sender->email."", $contract->email, "New Contract  Clerk", $message);
 	}
 	
 	public function openContract($contract, Request $request){
@@ -285,6 +286,8 @@ class ContractController extends Controller
 		$logData['type'] = 'open';			
 		$logData['iteration'] = $iteration + 1;			
 		ContractLog::create($logData);
+		
+		$template = $this->createTemplate('finalized');
 			
 		$sender = VendorUser::find($contract->sender_id);
 		if($contract->receiver_role == "user"){
@@ -294,26 +297,19 @@ class ContractController extends Controller
 		}
 		
 		/*** Notify Sender ***/
+		$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+		$values   = [$sender->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+		$message = str_replace($constants, $values, $template);
 		
-		$data = array(
-			"notify" => $sender->name,
-			"creator" => $sender->shop_name,
-			"receiver" => $receiver->name,
-			"contract_url" => config('constants.url').'#/contract/preview/'.$contract->id,
-		);
-		
-		$this->sendNotification("Admin", "admin@clerk.io", $sender->email, $sender->name, "Contract Opened Again", $data, 'mail.contract_reopen');
+		$this->sendNotification("Admin <admin@clerk.io>", $sender->email, "Contract Finalized", $message);
 		
 		/*** Notify Receiver ***/
-		$data1 = array(
-			"notify" => $receiver->name,
-			"creator" => $sender->shop_name,
-			"receiver" => $receiver->name,
-			"contract_url" => config('constants.url').'#/contract/preview/'.$contract->id,
-		);
 		
-		$this->sendNotification("Admin", "admin@clerk.io", $receiver->email, $receiver->name, "Contract Opened Again", $data1, 'mail.contract_reopen');
-
+		$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+		$values   = [$receiver->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+		$message = str_replace($constants, $values, $template);
+		
+		$this->sendNotification("Admin <admin@clerk.io>", $receiver->email, "Contract Opened Again", $message);
 		
 		return new Response([
             'message' => 'Contract status updated',
@@ -326,18 +322,16 @@ class ContractController extends Controller
 		
 		$contract = Contract::find($contract);
 		$contract->status = $data['status'];
-		
-		if($data['isSender']){
-			$notification_receiver =  'receiver';
-		} else {
+		if($contract->sender_flag == 2){
 			$notification_receiver =  'sender';
+		} else {
+			$notification_receiver =  'receiver';
 		}	
 		
 		if($data['status'] == 4){
 			$contract->sender_flag = 2;
 			$contract->receiver_flag = 2;
 		}
-		
 		if(isset($data['signature']) && !empty($data['signature'])){
 			if(isset($data['isSender']) && $data['isSender']){
 				$contract->sender_signature = $data['signature'];
@@ -371,7 +365,6 @@ class ContractController extends Controller
 								
 				$logData['user'] = 'receiver';
 			}
-			
 			$notification['ref_id'] = $contract->id;
 			Notification::create($notification);
 			
@@ -400,7 +393,8 @@ class ContractController extends Controller
 		/******* Update Contract Table*********/
 		$contract = Contract::find($contract); 
 		if($data['sender']){
-			$role = 'sender';			
+			$role = 'sender';
+			$notification_receiver = 'sender';
 			$contract->sender_flag = 1; 
 			$contract->receiver_flag = 2;
 			$contract->save();
@@ -416,8 +410,6 @@ class ContractController extends Controller
 			$contract->receiver_flag = 1;
 			$contract->sender_flag = 2;
 			$contract->save();
-			
-			$notification_receiver = 'sender';
 			
 			$notification = [];
 			$notification['type'] = 'review';
@@ -559,12 +551,25 @@ class ContractController extends Controller
 		}
 	}
 	
-	public function sendNotification($from_name, $from_email, $to_email, $to_name, $subject= 'Default Subject',$data = [],$template = 'mail.contract_created') {
-		Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
-			$message->to($to_email, $to_name)
-					->subject($subject);
-			$message->from($from_email,$from_name);
-		});
+	public function sendNotification($from, $to, $subject, $message) {
+			$boundary = md5(date('r', time()));
+    $headers = "From: $from";
+    $headers .= "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"_1_$boundary\"";
+
+            $message = "This is a multi-part message in MIME format.
+
+--_1_$boundary
+Content-Type: multipart/alternative; boundary=\"_2_$boundary\"
+
+--_2_$boundary
+Content-Type: text/html; charset=\"utf-8\"
+Content-Transfer-Encoding: 7bit
+
+$message
+
+--_2_$boundary--";
+
+    mail($to, $subject, $message, $headers);
 	}
 	
 	private function generateRandomString($length = 10) {
@@ -596,53 +601,42 @@ class ContractController extends Controller
 			$other = $sender;
 		}	
 		
-		if($contract->status == 3){
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'status'=>'rejected',
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Contract Rejected", $data, 'mail.contract_status_update');
+		if($contract->status == 3){			
+			$template = $this->createTemplate('reject');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%ACTION%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name,'rejected', config('constants.url').'#/contract/preview'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Contract Rejected", $message);
 		} else if($contract->status == 2){
-			
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'status'=>'accepted',
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Contract Accepted", $data, 'mail.contract_status_update');
+			$template = $this->createTemplate('accept');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%ACTION%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name,'accepted', config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Contract Accepted", $message);
 		} else if($contract->status == 4){
+			$template = $this->createTemplate('finalized');
 			
-			$data = array(
-				'notify'=>$sender->shop_name,
-				'creator'=>$sender->shop_name,
-				'receiver'=>$receiver->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			$this->sendNotification("Admin", "admin@clerk.io", $sender->email, $sender->name, "Contract Finalized", $data, 'mail.contract_finalized');
+			/*** Notify Sender ***/
+			$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+			$values   = [$sender->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
 			
-			/*** Notify Receiver ***/			
+			$this->sendNotification("Admin <admin@clerk.io>", $sender->email, "Contract Finalized", $message);
 			
-			$data = array(
-				'notify'=>$receiver->name,
-				'creator'=>$sender->shop_name,
-				'receiver'=>$receiver->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
+			/*** Notify Receiver ***/
 			
-			$this->sendNotification("Admin", "admin@clerk.io", $receiver->email, $receiver->name, "Contract Finalized", $data, 'mail.contract_finalized');			
+			$constants = ['%NOTIFY%','%CREATOR%','%RECEIVER%','%CONTRACT_URL%'];
+			$values   = [$receiver->name, $sender->name,$receiver->name, config('constants.url').'#/contract/preview/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
 			
-		} else {			
+			$this->sendNotification("Admin <admin@clerk.io>", $receiver->email, "Contract Finalized", $message);
 			
-			$data = array(
-				'receiver_name'=>$notify_user->name,
-				'other_name'=>$other->name,
-				'contract_url'=>config('constants.url').'#/contract/preview'.$contract->id,
-			);
-			
-			$this->sendNotification($other->name, $other->email, $notify_user->email, $notify_user->name, "Review Contract", $data, 'mail.contract_reviewed');
+		} else {
+			$template = $this->createTemplate('reviewed');
+			$constants = ['%RECEIVER_NAME%','%OTHER_NAME%','%CONTRACT_URL%'];
+			$values   = [$notify_user->name, $other->name, config('constants.url').'#/contract/review/'.$contract->id];
+			$message = str_replace($constants, $values, $template);
+			$this->sendNotification($other->name." <".$other->email.">", $notify_user->email, "Review Contract", $message);
 		}
 		
 	}
@@ -707,7 +701,8 @@ class ContractController extends Controller
 		
 		return $message;
 	}
-		
+	
+	
 	public function showPdf(Request $request,$id){
 			$contract = Contract::find($id);
 			$contract->getCategoryData;

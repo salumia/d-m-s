@@ -19,9 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return 'working';
     //return $request->user();
 });*/
- Route::post('reset-password', 'PasswordResetController@create');
-//   Route::get('find/{token}', 'PasswordResetController@find');
-//   Route::post('reset', 'PasswordResetController@reset');
+Route::post('reset-password', 'PasswordResetController@create');
+Route::get('find/{token}', 'PasswordResetController@find');
+Route::post('reset', 'PasswordResetController@reset');
+
 // //Route::post('reset-password', 'Auth\RegisterController@register');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('login', 'Auth\LoginController@login');

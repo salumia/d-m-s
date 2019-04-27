@@ -58,6 +58,9 @@
 			 <strong *ngIf="contract.receiver_flag == 2&&contract.get_receiver_data == null">{{contract.email}}</strong> 
             </span>
 			<span *ngIf="contract.status == 2">
+              Accepted ( by <strong *ngIf="contract.sender_flag == 2">{{contract.get_sender_data.username}}</strong><strong *ngIf="contract.receiver_flag == 2">{{contract.get_receiver_data.username}}</strong> ) 
+            </span>
+			<span *ngIf="contract.status == 4">
               Finalized
             </span>
 			
@@ -75,7 +78,7 @@
 			<!-- Preview can be seen in all scenario -->
             <a title="Preview" class='btn bg-primary listing-actions' [routerLink]="'/contract/preview/' + contract.id" ><i class="fa fa-search"></i></a>	
 			
-			<a title="Open Contract" *ngIf="contract.status == 2||contract.status == 3"  class='btn bg-danger listing-actions' (click)="openContract(contract.id)" ><i class="fa fa-pencil-square-o"></i></a>
+			<a title="Open Contract" *ngIf="contract.status == 4||contract.status == 3"  class='btn bg-danger listing-actions' (click)="openContract(contract.id)" ><i class="fa fa-pencil-square-o"></i></a>
 			
 			<!-- IF Contract is in Draft state, then it can be edited/deleted-->
 			<!--<a title="Edit" *ngIf="contract.status == 0"  class='btn bg-primary listing-actions' [routerLink]="'/contract/edit/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>

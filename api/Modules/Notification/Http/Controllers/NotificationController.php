@@ -27,7 +27,6 @@ class NotificationController extends Controller
 		$userNotifications = Notification::where([['user_id','=',$this->user],['role','=',$role]])->orderBy('id', 'DESC')->get();
 		foreach($userNotifications as $notify){
 			$notify->getReferenceData;
-			//echo "<pre>";print_r($notify);
 			if($notify->role == 'vendor'  && $notify->user_id == $notify->getReferenceData->sender_id){
 				if($notify->getReferenceData->receiver_role == 'user'){
 					$notify->get_sender_data = User::find($notify->getReferenceData->receiver_id);

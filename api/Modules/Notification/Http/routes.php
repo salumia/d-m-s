@@ -3,5 +3,5 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 {
 	Route::resource('notification', 'NotificationController');//->middleware('auth:api');
 	Route::get('notification/user/{id}/{role}', 'NotificationController@userNotifications');
-	Route::post('notification/view/user/{id}', 'NotificationController@disableNotification');
+	Route::post('notification/view/user/{id}', 'NotificationController@disableNotification');	
 });

@@ -17,9 +17,9 @@
 				<!-- Page Title End -->
 			</div>
 			<div class="col-lg-6 text-right">
-				<!-- <a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-envelope"></i> Email</a> -->
 				<a href="javascript:void(0);" (click)="printPreview()" class="btn btn-rounded btn-warning"><i class="fa fa-print"></i> Print</a>
-				<a href="http://localhost:8000/api/contract/1/save_pdf" class="btn btn-rounded btn-warning"><i class="fa fa-download"></i> Save PDF</a>
+				<a href="{{apiUrl}}/contract/{{id}}/save_pdf" class="btn btn-rounded btn-warning"><i class="fa fa-download"></i> Download</a>
+				<a href="javascript:void(0);" (click)="sendEmail()" class="btn btn-rounded btn-warning"><i class="fa fa-envelope"></i> Email</a>
 			</div>  
 		</div>
 		<p-tabView>

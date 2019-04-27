@@ -13,6 +13,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\
 	Route::get('contract/log/{id}', 'ContractController@getContractLog'); 
 	Route::get('contract/payment/{id}', 'ContractController@contractPayment'); 	
 	Route::get('contract/{id}/save_pdf', 'ContractController@showPdf');
+	Route::get('contract/{id}/print', 'ContractController@printContract');
+	Route::get('contract/{id}/email/{sender}', 'ContractController@sendContractAttachmentEmail');
 		
 	Route::resource('category', 'CategoriesController');
 	Route::post('category/disable-category/{category}', 'CategoriesController@disableCategory');

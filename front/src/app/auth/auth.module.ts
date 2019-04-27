@@ -19,6 +19,7 @@ import { SignupComponent } from './signup/signup.component';
 
 import { InputMaskModule } from 'primeng/inputmask';
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   imports: [
@@ -34,6 +35,6 @@ import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
 	InputMaskModule,
 	Ng4GeoautocompleteModule
   ],
-  declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent]
+  declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent, ResetPasswordComponent]
 })
 export class AuthModule { }
