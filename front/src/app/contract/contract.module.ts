@@ -68,6 +68,13 @@ import {AccordionModule} from 'primeng/accordion';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import { AccessContractComponent } from './access-contract/access-contract.component';
 
+import {TooltipModule} from 'primeng/tooltip';
+import { ContractSettingComponent } from './contract-setting/contract-setting.component';
+
+import {EditorModule} from 'primeng/editor';
+
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -100,10 +107,12 @@ import { AccessContractComponent } from './access-contract/access-contract.compo
 	CardModule,
 	CaptchaModule,
 	AccordionModule,
-	AutoCompleteModule
+	AutoCompleteModule,
+	TooltipModule,
+	EditorModule
   ],
   providers: [AuthService, UserService, CategoryService, IndustryService, ContractTypeService, PartService, SetService, ConfirmationService, ContractService],
-  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent, AccessContractComponent]
+  declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent, AccessContractComponent, ContractSettingComponent]
 })
 export class ContractModule {
   constructor(auth: AuthService, router: Router) {

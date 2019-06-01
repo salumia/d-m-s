@@ -6,6 +6,8 @@ import { AuthData } from '../auth-response';
 import { Message } from 'primeng/components/common/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TemplateConfigService } from '../../template/template-config.service';
+import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
   selector: 'app-forgot-password',
@@ -16,30 +18,41 @@ export class ForgotPasswordComponent implements OnInit {
   public username: string;
   public password: string;
   public msgs: Message[];
+  processing: boolean = false;
+  Forgotform: FormGroup;
+  
   @Output() onFilter: any = new EventEmitter();
-  constructor(private auth: AuthService, private router: Router, private templateService: TemplateConfigService) { }
+  constructor(private auth: AuthService, private router: Router, private templateService: TemplateConfigService,private fb: FormBuilder, private messageService: MessageService) { }
 
   ngOnInit() {
     if(this.auth.isLoggedIn()){
 		this.templateService.filter('header refresh');
 		this.router.navigate(['dashboard']);
 	}
+	this.Forgotform = this.fb.group({	
+		'username': new FormControl('', Validators.compose([Validators.required,Validators.email]))
+	});
   }
 
   doAuth() {
+	this.processing = true;
     const auth = this.username;
     this.auth.reset(auth).subscribe(res => {
-      if (res instanceof HttpErrorResponse) {
-        this.updateMessage('Note:', res.error.message);
-        this.clearForm();
-      } else if (res instanceof AuthData) {
-		  this.templateService.filter('header refresh');
-        this.router.navigateByUrl('/dashboard');
-      } else {
-        console.log(res);
-        this.updateMessage('Login Failed:', 'An unknown error occurred');
-        this.clearForm();
-      }
+		this.processing = false;
+		if (res instanceof HttpErrorResponse) {
+			if (res.error.statusCode == 404) {
+				this.updateMessage('Note:', res.error.message);
+				this.clearForm();
+			} else if (res.error.statusCode == 200) {
+				this.msgs = [];
+				this.msgs.push({
+				  severity: 'success',
+				  summary: 'Success',
+				  detail: res.error.message
+				});
+				this.clearForm();
+			}
+		}
     });
   }
 

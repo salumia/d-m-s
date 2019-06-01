@@ -126,8 +126,11 @@
 					</div>
 					<div class="form-group row">
 						<div class="col-md-9 offset-md-3">
-							<a [routerLink]="'/login'" *ngIf="contract.receiver_role == 'user'" class="btn btn-rounded btn-warning">Login</a>
-							<a [routerLink]="'/vendor-login'" *ngIf="contract.receiver_role == 'vendor'" class="btn btn-rounded btn-warning">Login</a>
+							<a [routerLink]="'/login'" *ngIf="contract.receiver_role == 'user'&&contract.get_receiver_data.password != ''" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
+							
+							<!-- <a href="javascript:void(0)" (click)="showPasswordBox()" *ngIf="contract.receiver_role == 'user'&&contract.get_receiver_data.password == ''" class="btn btn-rounded btn-warning">Login</a> -->
+							<a href="javascript:void(0)" [routerLink]="'/users/edit/'+contract.receiver_id+'/'+contract.id" *ngIf="contract.receiver_role == 'user'&&contract.get_receiver_data.password == ''" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
+							<a [routerLink]="'/vendor-login'" *ngIf="contract.receiver_role == 'vendor'" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
 						</div>
 					</div>
 			</div>	
@@ -144,6 +147,19 @@
 		</div>
 		<div class="col-md-4">
 			<button type="button" class="btn btn-primary" (click)="validatePIN()">Submit</button>
+		</div>
+	</div>
+</p-dialog>
+
+<p-dialog header="Setup your password" [(visible)]="passwordModel" [modal]="false" [closable]="false" [responsive]="true" [style]="{width: '400px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000">	
+	<div class="form-group row">
+		<div class="col-md-8">
+			<input type="text" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"  class="form-control" name="password">
+			<label class="text-success">{{passwordSuccess}}</label>
+			<label class="text-danger">{{passwordError}}</label>
+		</div>
+		<div class="col-md-4">
+			<button type="button" class="btn btn-primary" (click)="setPassword()">Submit</button>
 		</div>
 	</div>
 </p-dialog>

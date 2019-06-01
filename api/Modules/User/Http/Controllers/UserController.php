@@ -86,6 +86,10 @@ class UserController extends Controller
         // Load new data
         $data = $request->post();
 
+		if(isset($data['password']) && !empty($data['password'])){
+			$data['password'] = Hash::make($data['password']);
+		}
+		
         // Massage data
         unset($data['api_token_expires']);
         //$data['name'] = $data['first_name'] . ' ' . $data['last_name'];

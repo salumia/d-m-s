@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Modules\Contract\Entities\Contract;
 use Modules\Contract\Entities\ContractPart;
 use Modules\Contract\Entities\ContractLog;
+use Modules\Contract\Entities\ContractSetting;
 use Modules\Notification\Entities\Notification;
 use App\User;
 use App\VendorUser;
@@ -560,11 +561,12 @@ class ContractController extends Controller
 	}
 	
 	public function sendNotification($from_name, $from_email, $to_email, $to_name, $subject= 'Default Subject',$data = [],$template = 'mail.contract_created') {
-		Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
+		/* Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
 			$message->to($to_email, $to_name)
 					->subject($subject);
 			$message->from($from_email,$from_name);
-		});
+		}); */
+		return true;
 	}
 	
 	private function generateRandomString($length = 10) {
@@ -817,4 +819,19 @@ $attachment
 		}
 		
     }
+	
+	public function getTOS(Request $request){
+		$cs = ContractSetting::find(1);
+		return new Response($cs);
+	}
+	
+	public function saveTOS(Request $request){
+		$data = $request->post('terms');
+		$cs = ContractSetting::find(1);
+		$cs->tos = $data;
+		$cs->save();
+		return new Response([
+            'message' => 'Contract Terms of service updated Successfully',
+        ]);
+	}
 }

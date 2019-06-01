@@ -25,6 +25,7 @@ import { ContractPreviewComponent } from './contract-preview/contract-preview.co
 import { ContractListComponent } from './contract-list/contract-list.component';
 import { AdminContractListComponent } from './admin-contract-list/admin-contract-list.component';
 import { AccessContractComponent } from './access-contract/access-contract.component';
+import { ContractSettingComponent } from './contract-setting/contract-setting.component';
 
 const routes: Routes = [
 
@@ -58,7 +59,8 @@ const routes: Routes = [
   {path: 'contract/preview/:id', component: ContractPreviewComponent},
   {path: 'contracts', component: ContractListComponent},
   {path: 'contract-list', component: AdminContractListComponent},
-  {path: 'access-contract/:token', component: AccessContractComponent}
+  {path: 'access-contract/:token', component: AccessContractComponent},
+  {path: 'contract-settings', component: ContractSettingComponent}
 ];
 
 @NgModule({

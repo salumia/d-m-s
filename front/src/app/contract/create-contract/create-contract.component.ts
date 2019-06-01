@@ -46,8 +46,7 @@ export class CreateContractComponent implements OnInit {
 	selectedPart: any = {};
 	listPart: any;
 	listSet: any;
-	
-	captchaSolved = true;
+
 	selectedContact:string = "";
 	
     suggestions: any[];
@@ -67,10 +66,11 @@ export class CreateContractComponent implements OnInit {
 		this.loggedInUser = this.auth.getAuth();
 		if(this.id > 0 ){
 			this.loadContract();
-		}
-		//this.loadIndustries();
-		this.getIndustryParts();			
-		this.loadContractType();		
+		}		
+		
+		this.loadContractType();
+		
+		this.getIndustryParts();		
 		this.getUserSets();
 		
 		this.contractform = this.fb.group({
@@ -86,7 +86,7 @@ export class CreateContractComponent implements OnInit {
 	}
 	
 	loadContract() {
-		// Load Industry
+		// Load Contract
 		this.contractService.getContract(this.id).subscribe(res => {
 			console.log(res);
 		  this.contract = res;
@@ -101,51 +101,30 @@ export class CreateContractComponent implements OnInit {
 		  this.loadCategories();
 		});
 	}
-	/* loadIndustries() {
-		this.industryService.getIndustryList().subscribe(res => {
-		  this.industries = res;
-		  this.industries.unshift({label: 'Select', value: ''});
-		  this.loadCategories();		
-		});
-	} */
 	
 	loadCategories() {
-		//this.categoryService.getCategoryList().subscribe(res => {
 		this.categoryService.getIndustryCategoryList(this.loggedInUser.id).subscribe(res => {
 		  this.categories = res;
 		  this.categories.unshift({label: 'Select', value: null});
 		  this.loadSpinner = false;
-		  //this.loadContacts();
 		});
 	}
 	
-	loadContacts() {
-		this.contactService.getContactList(this.loggedInUser.id).subscribe(res => {
-		  this.contacts = res;
-		  this.contacts.unshift({label: 'Select', value: null});
-		  console.log(this.contacts);		  
-		});
-	}
-	
-	getIndustryParts() {	
-		//if(this.loggedInUser.industry_id > 0){	
+	getIndustryParts() {		
 		this.partService.getIndustryParts(this.loggedInUser.industry_id,this.loggedInUser.id).subscribe(res => {
 			this.industryParts = res;
-			console.log(this.industryParts);
 		});			
-		//}
 	}	
 	
 	getUserSets() {	
 		this.setService.getUserSetsArray(this.loggedInUser.id).subscribe(res => {
 			this.userSets = res;
-			console.log(this.userSets);
 		});
 	}
     
 	saveContract() {
 		console.log(this.contract);
-		if(this.captchaSolved){
+		if(this.user_contract_parts.length > 0){				
 			this.loadSpinner = true;
 			this.contract.sender_id = this.loggedInUser.id;
 			if(typeof this.contract.email == "undefined" || this.contract.email == "" || this.contract.email == null){
@@ -159,7 +138,6 @@ export class CreateContractComponent implements OnInit {
 				});
 				
 			}else{
-				console.log(this.contract);
 				if(typeof this.contract.pin == "undefined" || this.contract.pin == "" || this.contract.pin == null){
 					this.contractPinModel = true;
 				} else {
@@ -176,12 +154,11 @@ export class CreateContractComponent implements OnInit {
 						}			
 					});
 				}
-			}			
+			}
 		} else {
-			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please click on captcha"});	
+			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "There must be some terms to create the contract"});	
 		}
 	}
-	
 	
 	saveContractTerms(id) {
 		this.contractService.saveContractTerms(id, this.user_contract_parts, this.loggedInUser.id).subscribe(res => {
@@ -198,7 +175,6 @@ export class CreateContractComponent implements OnInit {
 	}
 	
 	showEditDialog(index){
-		//this.selectedPart = this.user_contract_parts[index];
 		this.selectedPart = { 
 								index:index,
 								id:this.user_contract_parts[index].id,
@@ -241,13 +217,6 @@ export class CreateContractComponent implements OnInit {
 		this.user_contract_parts[i].body = this.selectedPart.body;
 		this.editFormVisible = false;
 		console.log(this.selectedPart);
-	}
-	
-	onExpire(data){
-		this.captchaSolved = false;
-	}
-	showResponse(data){
-		this.captchaSolved = true;
 	}
 	
 	onSelectContact(event) {

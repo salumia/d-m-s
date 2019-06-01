@@ -16,6 +16,7 @@ declare var google: any;
 export class UserEditComponent implements OnInit {
 	@ViewChild('documentsChild') documentsChild;
 	id: number;
+	contract: any = false;
 	user: User = {} as User;	
 	msgs: Message[] = [];
 	Userform: FormGroup;
@@ -28,10 +29,11 @@ export class UserEditComponent implements OnInit {
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
 		this.showPassword = false;
 		aroute.params.subscribe(params => {
-			this.id = params['id'];
+			this.id = params['id'];			
 			if(this.id > 0){
 				this.editMode = true;
 				this.loadSpinner = true;
+				this.contract = params['contract'];
 			}
 		});		
 	}
@@ -57,6 +59,9 @@ export class UserEditComponent implements OnInit {
 	 
 	if(this.id > 0 ){
 		this.loadUser();
+		if(this.contract){
+			this.Userform.controls['password'].setValidators(Validators.required);
+		}
 	}else{
 		this.Userform.controls['password'].setValidators(Validators.required);
 	}
@@ -114,8 +119,12 @@ export class UserEditComponent implements OnInit {
 		this.loadSpinner = true;
 		this.userService.saveUser(this.id, this.user).subscribe(res => {
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});
-			setTimeout(() => {
-				this.router.navigate(['users']);
+			 setTimeout(() => {		 
+				if(this.contract){
+					this.router.navigate(['/login']);
+				} else {
+					this.router.navigate(['users']);
+				}
 			}, 2000);
 		});
 	}

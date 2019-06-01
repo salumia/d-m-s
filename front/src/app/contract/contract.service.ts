@@ -154,5 +154,22 @@ export class ContractService {
 		  }
 		});
 	}
-  
+	
+	getTermsOfService() {
+		const token = this.auth.getToken();
+		return this.http.get<any>(this.apiUrl + '/contract/get-tos',{
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
+			});
+	}
+	
+	saveTermsOfService(terms: any) {
+		const token = this.auth.getToken();
+		return this.http.post<any>(this.apiUrl + '/contract/tos',{ terms:terms}, {
+				headers: {
+					Authorization: 'Bearer ' + token
+				}
+			});
+	}
 }

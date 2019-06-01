@@ -12,14 +12,16 @@ import { LogoutComponent } from './logout/logout.component';
 // Controls
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { DropdownModule, InputTextModule } from 'primeng/primeng';
 import { SignupComponent } from './signup/signup.component';
 
 import { InputMaskModule } from 'primeng/inputmask';
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
+import {ProgressBarModule} from 'primeng/progressbar';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+
 
 @NgModule({
   imports: [
@@ -30,10 +32,12 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 	PanelModule,
 	ButtonModule,
 	InputTextModule,
+	DropdownModule,
 	MessagesModule,
 	MessageModule,
 	InputMaskModule,
-	Ng4GeoautocompleteModule
+	Ng4GeoautocompleteModule,
+	ProgressBarModule
   ],
   declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent, ResetPasswordComponent]
 })

@@ -17,12 +17,16 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const routes: Routes = [
+
   {path: 'settings/users', component: UserListComponent},
   {path: 'users', component: UserListComponent},
   {path: 'users/create', component: UserEditComponent},  
   {path: 'users/edit/:id', component: UserEditComponent},
+  {path: 'users/edit/:id/:contract', component: UserEditComponent},
+  
   {path: 'settings/users/create', component: UserEditComponent},
   {path: 'settings/users/edit/:id', component: UserEditComponent},
+  
   {path: 'users/view/:id', component: ViewComponent},
   {path: 'user/change-password', component: ChangePasswordComponent},
   

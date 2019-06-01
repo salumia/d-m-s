@@ -16,6 +16,7 @@ import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms'
 export class ResetPasswordComponent implements OnInit {
 	public token: string;	
 	public submitBtnEnable: boolean = false;
+	public show: boolean = true;
 
 	resetPasswordForm: FormGroup;
 	
@@ -74,6 +75,7 @@ export class ResetPasswordComponent implements OnInit {
 				  summary: 'Sucess :',
 				  detail: 'Password reset successfully',
 				});
+				this.show = false;
 				this.clearForm();
 			}
 		});

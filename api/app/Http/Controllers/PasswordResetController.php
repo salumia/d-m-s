@@ -29,7 +29,8 @@ class PasswordResetController extends Controller {
 				$user = AdminUser::where('email', $request->email)->first();
 				if (!$user){
 					return response()->json([
-						'message' => 'We can\'t find a user with that e-mail address.'
+						'message' => 'We can\'t find a user with that e-mail address.',
+						'statusCode' => 404
 					], 404);
 				}
 			}
@@ -51,6 +52,7 @@ class PasswordResetController extends Controller {
 			});
         return response()->json([
             'message' => 'We have e-mailed your password reset link!',
+			'statusCode' => 200
        ], 404);
     }
     /**

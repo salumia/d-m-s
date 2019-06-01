@@ -70,7 +70,7 @@
 			<!-- Nav User Start -->
 			<li class="nav-item dropdown nav--user online" *ngIf="loggedInMenus">
 				<a href="javascript:return false;" (click)="menu.toggle($event)" class="nav-link" data-toggle="dropdown">
-					<img src="http://bookkeeper.shredex.net/resources/assets/images/placeholder.jpg" alt="" class="rounded-circle">
+					<img src="assets/placeholder.jpg" alt="" class="rounded-circle">
 					<span>{{userData.name}}</span>
 					<i class="fa fa-angle-down"></i>
 				</a>
@@ -102,6 +102,43 @@
 							<span>Dashboard</span>
 						</a>
 					</li> 
+					<li class="active">
+						<a routerLink="/contacts" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-address-book"></i>
+							<span>Contacts</span>
+						</a>
+					</li>					
+					<li class="active">
+						<a routerLink="/contracts" *ngIf="userData.role != 'admin'">
+							<i class="fa fa-file"></i>
+							<span>Documents</span>
+						</a>
+					</li>
+					<li class="active" *ngIf="userData.role == 'vendor'">
+                        <a href="#"><i class="fa fa-newspaper"></i> Settings</a>
+                        <ul>
+							<li class="active">
+								<a routerLink="/sets">
+									<i class="fa fa-list"></i>
+									<span>Manage Sets</span>
+								</a>
+							</li>
+							<li class="active">
+								<a routerLink="/parts">
+									<i class="fa fa-list-alt"></i>
+									<span>Manage Parts</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="active">
+						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
+							<i class="fa fa-file-alt"></i>
+							<span>Create Contract</span>
+						</a>
+					</li>
+					
+					
 					
 					<li class="active">
 						<a routerLink="/users" routerLinkActive="active" *ngIf="userData.role == 'admin'">
@@ -117,37 +154,7 @@
 						</a>
 					</li>
 					
-					<li class="active">
-						<a routerLink="/sets" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-list"></i>
-							<span>Manage Sets</span>
-						</a>
-					</li>
-					<li class="active">
-						<a routerLink="/parts" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-list-alt"></i>
-							<span>Manage Parts</span>
-						</a>
-					</li>
-					<li class="active">
-						<a routerLink="/contacts" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-address-book"></i>
-							<span>Manage Contacts</span>
-						</a>
-					</li>
 					
-					<li class="active">
-						<a routerLink="/contracts" *ngIf="userData.role != 'admin'">
-							<i class="fa fa-file"></i>
-							<span>Manage Contracts</span>
-						</a>
-					</li>
-					<li class="active">
-						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-file-alt"></i>
-							<span>Create Contract</span>
-						</a>
-					</li>
 					
 					<li class="active" *ngIf="userData.role == 'admin'">
                         <a href="#"><i class="fa fa-newspaper"></i> Contract Components</a>
@@ -171,6 +178,11 @@
 							<li class="active">
 								<a routerLink="/contract/types" routerLinkActive="active">
 									<span>Manage Types</span>
+								</a>						
+							</li>	
+							<li class="active">
+								<a routerLink="/contract-settings" routerLinkActive="active">
+									<span>Contract TOS</span>
 								</a>						
 							</li>							
                         </ul>

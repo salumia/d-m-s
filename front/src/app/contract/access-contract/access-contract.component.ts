@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractService } from '../contract.service';
+import { UserService } from '../../user/user.service';
 
 import { Contract } from '../contract';
 import { Message, SelectItem } from 'primeng/api';
 import { AuthService } from '../../auth/auth.service';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { Location} from '@angular/common';
+
 
 @Component({
   selector: 'app-access-contract',
@@ -29,8 +31,13 @@ export class AccessContractComponent implements OnInit {
 	contractPinModel: boolean = false;
 	contractPin: any = "";
 	contractPinError: any = "";
+	
+	passwordModel: boolean = false;
+	password: any = "";
+	passwordError: any = "";
+	passwordSuccess: any = "";
 
-	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private auth: AuthService, private _location: Location, private messageService: MessageService) {
+	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private auth: AuthService, private _location: Location, private messageService: MessageService, private userService: UserService) {
 		aroute.params.subscribe(params => {
 			this.token = params['token'];
 			this.loadSpinner = true;
@@ -46,7 +53,7 @@ export class AccessContractComponent implements OnInit {
 	
 	loadContract() {
 		this.contractService.getContractByToken(this.token).subscribe(res => {	
-			this.contract = res;			
+			this.contract = res;
 			if(this.checkTokenExpiration(this.contract.token_expiration)){
 				this.linkExpired = false;
 				this.contractPinModel = true;
@@ -90,6 +97,27 @@ export class AccessContractComponent implements OnInit {
 			}
 		} else {
 			this.contractPinError = "Please enter contract PIN";
+		}
+	
+	}
+	
+	showPasswordBox(){
+		this.passwordModel = true;
+	}	
+	
+	setPassword(){
+		this.passwordError = "";
+		this.passwordSuccess = "";
+		if(this.password != ""){
+			this.userService.changePassword(this.contract.get_receiver_data.id, '', this.password).subscribe(res => {
+				this.password = '';
+				this.passwordSuccess = "Password saved successfully. Redirecting...";	
+				setTimeout(()=>{
+					  this.router.navigateByUrl('login');
+				 }, 3000);				
+			});
+		} else {
+			this.passwordError = "Please enter password";
 		}
 	
 	}

@@ -63,26 +63,20 @@ export class HeaderComponent implements OnInit {
 	}
   
   loadNotification(){	
-	console.log('calling');
 	if(this.userData != null){
 		this.userService.userNotifications(this.userData.id,this.userData.role).subscribe(res => {
 			this.notifications = res;
 			this.badge = 0;
 			for (let notify of this.notifications) {
-			   console.log(notify);
 			   if(notify.is_viewed == 0){
 				   this.badge = this.badge + 1;
 			   }
 			}
-			
-			console.log('notifications');
-			console.log(this.notifications);
 		});  
 	}	
   }
   
-  refreshHeader() {
-	console.log('header refresh');	
+  refreshHeader() {	
 	this.userData = this.auth.getAuth();	 
 	this.setSettingMenus();
 	if(this.userData != null){

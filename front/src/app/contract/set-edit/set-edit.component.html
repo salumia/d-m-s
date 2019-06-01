@@ -37,16 +37,17 @@
 						<p-pickList [source]="sourceParts" [target]="selectedParts" sourceHeader="Available Parts" targetHeader="Selected Parts" [responsive]="true" filterBy="title" dragdrop="true" sourceFilterPlaceholder="Search by Title" targetFilterPlaceholder="Search by Title" [sourceStyle]="{'height':'600px'}" [targetStyle]="{'height':'600px'}">
 							<ng-template let-part pTemplate="item">
 								<div class="ui-helper-clearfix">
-									<div class="ui-g">
+									<!-- <div class="ui-g" pTooltip="{{part.body}}" tooltipPosition="top"> -->
+									<div class="ui-g" title="{{part.body}}">
 										<div class="ui-g-6"><strong>Title</strong>: {{part.title}}</div>
 										<div class="ui-g-6 text-right">
 											<strong>Industry</strong>: {{part.get_industry_data.name}}
 											<span class="global" *ngIf="part.type == 1">Global</span>
 										</div>
 									</div>
-									<div class="ui-g">
+									<!-- <div class="ui-g">
 										<div class="ui-g-12">{{part.body}}</div>
-									</div>
+									</div> -->
 								</div>
 							</ng-template>
 						</p-pickList>  

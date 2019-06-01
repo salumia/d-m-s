@@ -334,13 +334,13 @@
 <p-dialog header="Terms of service" [(visible)]="showDigitalSignBox" [modal]="true" [responsive]="true" [style]="{width: '700px'}" [minY]="10" [baseZIndex]="10000">
 	<div style="width:700px;">
 		<div class="form-group row">
-			<div class="col-md-12">
-			  <ol class="list-group" style="padding-left:15px;">
+			<div class="col-md-12 tos" [innerHTML]="terms">
+			  <!-- <ol class="list-group" style="padding-left:15px;">
 				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
 				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
 				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
 				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
-			  </ol>
+			  </ol> -->
 			</div>	
 			<div class="col-md-12">
 				<div class="checkbox">

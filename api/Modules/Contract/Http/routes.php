@@ -2,6 +2,8 @@
 
 Route::group(['middleware' => 'api', 'prefix' => 'api', 'namespace' => 'Modules\Contract\Http\Controllers'], function()
 {
+	Route::get('contract/get-tos', 'ContractController@getTOS');
+	Route::post('contract/tos', 'ContractController@saveTOS');
 	Route::post('contract/saveparts/{contract}/{user}', 'ContractController@saveContractParts');
 	Route::post('contract/updateparts/{contract}/{user}', 'ContractController@updateContractParts');
 	Route::get('contract/token/{token}', 'ContractController@contractByToken');

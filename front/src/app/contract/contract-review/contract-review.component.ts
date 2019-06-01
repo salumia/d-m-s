@@ -68,6 +68,8 @@ export class ContractReviewComponent implements OnInit {
 	
 	contractPin: any = "";
 	contractPinError: any = "";
+	
+	terms: string = '';
 
 	constructor(aroute: ActivatedRoute, private router: Router, private contractService: ContractService, private contactService: ContactService, private partService: PartService, private setService: SetService, private industryService: IndustryService, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location,  private confirmationService: ConfirmationService) {
 		aroute.params.subscribe(params => {
@@ -82,6 +84,7 @@ export class ContractReviewComponent implements OnInit {
 		this.getIndustryParts();
 		if(this.id > 0 ){
 			this.loadContract();
+			this.loadTOS();
 		}		
 	}
 	
@@ -105,6 +108,12 @@ export class ContractReviewComponent implements OnInit {
 								this.router.navigate(['contracts']);
 							}, 2000);				
 			}
+		});
+	}
+	
+	loadTOS() {		
+		this.contractService.getTermsOfService().subscribe(res => {
+			this.terms = res.tos;
 		});
 	}
 	

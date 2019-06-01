@@ -5,6 +5,11 @@ import { Vendor } from '../../user/vendor';
 import { Message, SelectItem } from 'primeng/api';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { MessageService } from 'primeng/components/common/messageservice';
+import { IndustryService } from '../../contract/industry.service';
+
+import { AuthService } from '../auth.service';
+import { Auth } from '../auth';
+import { AuthData } from '../auth-response';
 
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -21,24 +26,43 @@ export class SignupComponent implements OnInit {
 	msgs: Message[] = [];
 	Userform: FormGroup;
 	userSettings: any = {};
+	industries: SelectItem[] = [];
+	
+	showPassword: boolean;
 
-	constructor(private userService: UserService, private router: Router, private fb: FormBuilder, private messageService: MessageService) {}
+	constructor(private auth: AuthService, private userService: UserService, private router: Router, private fb: FormBuilder, private messageService: MessageService, private industryService:IndustryService) {}
 
 	ngOnInit() {
+		if(this.auth.isLoggedIn()){
+			this.router.navigate(['dashboard']);
+		}
+		this.loadIndustries();
 		this.userSettings['inputPlaceholderText'] = 'Find Street Address';
 		this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
 		
 		this.Userform = this.fb.group({
 			'name': new FormControl('', Validators.required),
 			'shop_name': new FormControl('', Validators.required),
+			'industry_id': new FormControl('', Validators.required),
 			'phone': new FormControl('', Validators.required),
 			'username': new FormControl('', Validators.compose([Validators.required]), this.isUsernameUnique.bind(this)),			
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]), this.isEmailUnique.bind(this)),					
-			'fax': new FormControl('', Validators.required),
+			'fax': new FormControl(''),
 			'address': new FormControl(''),
 			'city': new FormControl('', Validators.required),
 			'zip': new FormControl('', Validators.required),
 			'password': new FormControl('', Validators.required)
+		});
+	}
+	
+	loadIndustries() {
+		this.industryService.getIndustryList().subscribe(res => {
+			for(let i=0;i< res.length; i++){
+				if(res[i].value != 1){
+					this.industries.push(res[i]);
+				}
+			}
+			this.industries.unshift({label: 'Select', value: ''});		
 		});
 	}
 	
@@ -83,13 +107,27 @@ export class SignupComponent implements OnInit {
 	
 	saveUser() {
 		this.userService.saveVendor(0, this.user).subscribe(res => {
+			window.scroll(0,0);
 			if(res instanceof HttpErrorResponse) {
 				this.updateMessage('Sign up Failed:', res.error.message, 'error');
 			} else {
 				this.updateMessage('Success :', res.message, 'success');
 				setTimeout(() => {
-					this.router.navigate(['vendor-login']);
+					this.doAuth();
+					//this.router.navigate(['vendor-login']);
 				}, 2000);
+			}
+		});
+	}
+	
+	doAuth() {
+		let auth: Auth = new Auth(this.user.email, this.user.password);
+
+		this.auth.loginVendor(auth).subscribe(res => {
+			if(res instanceof HttpErrorResponse) {
+				this.updateMessage('Login Failed :', res.error.message, 'error');				
+			} else if(res instanceof AuthData) {
+				location.reload();		
 			}
 		});
 	}
@@ -102,7 +140,11 @@ export class SignupComponent implements OnInit {
 		  detail: detail
 		});
 	  }
-	  
+	
+	toggle_password() {
+		this.showPassword = !this.showPassword;
+    }
+	
 	autoCompleteCallback1(googleAddress:any){
 		console.log(googleAddress);
 		if( googleAddress.status == "OK" || googleAddress.response){

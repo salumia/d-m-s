@@ -6940,3 +6940,12 @@ textarea.form-control{
 .pricing--item{
 	margin:0 20px;
 }
+
+#vendor-signup p-dropdown, ng4geo-autocomplete{ width:100% !important;}
+#vendor-signup p-dropdown .ui-dropdown{ width:100% !important;}
+input.ui-state-default, .ui-widget-content input.ui-state-default, .ui-widget-header input.ui-state-default{
+	background:#FFFFFF !important;
+}
+#vendor-signup textarea,#vendor-signup input[type='password']{ padding: 5px 8px;}
+.ui-tooltip-text{ }
+.tos ol, .tos ul{ padding-left:15px; }
