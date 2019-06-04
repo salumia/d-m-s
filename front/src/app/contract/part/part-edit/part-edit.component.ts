@@ -72,7 +72,6 @@ export class PartEditComponent implements OnInit {
     
 	savePart() {
 		this.part.user_id = this.loggedInUser.id;
-		console.log(this.part);
 		this.partService.savePart(this.id, this.part).subscribe(res => {
 
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});

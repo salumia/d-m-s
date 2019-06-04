@@ -51,14 +51,12 @@ export class ContractPreviewComponent implements OnInit {
 			this.user_contract_parts = res.get_contract_parts;
 			this.loadSpinner = false;
 			this.updateNotifications()
-			console.log(this.user_contract_parts);
 		});
 	}
 	
 	loadContractLog() {
 		this.contractService.getContractLog(this.id).subscribe(res => {	
 			this.contractLog = res.contract;
-			console.log(this.contractLog);
 		});
 	}
 	
@@ -73,9 +71,7 @@ export class ContractPreviewComponent implements OnInit {
 			this.senderActive = false;
 		} else {
 			this.senderActive = true;
-		}	
-		console.log("senderActive");
-		console.log(this.senderActive);
+		}
 	}
 	
 	goBack() {

@@ -98,7 +98,6 @@ export class VendorListComponent implements OnInit {
             icon: 'pi pi-info-circle',
             accept: () => {
                 this.userService.deleteUser(id, 'vendors').subscribe(res => {
-					console.log(res)
 					if(res.statusCode == 202){
 						this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: res.message});
 					} else {

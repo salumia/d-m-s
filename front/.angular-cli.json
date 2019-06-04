@@ -18,14 +18,23 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "styles": [
-        "bootstrap.scss",
+      "styles": [        		
+		"assets/css/bootstrap.min.css",
+		"assets/css/jquery-ui.min.css",
+		"assets/css/perfect-scrollbar.min.css",
+		"assets/css/morris.min.css",
+		"assets/css/select2.min.css",
+		"assets/css/horizontal-timeline.min.css",
+		"assets/css/dropzone.min.css",
+		"assets/css/datatables.min.css",
+		"assets/css/style.css",
+		"bootstrap.scss",
         "../node_modules/font-awesome/css/font-awesome.min.css",
         "../node_modules/primeng/resources/themes/omega/theme.scss",
         "../node_modules/primeng/resources/primeng.min.css",
         "../node_modules/quill/dist/quill.core.css",
-        "../node_modules/quill/dist/quill.snow.css",
-        "styles.css"
+        "../node_modules/quill/dist/quill.snow.css",		
+		"styles.css"    	
       ],
       "stylePreprocessorOptions": {
         "includePaths": [
@@ -33,7 +42,21 @@
         ]
       },
       "scripts": [
-        "../node_modules/quill/dist/quill.js"
+		"assets/js/jquery.min.js",
+		"assets/js/jquery-ui.min.js",
+		"assets/js/bootstrap.bundle.min.js",
+		"assets/js/perfect-scrollbar.min.js",
+		"assets/js/jquery.sparkline.min.js",
+		"assets/js/raphael.min.js",
+		"assets/js/morris.min.js",
+		"assets/js/select2.min.js",
+		"assets/js/horizontal-timeline.min.js",
+		"assets/js/jquery.validate.min.js",
+		"assets/js/jquery.steps.min.js",
+		"assets/js/dropzone.min.js",
+		"assets/js/datatables.min.js",
+		"assets/js/main.js",
+		"../node_modules/quill/dist/quill.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

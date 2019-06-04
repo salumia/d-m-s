@@ -29,9 +29,7 @@ export class ContractListComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.authService.getAuth();
-		console.log(this.loggedInUser);
 		this.cols = [
-			//{ field: 'get_category_data.name', header: 'Category' },
 			{ field: 'id', header: 'Contract ID' },
 			{ field: 'name', header: 'Contract Name' },
 			{ field: 'get_sender_data.email', header: 'Owner' },
@@ -54,14 +52,12 @@ export class ContractListComponent implements OnInit {
 		this.contractService.loadContracts(user.id,user.role).subscribe(
 			res => {
 				this.contracts = res;
-				console.log(this.contracts);
 				this.loadSpinner = false;
 			}
 		);
 	}
 	
-	deleteContract(index){
-		console.log(this.contracts[index].id);		
+	deleteContract(index){		
 		this.confirmationService.confirm({
 			message: 'Are you sure ?',
             header: 'Delete Confirmation',
@@ -78,9 +74,7 @@ export class ContractListComponent implements OnInit {
 	
 	
 	viewContract(index){
-		console.log(index);
 		this.selectedContact = this.contracts[index];
-		console.log(this.selectedContact);
 		this.viewContractFlag = true;
 	}
 }

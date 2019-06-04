@@ -70,7 +70,6 @@ export class GlobalEditComponent implements OnInit {
 	}
     
 	savePart() {
-		console.log(this.part);
 		this.partService.savePart(this.id, this.part).subscribe(res => {
 
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});

@@ -66,7 +66,6 @@ export class EditComponent implements OnInit {
 	}
     
 	saveCategory() {
-		console.log(this.category);
 		this.categoryService.saveCategory(this.id, this.category).subscribe(res => {
 
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});

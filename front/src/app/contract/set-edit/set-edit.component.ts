@@ -71,8 +71,6 @@ export class SetEditComponent implements OnInit {
 	getTerms(){
 		this.setService.getTerms(this.id).subscribe(res => {
 		  this.selectedParts = res;
-		  console.log(this.sourceParts);
-		  console.log(this.selectedParts);
 		});
 	}
   

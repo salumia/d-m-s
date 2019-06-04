@@ -17,7 +17,6 @@ export class AppComponent {
 	}
   	ngOnInit() {
 		this.loggedInUser = this.auth.getAuth();
-		console.log(this.loggedInUser);
 	}
 	
 	refreshStyle() {

@@ -115,7 +115,7 @@
 						</a>
 					</li>
 					<li class="active" *ngIf="userData.role == 'vendor'">
-                        <a href="#"><i class="fa fa-newspaper"></i> Settings</a>
+                        <a href="javascript:void(0)"><i class="fa fa-gear"></i> Settings</a>
                         <ul>
 							<li class="active">
 								<a routerLink="/sets">
@@ -133,7 +133,7 @@
 					</li>
 					<li class="active">
 						<a routerLink="/contract/create" *ngIf="userData.role == 'vendor'">
-							<i class="fa fa-file-alt"></i>
+							<i class="fa fa-edit"></i>
 							<span>Create Contract</span>
 						</a>
 					</li>
@@ -157,7 +157,7 @@
 					
 					
 					<li class="active" *ngIf="userData.role == 'admin'">
-                        <a href="#"><i class="fa fa-newspaper"></i> Contract Components</a>
+                        <a href="javascript:void(0)"><i class="fa fa-list"></i> Contract Components</a>
 
                         <ul>
 							<li class="active">

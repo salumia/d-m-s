@@ -14,13 +14,6 @@
 	</div>
 	<div class="table-responsive">	
     <p-table #setListing [columns]="cols" [value]="sets" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" paginatorPosition="both" *ngIf="sets?.length > 0">
-		<!-- <ng-template pTemplate="caption">
-			<div style="text-align: right">        
-				<i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-				<input type="text" pInputText size="50" placeholder="Search" (input)="setListing.filterGlobal($event.target.value, 'contains')" style="width:auto">                
-			</div>
-		</ng-template> -->
-		
 		<ng-template pTemplate="header" let-columns>			
 			<tr class="custom-white">
 				<th colspan="2">				

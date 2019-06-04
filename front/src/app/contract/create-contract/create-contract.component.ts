@@ -88,7 +88,6 @@ export class CreateContractComponent implements OnInit {
 	loadContract() {
 		// Load Contract
 		this.contractService.getContract(this.id).subscribe(res => {
-			console.log(res);
 		  this.contract = res;
 		  this.user_contract_parts = res.get_contract_parts;
 		});
@@ -123,7 +122,6 @@ export class CreateContractComponent implements OnInit {
 	}
     
 	saveContract() {
-		console.log(this.contract);
 		if(this.user_contract_parts.length > 0){				
 			this.loadSpinner = true;
 			this.contract.sender_id = this.loggedInUser.id;
@@ -182,7 +180,6 @@ export class CreateContractComponent implements OnInit {
 								body:this.user_contract_parts[index].body
 							};
 		this.editFormVisible = true;
-		console.log(this.selectedPart);
 	}
 	
 	deleteTerm(index){
@@ -216,11 +213,9 @@ export class CreateContractComponent implements OnInit {
 		this.user_contract_parts[i].title = this.selectedPart.title;
 		this.user_contract_parts[i].body = this.selectedPart.body;
 		this.editFormVisible = false;
-		console.log(this.selectedPart);
 	}
 	
 	onSelectContact(event) {
-		console.log(event.value);
 		this.selectedContact = event.label;
 		this.contract.email = event.value;
 	}
@@ -230,7 +225,6 @@ export class CreateContractComponent implements OnInit {
 		this.contactService.searchContactList(this.loggedInUser.id,event.query.toLowerCase()).subscribe(res => {	
 			this.suggestions = [];
 			this.suggestions = res;
-			console.log(this.suggestions);
 		});
     }
 	

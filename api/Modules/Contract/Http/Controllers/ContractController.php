@@ -561,11 +561,11 @@ class ContractController extends Controller
 	}
 	
 	public function sendNotification($from_name, $from_email, $to_email, $to_name, $subject= 'Default Subject',$data = [],$template = 'mail.contract_created') {
-		/* Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
+		Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
 			$message->to($to_email, $to_name)
 					->subject($subject);
 			$message->from($from_email,$from_name);
-		}); */
+		});
 		return true;
 	}
 	

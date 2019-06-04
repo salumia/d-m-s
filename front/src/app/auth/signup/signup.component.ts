@@ -89,7 +89,6 @@ export class SignupComponent implements OnInit {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
                 this.userService.isEmailRegisterd(control.value,0).subscribe(res => {
-                    console.log('Check Email Calling'+res);
                     if(res == 0){
                         resolve(null);
                     } else {
@@ -146,7 +145,6 @@ export class SignupComponent implements OnInit {
     }
 	
 	autoCompleteCallback1(googleAddress:any){
-		console.log(googleAddress);
 		if( googleAddress.status == "OK" || googleAddress.response){
 			
 			if(typeof googleAddress.result == "undefined"){
@@ -158,28 +156,28 @@ export class SignupComponent implements OnInit {
 			for (let i = 0; i < temp.address_components.length; i++) {
 				
 				if(temp.address_components[i].types[0] == "sublocality_level_1" ){
-					console.log("sublocality_level_1 : " + temp.address_components[i].long_name);
+					//console.log("sublocality_level_1 : " + temp.address_components[i].long_name);
 				}
 				
 				if(temp.address_components[i].types[0] == "locality" ){
-					console.log("locality : " + temp.address_components[i].long_name);
+					//console.log("locality : " + temp.address_components[i].long_name);
 					this.user.city = temp.address_components[i].long_name;
 				}
 				
 				if(temp.address_components[i].types[0] == "administrative_area_level_2" ){
-					console.log("City : " + temp.address_components[i].long_name);
+					//console.log("City : " + temp.address_components[i].long_name);
 				}
 				
 				if(temp.address_components[i].types[0] == "administrative_area_level_1" ){
-					console.log("State : " + temp.address_components[i].long_name);
+					//console.log("State : " + temp.address_components[i].long_name);
 				}
 				
 				if(temp.address_components[i].types[0] == "country" ){
-					console.log("country : " + temp.address_components[i].long_name);
+					//console.log("country : " + temp.address_components[i].long_name);
 				}
 				
 				if(temp.address_components[i].types[0] == "postal_code" ){
-					console.log("postal_code : " + temp.address_components[i].long_name);
+					//console.log("postal_code : " + temp.address_components[i].long_name);
 					this.user.zip = temp.address_components[i].long_name;
 				}
 			}

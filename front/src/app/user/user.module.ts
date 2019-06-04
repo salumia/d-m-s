@@ -19,7 +19,6 @@ import { DropdownModule, InputTextModule, PasswordModule } from 'primeng/primeng
 import { MessagesModule } from 'primeng/messages';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SplitButtonModule} from 'primeng/splitbutton';
-import { NotfoundComponent } from './notfound/notfound.component';
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
 import { InputMaskModule} from 'primeng/inputmask';
 import { CalendarModule} from 'primeng/calendar';
@@ -64,7 +63,7 @@ import {ConfirmationService} from 'primeng/api';
 	ConfirmDialogModule
   ],
   providers: [AuthService, UserService, ConfirmationService],
-  declarations: [UserListComponent, VendorListComponent, UserEditComponent, VendorEditComponent,VendorViewComponent, DashboardComponent, NotfoundComponent, ChangePasswordComponent, ViewComponent, AdminViewComponent, AdminEditComponent]
+  declarations: [UserListComponent, VendorListComponent, UserEditComponent, VendorEditComponent,VendorViewComponent, DashboardComponent, ChangePasswordComponent, ViewComponent, AdminViewComponent, AdminEditComponent]
 })
 export class UserModule {
   constructor(auth: AuthService, router: Router) {

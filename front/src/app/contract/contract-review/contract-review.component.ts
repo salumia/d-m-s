@@ -128,9 +128,7 @@ export class ContractReviewComponent implements OnInit {
 			this.senderActive = false;
 		} else {
 			this.senderActive = true;
-		}	
-		console.log("senderActive");
-		console.log(this.senderActive);
+		}
 	}
 	
 	loadIndustries() {
@@ -140,20 +138,10 @@ export class ContractReviewComponent implements OnInit {
 		});
 	}
 	
-	/* getIndustryParts(industry) {	
-		if(industry.value > 0){	
-			this.partService.getIndustryParts(industry.value,this.loggedInUser.id, this.loggedInUser.role).subscribe(res => {
-				this.industryParts = res;
-				console.log(this.industryParts);
-			});			
-		}
-	} */
-	
 	getIndustryParts() {	
 		if(this.loggedInUser.role == 'vendor'){	
 			this.partService.getIndustryParts(this.loggedInUser.industry_id,this.loggedInUser.id, this.loggedInUser.role).subscribe(res => {
 				this.industryParts = res;
-				console.log(this.industryParts);
 			});			
 		}
 	}	
@@ -169,29 +157,6 @@ export class ContractReviewComponent implements OnInit {
 	}
 	
 	showEditDialog(index){	
-		/* if(this.user_contract_parts[index].newly_added == 0){
-			let findIndex = this.edited_contract_parts.findIndex(part => part.part_id === this.user_contract_parts[index].id);
-			if( findIndex >= 0){
-				this.edited_contract_parts[findIndex] = {
-					part_id:this.user_contract_parts[index].id,
-					body:this.user_contract_parts[index].body,
-					title:this.user_contract_parts[index].title,
-					contract_id:this.id
-				};
-			} else {
-				this.edited_contract_parts.push({
-					part_id:this.user_contract_parts[index].id,
-					body:this.user_contract_parts[index].body,
-					title:this.user_contract_parts[index].title,
-					contract_id:this.id
-				});
-			}
-			//this.user_contract_parts[index].is_edited = 1;
-			this.user_contract_parts[index].tmp_edited = 1;
-			console.log(this.edited_contract_parts);
-		} */		
-		
-		//this.selectedPart = this.user_contract_parts[index];
 		this.selectedPart = { 
 								index:index,
 								id:this.user_contract_parts[index].id,
@@ -199,9 +164,6 @@ export class ContractReviewComponent implements OnInit {
 								body:this.user_contract_parts[index].body
 							};
 		this.editFormVisible = true;
-		
-		/* this.modificationCounter = this.modificationCounter + 1;
-		this.showProperButton(); */
 	}
 	
 	reloadTerm(index){
@@ -313,8 +275,6 @@ export class ContractReviewComponent implements OnInit {
 	}
 	
 	checkToS(){
-		console.log(this.acceptToS);
-		console.log(this.digitalSign);
 		this.tosError = "";
 		this.digitalSignError = "";
 		if(this.acceptToS){
@@ -332,11 +292,9 @@ export class ContractReviewComponent implements OnInit {
 					}, 2000);
 				});
 			} else {
-				console.log("Show DS error");
 				this.digitalSignError = "Please type your signature";
 			}
 		} else {
-			console.log("Show TOS error");
 			this.tosError = "Please accept the terms of service";
 		}
 		
@@ -372,7 +330,6 @@ export class ContractReviewComponent implements OnInit {
 		this.showCompareBox = true;		
 		this.contractService.getPartComparisonData(this.user_contract_parts[index].id).subscribe(res => {		
 			this.compareData = res.data;
-			console.log(this.compareData);
 		});
 	}
 	
@@ -412,10 +369,7 @@ export class ContractReviewComponent implements OnInit {
 						type:'edited'
 					});
 				}
-				
-				//this.user_contract_parts[index].is_edited = 1;
 				this.user_contract_parts[i].tmp_edited = 1;
-				console.log(this.edited_contract_parts);
 			}
 			
 			this.user_contract_parts[i].title = this.selectedPart.title;
@@ -426,7 +380,6 @@ export class ContractReviewComponent implements OnInit {
 		
 		}
 		this.editFormVisible = false;		
-		console.log(this.selectedPart);
 	}
 	
 	onExpire(data){
@@ -438,8 +391,6 @@ export class ContractReviewComponent implements OnInit {
 	
 	validatePIN(){
 		this.contractPinError = "";
-		console.log(this.contractPin);
-		console.log(this.contractPinError);
 		if(this.contractPin != ""){
 			if(this.contractPin == this.contract.pin){				
 				return true;

@@ -56,7 +56,6 @@ export class IndustryEditComponent implements OnInit {
 	}
     
 	saveIndustry() {
-		console.log(this.industry);
 		this.industryService.saveIndustry(this.id, this.industry).subscribe(res => {
 
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});

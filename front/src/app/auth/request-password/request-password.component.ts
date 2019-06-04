@@ -36,7 +36,6 @@ export class ForgotPasswordComponent implements OnInit {
 		  this.templateService.filter('header refresh');
         this.router.navigateByUrl('/dashboard');
       } else {
-        console.log(res);
         this.updateMessage('Login Failed:', 'An unknown error occurred');
         this.clearForm();
       }

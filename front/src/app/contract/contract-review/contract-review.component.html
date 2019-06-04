@@ -154,9 +154,6 @@
 							<div class="col-md-12" *ngIf="industryParts.length > 0">
 								<h3>Add More Terms</h3>
 							</div>
-							<!-- <div class="col-md-12" *ngIf="industries.length > 0&&loggedInUser.role=='vendor'">
-								<p-dropdown [options]="industries" [style]="{width: '100%'}" (onChange)="getIndustryParts($event)"></p-dropdown>
-							</div> -->
 							<div class="col-md-12" *ngIf="industryParts.length > 0">								
 								<p-listbox [(ngModel)]="listPart" [ngModelOptions]="{standalone: true}" [options]="industryParts" filter="filter" (onChange)="onSelectTerm($event.value)" optionLabel="label">
 								  <p-header>
@@ -167,13 +164,6 @@
 							</div>
 						</div>
 					</div>
-					
-					<!-- <div class="row mt-3">
-						<div class="col-md-10 offset-md-2">		
-						<p-captcha siteKey="6Lff_5IUAAAAACQbrHCVfQHieWHXcXGIxF1ZFAH3" (onResponse)="showResponse($event)" (onExpire)="onExpire($event)"></p-captcha>
-						</div>
-					</div> -->
-					
 					<div class="row mt-3">
 						<div class="col-md-8">
 							<input type="text" placeholder="Enter Security PIN" [(ngModel)]="contractPin" [ngModelOptions]="{standalone: true}"  class="form-control" name="contractPin">
@@ -335,12 +325,6 @@
 	<div style="width:700px;">
 		<div class="form-group row">
 			<div class="col-md-12 tos" [innerHTML]="terms">
-			  <!-- <ol class="list-group" style="padding-left:15px;">
-				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
-				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem IpsumLorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
-				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
-				<li>Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum</li>
-			  </ol> -->
 			</div>	
 			<div class="col-md-12">
 				<div class="checkbox">

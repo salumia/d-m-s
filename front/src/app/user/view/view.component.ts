@@ -33,7 +33,6 @@ export class ViewComponent implements OnInit {
 		this.userService.getUser(this.id).subscribe(res => {
 			this.user = res;
 			this.loadUserData = true;
-			console.log(this.user);
 		});
 	
 	}

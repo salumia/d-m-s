@@ -18,25 +18,18 @@ import { ButtonModule } from "primeng/button";
 import { DialogModule } from "primeng/dialog";
 import { DropdownModule, InputTextModule, PasswordModule } from 'primeng/primeng';
 import { MessagesModule } from 'primeng/messages';
-import { SplitButtonModule} from 'primeng/splitbutton';
 import {InputMaskModule} from 'primeng/inputmask';
-import {CalendarModule} from 'primeng/calendar';
 import {InputTextareaModule} from 'primeng/inputtextarea';
-import {FileUploadModule} from 'primeng/fileupload';
 import {GrowlModule } from 'primeng/growl';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TabViewModule} from 'primeng/tabview';
-import {DragDropModule} from 'primeng/dragdrop';
-import {PickListModule} from 'primeng/picklist';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
 import { ContactEditComponent } from './contact-edit/contact-edit.component';
-
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
-import {AutoCompleteModule} from 'primeng/autocomplete';
 
 @NgModule({
-  imports: [	
+  imports: [
     Ng4GeoautocompleteModule.forRoot(),
     CommonModule,
 	ContactRoutingModule,
@@ -51,18 +44,12 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
     MessagesModule,
     InputTextModule,
     DropdownModule,
-	SplitButtonModule,
 	InputMaskModule,
-	CalendarModule,
 	InputTextareaModule,
-	FileUploadModule,
 	GrowlModule,
 	ProgressSpinnerModule,
 	TabViewModule,
-	DragDropModule,
-	PickListModule,
 	ConfirmDialogModule,
-	AutoCompleteModule
   ],
   providers: [AuthService, UserService, ConfirmationService, ContactService],
   declarations: [ContactListComponent, ContactEditComponent]

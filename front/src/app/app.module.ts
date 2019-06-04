@@ -12,9 +12,9 @@ import { UserModule } from './user/user.module';
 import { TemplateModule } from './template/template.module';
 import { ConfigServiceService } from './config-service.service';
 import { FormsModule } from '@angular/forms';
-import { PagesModule } from './pages/pages.module';
 import { ContractModule } from './contract/contract.module';
 import { ContactModule } from './contact/contact.module';
+import { PagesModule } from './pages/pages.module';
 
 @NgModule({
   declarations: [
@@ -28,9 +28,9 @@ import { ContactModule } from './contact/contact.module';
     StorageServiceModule,
     AuthModule,
     UserModule,
+	PagesModule,
     TemplateModule,
     FormsModule,
-	PagesModule,
 	ContractModule,
 	ContactModule
   ],

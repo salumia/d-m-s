@@ -48,8 +48,6 @@ export class ContractTypeEditComponent implements OnInit {
 	getContractType() {
 		// Load ContractType
 		this.contractTypeService.getContractType(this.id).subscribe(res => {
-			console.log('getContractType');
-			console.log(res);
 		  this.contractType = res;
 		  this.loadComponents = true;
 		  this.loadSpinner = false;
@@ -58,7 +56,6 @@ export class ContractTypeEditComponent implements OnInit {
 	}
     
 	saveContractType() {
-		console.log(this.contractType);
 		this.contractTypeService.saveContractType(this.id, this.contractType).subscribe(res => {
 
 			this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: res.message});

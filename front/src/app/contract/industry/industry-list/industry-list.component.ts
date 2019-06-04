@@ -25,7 +25,6 @@ export class IndustryListComponent implements OnInit {
 
 	ngOnInit() {
 		this.cols = [
-			/* { field: 'id', header: 'Id' }, */
 			{ field: 'name', header: 'Name' },
 			{ field: 'status', header: 'Status' }
 		];

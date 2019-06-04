@@ -13,7 +13,6 @@ import { AdminViewComponent } from './admin-view/admin-view.component';
 import { AdminEditComponent } from './admin-edit/admin-edit.component';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { NotfoundComponent } from './notfound/notfound.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 
 const routes: Routes = [
@@ -41,7 +40,6 @@ const routes: Routes = [
   {path: 'admin/edit/:id', component: AdminEditComponent},
   
   {path: 'dashboard', component: DashboardComponent},
-  {path: 'underconstruction', component: NotfoundComponent},
   
 ];
 

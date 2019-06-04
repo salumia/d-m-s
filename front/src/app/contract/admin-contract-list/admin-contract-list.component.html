@@ -79,11 +79,6 @@
             <a title="Preview" class='btn bg-primary listing-actions' [routerLink]="'/contract/preview/' + contract.id" ><i class="fa fa-search"></i></a>	
 			
 			<a title="Open Contract" *ngIf="contract.status == 4||contract.status == 3"  class='btn bg-danger listing-actions' (click)="openContract(contract.id)" ><i class="fa fa-pencil-square-o"></i></a>
-			
-			<!-- IF Contract is in Draft state, then it can be edited/deleted-->
-			<!--<a title="Edit" *ngIf="contract.status == 0"  class='btn bg-primary listing-actions' [routerLink]="'/contract/edit/' + contract.id" ><i class="fa fa-pencil-square-o"></i></a>
-            <a title="Delete"  *ngIf="contract.status == 0" class='btn bg-danger listing-actions' (click)="deleteContract(rowIndex)" ><i class="fa fa-trash"></i></a> -->
-			
           </td>
         </tr>
       </ng-template>

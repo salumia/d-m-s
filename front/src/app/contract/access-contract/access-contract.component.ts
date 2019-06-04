@@ -69,7 +69,6 @@ export class AccessContractComponent implements OnInit {
 	loadContractLog() {
 		this.contractService.getContractLog(this.id).subscribe(res => {	
 			this.contractLog = res.contract;
-			console.log(this.contractLog);
 		});
 	}
 	

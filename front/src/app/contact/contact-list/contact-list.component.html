@@ -5,12 +5,8 @@
 		<!-- Page Title Start -->
 		<h2 class="page--title h5"><i class="fa fa-address-book"></i> contacts</h2>
 		<!-- Page Title End -->
-	</div><!-- 
+	</div>
 	<div class="col-lg-6 text-right">
-		<p-button label="Create Contact" icon="fa fa-user" (onClick)="showAddContactDialog()"></p-button>   
-	</div>  -->   
-	<div class="col-lg-6 text-right">
-		<!-- <a (click)="showAddContactDialog()" style="color:white;" class="btn btn-rounded btn-warning"><i class="fa fa-user"></i> Create Contact</a> -->
 		<a [routerLink]="'/contact/create'" style="color:white;" class="btn btn-rounded btn-warning"><i class="fa fa-user"></i> Create Contact</a>
 	</div> 
 	<div class="col-lg-12 d-flex justify-content-center" *ngIf="loadSpinner"> 

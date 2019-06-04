@@ -29,7 +29,6 @@ export class ContactListComponent implements OnInit {
 	ngOnInit() {
 		this.loggedInUser = this.authService.getAuth();
 		this.cols = [
-			/* { field: 'id', header: 'Sr No.' }, */
 			{ field: 'company', header: 'Company Name' },
 			{ field: 'name', header: 'Contact Name' },
 			{ field: 'email', header: 'Email' },
@@ -49,7 +48,6 @@ export class ContactListComponent implements OnInit {
 		this.contactService.getContacts(this.loggedInUser.id).subscribe(res => {
 			this.loadSpinner = false;
 			this.contacts = res;
-			console.log(this.contacts);
 		});
 	}
 	
@@ -96,34 +94,6 @@ export class ContactListComponent implements OnInit {
 	}
 	
 	showAddContactDialog() {
-		console.log("showContactDialog");
 		this.addContactVisible = true;
 	}
-	
-	/* saveContact(){
-		this.msgs = [];        
-		for (const contact of this.contacts) {
-		  if (contact.email === this.newContactEmail) {
-			this.msgs.push({severity:'error', summary:'Error ', detail:'This Email is already in your contacts'});
-		  }
-		}
-		
-		if(this.msgs.length == 0){
-			this.contactService.saveContact(this.loggedInUser.id, this.newContactEmail).subscribe(res => {
-				this.msgs.push({severity:'success', summary:'Success ', detail:'Contact Added'});
-				this.newContactEmail = "";
-				// Reload Contacts
-				this.loadUserContacts();
-				setTimeout(() => {
-					this.msgs = [];     					
-					this.addContactVisible = false;
-				}, 2000);
-				
-				
-
-			});
-		}
-		
-		
-	} */
 }

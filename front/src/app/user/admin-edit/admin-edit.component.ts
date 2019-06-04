@@ -61,7 +61,6 @@ export class AdminEditComponent implements OnInit {
         const q = new Promise((resolve, reject) => {
             setTimeout(() => {
                 this.userService.isEmailRegisterd(control.value, this.id, 'admin').subscribe(res => {
-                    console.log('Check Email Calling'+res);
                     if(res == 0){
                         resolve(null);
                     } else {

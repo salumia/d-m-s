@@ -29,7 +29,6 @@ export class HeaderComponent implements OnInit {
 	this.userData = this.auth.getAuth();
 	
 	if(this.userData != null){
-		console.log(this.userData);
 		this.setSettingMenus();
 		
 		this.loadNotification();

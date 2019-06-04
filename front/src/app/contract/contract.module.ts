@@ -30,9 +30,7 @@ import { MessagesModule } from 'primeng/messages';
 import { SplitButtonModule} from 'primeng/splitbutton';
 
 import {InputMaskModule} from 'primeng/inputmask';
-import {CalendarModule} from 'primeng/calendar';
 import {InputTextareaModule} from 'primeng/inputtextarea';
-import {FileUploadModule} from 'primeng/fileupload';
 import { GrowlModule } from 'primeng/growl';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {TabViewModule} from 'primeng/tabview';
@@ -42,7 +40,6 @@ import { GlobalEditComponent } from './part/global-edit/global-edit.component';
 import { GlobalListComponent } from './part/global-list/global-list.component';
 import { SetListComponent } from './set-list/set-list.component';
 import { SetEditComponent } from './set-edit/set-edit.component';
-import {DragDropModule} from 'primeng/dragdrop';
 import {PickListModule} from 'primeng/picklist';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
@@ -58,13 +55,10 @@ import {ListboxModule} from 'primeng/listbox';
 import { ContractListComponent } from './contract-list/contract-list.component';
 import { ContractReviewComponent } from './contract-review/contract-review.component';
 
-import {CardModule} from 'primeng/card';
 import { ContractPreviewComponent } from './contract-preview/contract-preview.component';
 
-import {CaptchaModule} from 'primeng/captcha';
 import { AdminContractListComponent } from './admin-contract-list/admin-contract-list.component';
 
-import {AccordionModule} from 'primeng/accordion';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import { AccessContractComponent } from './access-contract/access-contract.component';
 
@@ -73,6 +67,7 @@ import { ContractSettingComponent } from './contract-setting/contract-setting.co
 
 import {EditorModule} from 'primeng/editor';
 
+import {CardModule} from 'primeng/card';
 
 
 @NgModule({
@@ -92,24 +87,18 @@ import {EditorModule} from 'primeng/editor';
     DropdownModule,
 	SplitButtonModule,
 	InputMaskModule,
-	CalendarModule,
 	InputTextareaModule,
-	FileUploadModule,
 	GrowlModule,
 	ProgressSpinnerModule,
 	TabViewModule,
-	DragDropModule,
 	PickListModule,
 	ConfirmDialogModule,
-	BrowserAnimationsModule,
 	FieldsetModule,
 	ListboxModule,
-	CardModule,
-	CaptchaModule,
-	AccordionModule,
 	AutoCompleteModule,
 	TooltipModule,
-	EditorModule
+	EditorModule,
+	CardModule
   ],
   providers: [AuthService, UserService, CategoryService, IndustryService, ContractTypeService, PartService, SetService, ConfirmationService, ContractService],
   declarations: [ListComponent, EditComponent, IndustryListComponent, IndustryEditComponent, ContractTypeListComponent, ContractTypeEditComponent, ContractTypeListComponent, GlobalEditComponent, GlobalListComponent, SetListComponent, SetEditComponent, PartListComponent, PartEditComponent, CreateContractComponent, ContractListComponent, ContractReviewComponent, ContractPreviewComponent, AdminContractListComponent, AccessContractComponent, ContractSettingComponent]

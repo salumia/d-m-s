@@ -4,9 +4,6 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Modules\User\Entities\EmployeeFiles as EmployeeFiles;
-use Modules\User\Entities\Leave as Leave;
-use Modules\Claim\Entities\Claim as Claim;
 
 class AdminUser extends Authenticatable
 {
@@ -37,17 +34,5 @@ class AdminUser extends Authenticatable
         $this->save();
 
         return $this->api_token;
-    }
-	
-	public function getFiles() {
-        return $this->hasMany(EmployeeFiles::class,'user_id');
-    }	
-	
-	public function getLeaves() {
-        return $this->hasMany(Leave::class,'user_id');
-    }
-	
-	public function getClaims() {
-        return $this->hasMany(Claim::class,'user_id');
     }
 }

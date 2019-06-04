@@ -26,7 +26,6 @@ export class SetListComponent implements OnInit {
 	ngOnInit() {
 		this.loggedInUser = this.authService.getAuth();
 		this.cols = [
-			/* { field: 'id', header: 'Id' }, */
 			{ field: 'title', header: 'Title' },
 			{ field: 'status', header: 'Status' }
 		];
