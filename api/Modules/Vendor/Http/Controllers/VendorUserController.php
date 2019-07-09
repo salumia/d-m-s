@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\Contact\Entities\Contact;
 use Modules\Contract\Entities\Contract;
+use Illuminate\Support\Facades\Mail;
 
 class VendorUserController extends Controller{
    
@@ -32,6 +33,20 @@ class VendorUserController extends Controller{
         return 'create';
         //
     }
+	
+	public function sendWelcomeMail($vendor, $subject= 'Welcome to Clerk MyBackpocket',$template = 'vendor_welcome') {
+		$from_name = 'No Reply';
+		$from_email = 'no_reply@mybackpocket.io';
+		$data = array(
+			"name" => $vendor->shop_name
+		);
+		Mail::send($template, $data, function($message) use ($vendor, $subject, $from_name, $from_email) {
+			$message->to($vendor->email, $vendor->shop_name)
+					->subject($subject);
+			$message->from($from_email,$from_name);
+		});
+		return true;
+	}
 
     /**
      * Store a newly created resource in storage.
@@ -43,6 +58,10 @@ class VendorUserController extends Controller{
         $data = $request->post();
 		$data['password'] = Hash::make($data['password']);
         $user = VendorUser::create($data);
+		
+		/********** Send Welcome Mail ***************/
+		$this->sendWelcomeMail($user);		
+		/************** END ***********/
 		
 		if(Contact::whereEmail($data['email'])->count() > 0 ){
 			Contact::whereEmail($data['email'])->update(array('user_id' => $user->id, 'type' => 'vendor'));
@@ -160,34 +179,23 @@ class VendorUserController extends Controller{
     public function destroy($user)
     {
 		$user = VendorUser::find($user);
-		/* if(Part::where([['industry_id','=',$industry->id]])->count() > 0){
+		// Delete the user
+		try {				
+			$user->delete();
+		}
+		catch(\Exception $e) {
 			$response = new Response([
-				'message' => 'Industry can not be deleted',
-				'statusCode' => 202,
-				'industries' => $industry
-			]);
-			return $response;
-		} else { */
-		
-			// Delete the user
-			try {				
-				//print_r($user->id);die;
-				$user->delete();
-			}
-			catch(\Exception $e) {
-				$response = new Response([
-					'message' => $e->getMessage(),
-					'user' => $user
-				]);
-				$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-				return $response;
-			}
-
-			return new Response([
-				'message' => 'Vendor deleted successfully',
+				'message' => $e->getMessage(),
 				'user' => $user
 			]);
-		//}
+			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+			return $response;
+		}
+
+		return new Response([
+			'message' => 'Vendor deleted successfully',
+			'user' => $user
+		]);
     }
 
 }    

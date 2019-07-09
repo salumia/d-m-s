@@ -20,6 +20,7 @@ export class ContactEditComponent implements OnInit {
 	@ViewChild('documentsChild') documentsChild;
 	id: number;
 	user_id: number;
+	selectedVendor: number = 0;
 	user: any = {};
 	contact: any = {};
 	search_contact: any = {};
@@ -36,6 +37,9 @@ export class ContactEditComponent implements OnInit {
 	searchTab = true;
 	contactTab = false;
 	
+	suggestions: any[];
+	search_contact_label = '';
+	
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location, private contactService: ContactService) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
@@ -43,16 +47,21 @@ export class ContactEditComponent implements OnInit {
 				this.loadSpinner = true;
 				this.searchTab = false;
 			}
+			
+			if(typeof params['user'] != "undefined"){
+				this.selectedVendor = params['user'];
+			}
 		});		
 	}
 	
 	
 	ngOnInit() {
+		this.loggedInUser = this.auth.getAuth();
+		if(this.selectedVendor == 0 ){						
+			this.selectedVendor = this.loggedInUser.id;
+		}
 		this.userSettings['inputPlaceholderText'] = 'Enter Area Name';
 		this.userSettings = Object.assign({}, this.userSettings) //Very Important Line to add after modifying settings.
-
-		this.loggedInUser = this.auth.getAuth();
-	
 		this.Searchform = this.fb.group({
 			'cc': new FormControl(''),
 			'company': new FormControl('', Validators.required),
@@ -73,7 +82,7 @@ export class ContactEditComponent implements OnInit {
 			'name': new FormControl('', Validators.required),
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),		
 			'username': new FormControl('', Validators.compose([Validators.required]), this.isUsernameUnique.bind(this)),'phone': new FormControl('', Validators.required),
-			'fax': new FormControl('', Validators.required),
+			'fax': new FormControl(''),
 			'address': new FormControl('', Validators.required),
 			'city': new FormControl('', Validators.required),
 			'zip': new FormControl('', Validators.required),
@@ -82,8 +91,6 @@ export class ContactEditComponent implements OnInit {
 
 		if(this.id > 0 ){
 			this.loadContact();
-		} else {
-			this.loadAvailableNewContacts();
 		}
 	}
   
@@ -158,25 +165,19 @@ export class ContactEditComponent implements OnInit {
         return q;
     }     
 	
-	loadAvailableNewContacts() {
-		this.contactService.emailSuggestions(this.loggedInUser.id).subscribe(res => {
-			this.availableNewContacts = res;
-			this.availableNewContacts.unshift({label: 'Select', value: ''});
-		});        
-    }
-	
 	updateContact() {
 		console.log(this.contact);
 		this.addContact(this.contact);
 	}
 	
 	saveSearchContact() {
-		console.log(this.search_contact);
+		this.loadSpinner = true;
 		this.addContact(this.search_contact);
 	}
 	
 	saveContact() {
-		this.user.contact_added_by = this.loggedInUser.id;
+		this.loadSpinner = true;
+		this.user.contact_added_by = this.selectedVendor;
 		this.userService.saveUser(this.user_id, this.user).subscribe(res => {
 			this.contact.cc = this.user.cc;
 			this.contact.company = this.user.company;
@@ -187,8 +188,7 @@ export class ContactEditComponent implements OnInit {
 	}
 	
 	addContact(contact){
-		console.log(contact);
-		this.contactService.saveContact(this.loggedInUser.id, contact, this.id).subscribe(res => {
+		this.contactService.saveContact(this.selectedVendor, contact, this.id).subscribe(res => {
 			if(this.id > 0 ){
 				this.messageService.add({key: 'top-corner', severity: 'success', summary: 'Success', detail: "Contact Updated"});
 			} else {
@@ -196,7 +196,11 @@ export class ContactEditComponent implements OnInit {
 			}
 			
 			setTimeout(() => {
-				this.router.navigate(['contacts']);
+				if(this.selectedVendor == this.loggedInUser.id && this.loggedInUser.role == 'vendor' ){
+					this.router.navigate(['contacts']);
+				} else {
+					this.router.navigate(['vendor/'+this.selectedVendor+'/contacts']);
+				}				
 			}, 2000);
 		});		
 	}
@@ -245,5 +249,18 @@ export class ContactEditComponent implements OnInit {
 			}
 		}
 	}
+	
+	onSelectEmail(event) {
+		this.search_contact_label = event.label;
+		this.search_contact.email = event.value;
+	}
+	
+	searchEmail(event) {
+		this.search_contact.email = "";
+		this.contactService.emailSuggestionList(this.selectedVendor,event.query.toLowerCase()).subscribe(res => {	
+			this.suggestions = [];
+			this.suggestions = res;
+		});
+    }
 
 }

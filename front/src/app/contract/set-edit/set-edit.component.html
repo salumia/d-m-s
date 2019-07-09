@@ -37,12 +37,13 @@
 						<p-pickList [source]="sourceParts" [target]="selectedParts" sourceHeader="Available Parts" targetHeader="Selected Parts" [responsive]="true" filterBy="title" dragdrop="true" sourceFilterPlaceholder="Search by Title" targetFilterPlaceholder="Search by Title" [sourceStyle]="{'height':'600px'}" [targetStyle]="{'height':'600px'}">
 							<ng-template let-part pTemplate="item">
 								<div class="ui-helper-clearfix">
-									<!-- <div class="ui-g" pTooltip="{{part.body}}" tooltipPosition="top"> -->
-									<div class="ui-g" title="{{part.body}}">
+									<!-- <div class="ui-g" pTooltip="{{part.body}}" tooltipPosition="top">title="{{part.body}} -->
+									<div class="ui-g">
 										<div class="ui-g-6"><strong>Title</strong>: {{part.title}}</div>
 										<div class="ui-g-6 text-right">
 											<strong>Industry</strong>: {{part.get_industry_data.name}}
-											<span class="global" *ngIf="part.type == 1">Global</span>
+											<span class="" *ngIf="part.type == 1">| Global</span>
+											<a href="javascript:void(0)" title="View Description" (click)="viewPartDescription(part)" ><span class="global">View</span></a>
 										</div>
 									</div>
 									<!-- <div class="ui-g">
@@ -64,3 +65,9 @@
 	
 	</div>
 </div>
+
+<p-dialog header="{{selectedPart.title}}" [(visible)]="partDetailVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="30" [baseZIndex]="10000" >
+ 	<div style="width:500px;">	
+		{{selectedPart.body}}
+	</div>
+</p-dialog>

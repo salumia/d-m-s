@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 import { ContractModule } from './contract/contract.module';
 import { ContactModule } from './contact/contact.module';
 import { PagesModule } from './pages/pages.module';
-
 @NgModule({
   declarations: [
     AppComponent

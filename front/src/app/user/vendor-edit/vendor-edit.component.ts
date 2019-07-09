@@ -53,7 +53,7 @@ export class VendorEditComponent implements OnInit {
 			'username': new FormControl('', Validators.compose([Validators.required]),this.isUsernameUnique.bind(this)),			
 			'email': new FormControl('', Validators.compose([Validators.required, Validators.email]),this.isEmailUnique.bind(this)),			
 			'phone': new FormControl('', Validators.required),
-			'fax': new FormControl('', Validators.required),
+			'fax': new FormControl(''),
 			'address': new FormControl('', Validators.required),
 			'city': new FormControl('', Validators.required),
 			'zip': new FormControl('', Validators.required),

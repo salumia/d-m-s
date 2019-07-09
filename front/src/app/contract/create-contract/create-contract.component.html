@@ -68,8 +68,7 @@
 									{{brand.label}}
 								</ng-template>
 							</p-autoComplete>
-							
-							<a [routerLink]="'/contact/create'" target="_blank"><i class="fa fa-user"></i> Add Contact</a>
+							<a href="javascript:void(0);" (click)="showContactDialog()"><i class="fa fa-address-book"></i> Add Contact</a>
 						</div>
 					</div>	
 					
@@ -125,7 +124,157 @@
 	
 	</div>
 </div>
+<p-dialog header="Add Contact" [(visible)]="showContactPopup" [modal]="true" [responsive]="true"  [minY]="70" [baseZIndex]="10000">
+    <div style="width:500px;">	
+		<p-tabView>
+			<p-tabPanel header="Add Contact" [selected]="true" >
+				<form id="Userform" [formGroup]="Userform" *ngIf="!loadContactSpinner" (ngSubmit)="saveContact()" >
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Company Name: *</span>
 
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="company" id="company"  [(ngModel)]="user.company" formControlName="company" />
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Contact Name: *</span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="name" id="name"  [(ngModel)]="user.name" formControlName="name" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Contact Email: *</span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="email" id="email"  [(ngModel)]="user.email" formControlName="email" />
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">CC: </span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="cc" id="cc"  [(ngModel)]="user.cc" formControlName="cc" />
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Username: *</span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="username" id="username"  [(ngModel)]="user.username" formControlName="username" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Phone: *</span>
+
+						<div class="col-md-8">
+							<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.phone" formControlName="phone" placeholder="(XXX) XXX – XXXX"></p-inputMask>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Fax:</span>
+
+						<div class="col-md-8">
+							<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.fax" formControlName="fax" placeholder="(XXX) XXX – XXXX"></p-inputMask>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Find Street Address:</span>
+
+						<div class="col-md-8">
+							<ng4geo-autocomplete [userSettings]="userSettings"  (componentCallback)="autoCompleteCallback1($event)"></ng4geo-autocomplete>
+						</div>
+					</div>
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Address: *</span>
+
+						<div class="col-md-8">
+							<textarea rows="1" cols="30" class="form-control" pInputTextarea [(ngModel)]="user.address" formControlName="address"></textarea>
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">City: *</span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText  class="form-control" name="city" id="city" [(ngModel)]="user.city" formControlName="city" />
+						</div>
+					</div>					
+					
+					<div class="form-group row">
+						<span class="label-text col-md-4 col-form-label">Zip: *</span>
+
+						<div class="col-md-8">
+							<input type="text" pInputText class="form-control" name="zip" id="zip" [(ngModel)]="user.zip" formControlName="zip" />
+						</div>
+					</div>
+					
+					<div class="row mt-3">
+						<div class="col-md-9 offset-md-3">
+							<button type="submit" class="btn btn-rounded btn-success" [disabled]="!Userform.valid">Save</button>
+							<button type="button" class="btn btn-rounded btn-success" (click)="goBack()">Cancel</button>
+						</div>
+					</div>
+				</form>
+			</p-tabPanel>
+						
+			<p-tabPanel header="Search Client" *ngIf="searchTab" >
+				<form id="Searchform" [formGroup]="Searchform" *ngIf="!loadContactSpinner" (ngSubmit)="saveSearchContact()" >
+				<div class="form-group row">
+					<span class="label-text col-md-4 col-form-label">Enter Email : *</span>
+
+					<div class="col-md-8">					
+						<p-autoComplete [(ngModel)]="search_contact_label" formControlName="email" [suggestions]="suggestions" [style]="{width: '100%'}" (completeMethod)="searchEmail($event)" (onSelect)="onSelectEmail($event)" placeholder="Type Email" [minLength]="1">
+							<ng-template let-suggest pTemplate="item">
+								{{suggest.label}}
+							</ng-template>
+						</p-autoComplete>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<span class="label-text col-md-4 col-form-label">Company Name: *</span>
+
+					<div class="col-md-8">
+						<input type="text" pInputText class="form-control" name="company" id="company"  [(ngModel)]="search_contact.company" formControlName="company" />
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<span class="label-text col-md-4 col-form-label">Contact Name: *</span>
+
+					<div class="col-md-8">
+						<input type="text" pInputText class="form-control" name="title" id="title"  [(ngModel)]="search_contact.name" formControlName="name" />
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<span class="label-text col-md-4 col-form-label">CC: </span>
+
+					<div class="col-md-8">
+						<input type="text" pInputText class="form-control" name="cc" id="cc"  [(ngModel)]="search_contact.cc" formControlName="cc" />
+					</div>
+				</div>
+				
+				<div class="row mt-3">
+					<div class="col-md-9 offset-md-3">
+						<button type="submit" class="btn btn-rounded btn-success" [disabled]="!Searchform.valid">Add Contact</button>
+					</div>
+				</div>
+				</form>
+			</p-tabPanel>
+			
+		</p-tabView>
+	</div>
+</p-dialog>
 
 <p-dialog header="{{selectedPart.title}}" [(visible)]="editFormVisible" [modal]="true" [responsive]="true" [style]="{width: '600px', minWidth: '200px'}" [minY]="70" [baseZIndex]="10000">
 	<form (submit)="saveContact()">

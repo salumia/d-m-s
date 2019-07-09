@@ -7,8 +7,8 @@ const routes: Routes = [
 
   {path: 'contacts', component: ContactListComponent},
   {path: 'contact/create', component: ContactEditComponent},
-  {path: 'contact/edit/:id', component: ContactEditComponent},
-  
+  {path: 'contact/:user/edit/:id', component: ContactEditComponent},
+  {path: 'vendor/:user/contacts', component: ContactListComponent}
 ];
 
 

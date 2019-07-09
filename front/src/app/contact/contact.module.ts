@@ -27,6 +27,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService} from 'primeng/api';
 import { ContactEditComponent } from './contact-edit/contact-edit.component';
 import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 @NgModule({
   imports: [
@@ -50,6 +51,7 @@ import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
 	ProgressSpinnerModule,
 	TabViewModule,
 	ConfirmDialogModule,
+	AutoCompleteModule
   ],
   providers: [AuthService, UserService, ConfirmationService, ContactService],
   declarations: [ContactListComponent, ContactEditComponent]

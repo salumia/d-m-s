@@ -24,7 +24,6 @@ class ContractController extends Controller
      * @return Response
      */
     public function index(){
-		//return new Response(Contract::all());
 		$contracts = Contract::all();
 		foreach($contracts as $item) {
 			$item->getCategoryData;
@@ -394,10 +393,6 @@ class ContractController extends Controller
 		$data = $request->post();
 		$role = 'receiver';
 		$notification_receiver = 'receiver';
-		
-		/******* Delete Contract Old Logs *********/
-		//ContractLog::where(["contract_id"=>$contract])->delete();
-		
 		/******* Update Contract Table*********/
 		$contract = Contract::find($contract); 
 		if($data['sender']){
@@ -478,8 +473,7 @@ class ContractController extends Controller
 			// save log
 			foreach($data['edited_parts'] as $edited){
 				$edited['iteration'] = $iteration + 1;
-				$edited['user'] = $role;
-				//$edited['type'] = 'edited';
+				$edited['user'] = $role;				
 				ContractLog::create($edited);
 			}
 		}
@@ -519,53 +513,12 @@ class ContractController extends Controller
         ]);
 	}
 	
-	public function contractPayment($contract, Request $request){
-		
-		
-		$merchant_id = '300206404'; //INSERT MERCHANT ID (must be a 9 digit string)
-        $api_key = '04446E9287964AE2981Bd2997e380BA6'; //INSERT API ACCESS PASSCODE
-        $api_version = 'v1'; //default
-        $platform = 'api'; //default
-
-		//Create Beanstream Gateway
-		$beanstream = new \Beanstream\Gateway($merchant_id, $api_key, $platform, $api_version);
-		
-		
-		$result = $beanstream->reporting()->getTransaction(10000032);
-		echo "<pre>";
-		//display result
-		is_null($result)?:print_r($result);
-		die;
-		
-		//Example Card Payment Data
-		$payment_data = array(
-				'order_number' => 'a1b2c3',
-				'amount' => 1.00,
-				'payment_method' => 'card',
-				'card' => array(
-					'name' => 'Mr. Card Testerson',
-					'number' => '4030000010001234',
-					'expiry_month' => '07',
-					'expiry_year' => '22',
-					'cvd' => '123'
-				)
-		);
-		$complete = TRUE; //set to FALSE for PA
-		//Try to submit a Card Payment
-		try {
-			$result = $beanstream->payments()->makeCardPayment($payment_data, $complete);
-			die(print_r($result));
-		} catch (\Beanstream\Exception $e) {
-		   die(print_r($e->getMessage()));
-		}
-	}
-	
 	public function sendNotification($from_name, $from_email, $to_email, $to_name, $subject= 'Default Subject',$data = [],$template = 'mail.contract_created') {
-		Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
+		/* Mail::send($template, $data, function($message) use ($to_name, $to_email, $subject, $from_name, $from_email) {
 			$message->to($to_email, $to_name)
 					->subject($subject);
 			$message->from($from_email,$from_name);
-		});
+		}); */
 		return true;
 	}
 	

@@ -47,7 +47,6 @@ export class HeaderComponent implements OnInit {
 				this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/vendor/edit/'+this.userData.id});
 				this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/vendor/change-password'});
 			} else if(this.userData.role == "admin"){
-				this.items.push({label: 'Profile', icon: 'fa-user', routerLink: '/admin/view/'+this.userData.id});
 				this.items.push({label: 'Edit Profile', icon: 'fa-pencil', routerLink: '/admin/edit/'+this.userData.id});
 				this.items.push({label: 'Change Password', icon: 'fa-lock', routerLink: '/admin/change-password'});
 			} else {

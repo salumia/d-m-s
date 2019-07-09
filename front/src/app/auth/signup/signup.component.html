@@ -1,6 +1,6 @@
 <form id="vendor-signup" [formGroup]="Userform" (ngSubmit)="saveUser(Userform.value)">
   <div class="ui-g">
-	<p-panel header="Vendor Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-2 ui-xl-offset-5 ui-md-6 ui-md-offset-3 loginPanel">
+	<p-panel header="Vendor Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-6 ui-xl-offset-3 ui-md-6 ui-md-offset-3 loginPanel">
 	  <p-messages id="SignupMessage" [(value)]="msgs" [closable]="false"></p-messages>
 	  <div class="ui-g ui-fluid">
 		<div class="ui-inputgroup ui-g-12">
@@ -59,7 +59,10 @@
 		</div>
 	  </div>	  
 	   <div class="ui-g ui-fluid">
-		<div class="ui-inputgroup ui-g-12">
+		<div class="ui-inputgroup ui-g-2">
+			Password: *
+		</div>
+		<div class="ui-inputgroup ui-g-10">
 		  <input id="newPassword" class="form-control" name="password" [type]="showPassword ? 'text' : 'password'" pPassword [(ngModel)]="user.password" formControlName="password" placeholder="Password" /><a href="javascript:void(0);" (click)="toggle_password()"> <i style="position: relative; top: 7px; left: 50%; font-size: 16px;" title="Show/Hide Password" class="fa fa-eye"></i></a>
 		</div>
 	  </div>	  

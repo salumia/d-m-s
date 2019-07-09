@@ -24,6 +24,7 @@ export class ResetPasswordComponent implements OnInit {
 	public password: string;
 	
 	public msgs: Message[];
+	public loggedInUser: any = {};
   
 	@Output() onFilter: any = new EventEmitter();
 	constructor(aroute: ActivatedRoute, private auth: AuthService, private router: Router, private templateService: TemplateConfigService,  private fb: FormBuilder) {
@@ -37,14 +38,7 @@ export class ResetPasswordComponent implements OnInit {
 		
 		this.resetPasswordForm = this.fb.group({
 			'password': new FormControl('', Validators.required),		
-		});
-		
-		if(this.auth.isLoggedIn()){
-			this.templateService.filter('header refresh');
-			this.router.navigate(['dashboard']);
-		} else {
-			//this.verifyToken();
-		}
+		});		
 	}
 	
 	verifyToken(){		
@@ -54,8 +48,17 @@ export class ResetPasswordComponent implements OnInit {
 			} else if(typeof res.message != 'undefined') {
 				this.updateMessage('Login Failed:', res.message);
 			} else {
-				this.email = res.email;
-				this.submitBtnEnable = true;
+				this.loggedInUser = this.auth.getAuth();
+				if(this.loggedInUser){
+					if(this.loggedInUser.email == res.email){
+						this.updateMessage('Note:', 'Valid Url, But you already logged in');
+					} else {
+						this.updateMessage('Note:', 'Invalid Url, Already logged in with different User.');
+					}
+				} else {
+					this.email = res.email;
+					this.submitBtnEnable = true;
+				}
 			}
 		});
 	}

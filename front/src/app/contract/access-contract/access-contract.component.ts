@@ -54,15 +54,21 @@ export class AccessContractComponent implements OnInit {
 	loadContract() {
 		this.contractService.getContractByToken(this.token).subscribe(res => {	
 			this.contract = res;
-			if(this.checkTokenExpiration(this.contract.token_expiration)){
-				this.linkExpired = false;
-				this.contractPinModel = true;
-				this.id = res.id;				
-				this.user_contract_parts = res.get_contract_parts;				
+			if(this.loggedInUser == null || (this.contract.receiver_id == this.loggedInUser.id && this.contract.receiver_role == this.loggedInUser.role)){
+				if(this.checkTokenExpiration(this.contract.token_expiration)){
+					this.linkExpired = false;
+					this.contractPinModel = true;
+					this.id = res.id;				
+					this.user_contract_parts = res.get_contract_parts;				
+				} else {
+					this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Access Denied', detail: 'Contract Link expired.'});
+					this.loadSpinner = false;
+				}
 			} else {
-				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Access Denied', detail: 'Contract Link expired.'});
+				this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Access Denied', detail: 'You dont have permission.'});
 				this.loadSpinner = false;
 			}
+			
 		});
 	}
 	

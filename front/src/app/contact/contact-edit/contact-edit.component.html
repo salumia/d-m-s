@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		
-		<p-tabView>
+		<p-tabView *ngIf="!loadSpinner">
 			<p-tabPanel header="Edit Contact" [selected]="true" *ngIf="contactTab" >
 				<form id="Contactform" [formGroup]="Contactform" *ngIf="!loadSpinner" (ngSubmit)="updateContact()" >
 					<div class="form-group row">
@@ -118,7 +118,7 @@
 					</div>
 					
 					<div class="form-group row">
-						<span class="label-text col-md-3 col-form-label">Fax: *</span>
+						<span class="label-text col-md-3 col-form-label">Fax:</span>
 
 						<div class="col-md-9">
 							<p-inputMask mask="(999) 999 – 9999" [(ngModel)]="user.fax" formControlName="fax" placeholder="(XXX) XXX – XXXX"></p-inputMask>
@@ -172,8 +172,11 @@
 					<span class="label-text col-md-3 col-form-label">Enter Email : *</span>
 
 					<div class="col-md-9">
-						<p-dropdown [options]="availableNewContacts" [(ngModel)]="search_contact.email" formControlName="email" filter="true">
-						</p-dropdown>
+						<p-autoComplete [(ngModel)]="search_contact_label" formControlName="email" [suggestions]="suggestions" [style]="{width: '100%'}" (completeMethod)="searchEmail($event)" (onSelect)="onSelectEmail($event)" placeholder="Type Email" [minLength]="1">
+							<ng-template let-suggest pTemplate="item">
+								{{suggest.label}}
+							</ng-template>
+						</p-autoComplete>
 					</div>
 				</div>
 				

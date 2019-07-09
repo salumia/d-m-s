@@ -125,10 +125,13 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<div class="col-md-9 offset-md-3">
+						<div class="col-md-9 offset-md-3" *ngIf="this.loggedInUser == null">
 							<a [routerLink]="'/login'" *ngIf="contract.receiver_role == 'user'&&contract.get_receiver_data.password != ''" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
 							<a href="javascript:void(0)" [routerLink]="'/users/edit/'+contract.receiver_id+'/'+contract.id" *ngIf="contract.receiver_role == 'user'&&contract.get_receiver_data.password == ''" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
 							<a [routerLink]="'/vendor-login'" *ngIf="contract.receiver_role == 'vendor'" class="btn btn-rounded btn-warning">LOG IN TO EDIT AND APPROVE THIS CONTRACT</a>
+						</div>
+						<div class="col-md-9 offset-md-3" *ngIf="this.loggedInUser != null">
+							<a [routerLink]="'/contract/review/'+contract.id" class="btn btn-rounded btn-warning">APPROVE THIS CONTRACT</a>							
 						</div>
 					</div>
 			</div>	

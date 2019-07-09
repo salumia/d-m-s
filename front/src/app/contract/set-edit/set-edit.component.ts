@@ -24,10 +24,12 @@ export class SetEditComponent implements OnInit {
 	loadComponents: boolean = false;
 	loggedInUser: any;
 	loadSpinner: boolean = false;
+	partDetailVisible: boolean = false;
 	
 	sourceParts: Part[];
     
     selectedParts: Part[];
+	selectedPart: any = {};
 
 	constructor(aroute: ActivatedRoute, private router: Router, private setService: SetService, private partService: PartService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
 		aroute.params.subscribe(params => {
@@ -93,6 +95,11 @@ export class SetEditComponent implements OnInit {
 		} else {
 			this.messageService.add({key: 'top-corner', severity: 'error', summary: 'Error', detail: "Please select some parts"});
 		}
+	}
+	
+	viewPartDescription(part) {
+		this.partDetailVisible = true;
+		this.selectedPart = part;
 	}
 	
 	goBack() {

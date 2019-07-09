@@ -69,9 +69,12 @@ import {EditorModule} from 'primeng/editor';
 
 import {CardModule} from 'primeng/card';
 
+import { Ng4GeoautocompleteModule } from 'ng4-geoautocomplete';
+
 
 @NgModule({
   imports: [
+    Ng4GeoautocompleteModule.forRoot(),
     CommonModule,
 	ContractRoutingModule,
     FormsModule,

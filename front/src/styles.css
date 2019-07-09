@@ -6941,11 +6941,17 @@ textarea.form-control{
 	margin:0 20px;
 }
 
-#vendor-signup p-dropdown, ng4geo-autocomplete{ width:100% !important;}
-#vendor-signup p-dropdown .ui-dropdown{ width:100% !important;}
+p-dropdown, ng4geo-autocomplete{ width:100% !important;}
+/* p-dropdown .ui-dropdown{ width:100% !important;} */
 input.ui-state-default, .ui-widget-content input.ui-state-default, .ui-widget-header input.ui-state-default{
 	background:#FFFFFF !important;
 }
-#vendor-signup textarea,#vendor-signup input[type='password']{ padding: 5px 8px;}
+textarea,input, select{ padding: 5px 8px !important; background: #FFF !important;}
+#vendor-signup textarea,#vendor-signup input[type='password']{ padding: 5px 8px}
+.custom-autocomplete__input input{ height:40px !important;}
+.search-icon i{margin-top:5px;}
 .ui-tooltip-text{ }
 .tos ol, .tos ul{ padding-left:15px; }
+picklist .ui-state-highlight{	
+	background: #ffffff !important;
+}

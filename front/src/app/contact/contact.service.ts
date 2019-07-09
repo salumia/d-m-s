@@ -88,8 +88,7 @@ export class ContactService {
     });
   } 
   
-  
-  emailSuggestions(id:number,query:string = 'a'){
+  emailSuggestionList(id:number,query:string = ''){
 	const token = this.auth.getToken();
 	return this.http.get<any>(this.apiUrl + '/contact/suggestion/'+id+'/'+query ,{
 	  headers: {

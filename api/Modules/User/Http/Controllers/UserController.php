@@ -67,9 +67,6 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-		$user->getFiles;
-		$user->getLeaves;
-		$user->getClaims;
         return new Response($user);
     }
 
@@ -112,34 +109,23 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-		/* if(Part::where([['industry_id','=',$industry->id]])->count() > 0){
+		// Delete the user
+		try {				
+			$user->delete();
+		}
+		catch(\Exception $e) {
 			$response = new Response([
-				'message' => 'Industry can not be deleted',
-				'statusCode' => 202,
-				'industries' => $industry
-			]);
-			return $response;
-		} else { */
-		
-			// Delete the user
-			try {				
-				//print_r($user->id);die;
-				$user->delete();
-			}
-			catch(\Exception $e) {
-				$response = new Response([
-					'message' => $e->getMessage(),
-					'user' => $user
-				]);
-				$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-				return $response;
-			}
-
-			return new Response([
-				'message' => 'User deleted successfully',
+				'message' => $e->getMessage(),
 				'user' => $user
 			]);
-		//}
+			$response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+			return $response;
+		}
+
+		return new Response([
+			'message' => 'User deleted successfully',
+			'user' => $user
+		]);
     }
     //</editor-fold>
     //<editor-fold desc="Utility Operations">
@@ -284,67 +270,4 @@ class UserController extends Controller
 		
 		return new Response($count);
     }	
-	
-	/**
-     * Check Department HOD Already Exist in DB
-     * @param  Request $request
-     * @return Response
-     */
-    public function checkIfDepartmentHODExist(Request $request)
-    {
-		$data = $request->post();
-		return new Response(User::where([['department','=',$data['department']],['designation','=',$data['designation']],['id','!=',$data['id']]])->count());
-    }
-	
-	public function updatedocuments(Request $request) {
-		$id = $request->post('id');
-		$files = $request->post('files');
-		$data = [];		
-		foreach($files as $file){
-			$row['name'] = $file['name'];
-			$row['original_name'] = $file['original_name'];
-			$row['user_id'] =$id;
-			$row['created_at'] = $row['updated_at'] = date('Y-m-d H:i:s');
-			$data[] = $row;
-		}		
-		EmployeeFiles::insert($data);       
-		return new Response([
-            'message' => 'Employee docs saved successfully',
-        ]);
-	}
-	
-	public function uploadDocuments(Request $request) {
-		$destinationPath = public_path('/employee');
-		$output = [];
-		foreach($request->file('documents') as $image){
-			$name = time().'.'.$image->getClientOriginalExtension();			
-			$image->move($destinationPath, $name);
-			$output[] = array('name'=>$name,'original_name'=>$image->getClientOriginalName());
-		}
-		return new Response([
-            'message' => 'Files uploaded successfully',
-            'upoadedfiles' => $output
-        ]);
-	}
-	
-	public function deleteDocument(Request $request) {
-		$user_id = $request->post('id');
-		$file = $request->post('file');
-		$destinationPath = public_path('employee');
-		try{
-			unlink($destinationPath."/".$file['name']);
-			//EmployeeFiles::where(['user_id',$user_id])->delete();
-			EmployeeFiles::where([['user_id','=',$user_id],['name','=',$file['name']]])->delete();
-			return new Response([
-				'message' => 'File deleted successfully',
-			]);
-		}catch(\Exception $e) {
-            $response = new Response([
-                'message' => $e->getMessage()
-            ]);
-            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            return $response;
-        }
-		
-	}	
 }

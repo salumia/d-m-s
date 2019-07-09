@@ -170,23 +170,22 @@ class ContactController extends Controller
 		return new Response($contacts);
 		
 	}
+	
 	public function suggestionList($id,$query) {
 		$this->user = $id;
-		/* $users = User::select('email')->where('email', 'like', '%'.$query.'%')->get();
-		
-		$vendors = VendorUser::select('email')->where([['id', '!=', $id],['email', 'like', '%'.$query.'%']])->get(); */
-		
+		$this->query = $query;
 		$users = User::select('email as label', 'email as value')
 				->whereNotIn('email',function($query){
 					   $query->select('email')->from('contacts')->where('vendor_id',$this->user);
 					})
+				->where([['email', "like",'%'.$this->query.'%']])
 				->get();
 		
 		$vendors = VendorUser::select('email as label', 'email as value')
 					->whereNotIn('email',function($query){
 					   $query->select('email')->from('contacts')->where('vendor_id',$this->user);
 					})
-					->where([['id', '!=', $this->user]])
+					->where([['id', '!=', $this->user],['email', "like",'%'.$this->query.'%']])
 					->get();
 		
 		$users = collect($users);
