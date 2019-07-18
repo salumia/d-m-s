@@ -25,7 +25,8 @@ export class EditComponent implements OnInit {
 	loggedInUser: any;
 	loadSpinner: boolean = false;
 	industries: SelectItem[];
-
+	user:any;
+	
 	constructor(aroute: ActivatedRoute, private router: Router, private categoryService: CategoryService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location, private industryService: IndustryService) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];

@@ -8,6 +8,7 @@ import { VendorLoginComponent } from './vendor-login/vendor-login.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LogoutComponent } from './logout/logout.component';
+import { RequestPasswordComponent } from './request-password/request-password.component'
 
 // Controls
 import { PanelModule } from 'primeng/panel';
@@ -39,6 +40,6 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 	Ng4GeoautocompleteModule,
 	ProgressBarModule
   ],
-  declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent, ResetPasswordComponent]
+  declarations: [LoginComponent, VendorLoginComponent, AdminLoginComponent, ForgotPasswordComponent,LogoutComponent, SignupComponent, ResetPasswordComponent, RequestPasswordComponent]
 })
 export class AuthModule { }

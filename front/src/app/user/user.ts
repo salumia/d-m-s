@@ -16,6 +16,7 @@ export class User {
   updated_at: Date;
   contact_added_by: any;
   username: string;
+  role: string;
 
   isLoggedIn: boolean;
 

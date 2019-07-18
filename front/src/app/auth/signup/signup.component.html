@@ -1,4 +1,4 @@
-<form id="vendor-signup" [formGroup]="Userform" (ngSubmit)="saveUser(Userform.value)">
+<form id="vendor-signup" [formGroup]="Userform" (ngSubmit)="saveUser()">
   <div class="ui-g">
 	<p-panel header="Vendor Sign Up" class="ui-g-12 ui-g-offset-0 ui-xl-6 ui-xl-offset-3 ui-md-6 ui-md-offset-3 loginPanel">
 	  <p-messages id="SignupMessage" [(value)]="msgs" [closable]="false"></p-messages>

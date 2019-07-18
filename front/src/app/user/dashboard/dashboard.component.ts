@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
 	loggedInUser:any = {};
 	notifications: any;
-	  
+	loadSpinner: any;
 	constructor(private _location: Location,private auth: AuthService,  private router: Router, private userService:UserService) {}
 
 	ngOnInit() {

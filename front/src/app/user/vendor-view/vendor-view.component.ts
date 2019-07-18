@@ -16,13 +16,13 @@ export class VendorViewComponent implements OnInit {
 	user: Vendor = {} as Vendor;
 	loggedInUser: any;
 	loadUserData: boolean = false;
-	  
+	msgs:any;
 	constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private auth: AuthService, private _location: Location) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];
 		});
 	}
-	ngOnInit() {
+ngOnInit() {
 		this.loggedInUser = this.auth.getAuth();
 		this.loadUser();	 
 	}

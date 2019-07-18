@@ -15,7 +15,8 @@ export class ChangePasswordComponent implements OnInit {
   user: any;
   Userform: FormGroup;
   role: string = 'users';
-  
+	msgs:any;
+	id: any;
   constructor(private userService: UserService, private auth: AuthService, private fb: FormBuilder, private messageService: MessageService, private _location: Location) { }
 
 	ngOnInit() {

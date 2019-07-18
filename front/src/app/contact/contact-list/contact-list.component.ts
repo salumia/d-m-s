@@ -116,4 +116,9 @@ export class ContactListComponent implements OnInit {
 	showAddContactDialog() {
 		this.addContactVisible = true;
 	}
+
+	// Adding missing method 
+	saveContact(){
+		
+	}
 }

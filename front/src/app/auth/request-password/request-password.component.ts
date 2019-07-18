@@ -8,11 +8,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TemplateConfigService } from '../../template/template-config.service';
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.css']
+  selector: 'app-request-password',
+  templateUrl: './request-password.component.html',
+  styleUrls: ['./request-password.component.css']
 })
-export class ForgotPasswordComponent implements OnInit {
+export class RequestPasswordComponent implements OnInit {
   public username: string;
   public password: string;
   public msgs: Message[];

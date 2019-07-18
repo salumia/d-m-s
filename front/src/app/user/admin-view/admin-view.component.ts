@@ -16,7 +16,7 @@ export class AdminViewComponent implements OnInit {
 	user: Admin = {} as Admin;
 	loggedInUser: any;
 	loadUserData: boolean = false;
-	  
+	msgs:any;
 	constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private auth: AuthService, private _location: Location) {
 		aroute.params.subscribe(params => {
 			this.id = params['id'];

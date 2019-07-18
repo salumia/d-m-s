@@ -25,7 +25,7 @@ export class UserEditComponent implements OnInit {
 	loadSpinner: boolean = false;
 	userSettings: any = {};	
 	showPassword: boolean;
-	
+	role: string;
   constructor(aroute: ActivatedRoute, private router: Router, private userService: UserService, private fb: FormBuilder, private auth: AuthService, private messageService: MessageService, private _location: Location) {
 		this.showPassword = false;
 		aroute.params.subscribe(params => {
